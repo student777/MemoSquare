@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
-    'social.apps.django_app.me',
     'web'
 ]
 
@@ -128,22 +127,33 @@ STATIC_URL = '/static/'
 
 AUTHENTICATION_BACKENDS = [
     'social.backends.google.GoogleOAuth2',
+    'social.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '529089352401-7de23jotqhlen39v1d7aji3pjh5v2i32.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'lVBI4gw7P_wz71Eolv3quxHG'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:8000/social/complete/google-oauth2/'
+
+SOCIAL_AUTH_FACEBOOK_KEY = '1052596834838366'
+SOCIAL_AUTH_FACEBOOK_SECRET = '285e8e75e84b5db3674c6c25e358561e'
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_LOGIN_URL = '/login-test/'
-SOCIAL_AUTH_STORAGE = 'social.apps.django_app.me.models.DjangoStorage'
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
     'social.pipeline.social_auth.social_uid',
     'social.pipeline.social_auth.auth_allowed',
     'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'web.pipeline.require_email',
+    'social.pipeline.user.create_user',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details',
-    'social.pipeline.user.create_user',
 )
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+TIME_ZONE = 'Asia/Seoul'
+SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
+SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
+
+SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
