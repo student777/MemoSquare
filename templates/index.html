@@ -239,26 +239,30 @@
     <section id="contact">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <h2 class="section-heading">네모네모 시작하기</h2>
-                    <hr class="primary">
-                    <p>구글, 페이스북 계정으로 할 수 있어요</p>
-                </div>
-                <div class="col-lg-4 col-lg-offset-2 text-center">
-                    <a href="{% url "social:begin" "google-oauth2" %}" class="btn btn-social btn-google">
-                        <span class="fa fa-google"></span> Sign in with google
-                    </a>
-                </div>
-                <div class="col-lg-4 text-center">
-                    <a href="{% url "social:begin" "facebook" %}" class="btn btn-social btn-facebook">
-                        <span class="fa fa-facebook"></span> Sign in with facebook
-                    </a>
-                </div>
-            </div>
-            <div class="row">
-                <div class="text-center">
-                    <button type="button" class="btn btn-danger"><a href="/logout">Logout</a></button>
-                </div>
+                {% if user.is_authenticated %}
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <h2 class="section-heading">네모네모 로그인 됨</h2>
+                        <h4>{{ user.get_username }}님, 환영합니다!</h4>
+                        <img src="{{  user.userdetail.img_url }}" >
+                        <a href="/logout"><button type="button" class="btn btn-danger">Logout</button></a>
+                    </div>
+                {% else %}
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <h2 class="section-heading">네모네모 시작하기</h2>
+                        <hr class="primary">
+                        <p>구글, 페이스북 계정으로 할 수 있어요</p>
+                    </div>
+                    <div class="col-lg-4 col-lg-offset-2 text-center">
+                        <a href="{% url "social:begin" "google-oauth2" %}" class="btn btn-social btn-google">
+                            <span class="fa fa-google"></span> Sign in with google
+                        </a>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <a href="{% url "social:begin" "facebook" %}" class="btn btn-social btn-facebook">
+                            <span class="fa fa-facebook"></span> Sign in with facebook
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
@@ -268,11 +272,9 @@
         <div class="container text-center">
             <h2>테스트 공간</h2>
             <div>
-                {% if user %}
-                    user: {{ user }}<br>
-                    user.get_username: {{ user.get_username }}<br>
-                    user.is_authenticated: {{ user.is_authenticated }}<br>
-                {% endif %}
+                email: {{ user.email }} <br>
+                first name: {{ user.first_name }} <br>
+                last name: {{ user.last_name }} <br>
             </div>
         </div>
     </aside>

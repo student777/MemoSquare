@@ -4,3 +4,4 @@ db.sqlite3
 static/font-awesome-4.6.3/*
 static/startbootstrap-creative-gh-pages/*
 static/bootstrap-social/*
+web/migrations/*

@@ -136,7 +136,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'lVBI4gw7P_wz71Eolv3quxHG'
 SOCIAL_AUTH_FACEBOOK_KEY = '1052596834838366'
 SOCIAL_AUTH_FACEBOOK_SECRET = '285e8e75e84b5db3674c6c25e358561e'
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_LOGIN_URL = '/login-test/'
 SOCIAL_AUTH_PIPELINE = (
@@ -150,6 +150,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details',
+    'web.pipeline.save_profile',
 )
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 TIME_ZONE = 'Asia/Seoul'
