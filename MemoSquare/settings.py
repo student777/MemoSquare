@@ -110,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -123,13 +123,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
-
+# Social auth settings
 AUTHENTICATION_BACKENDS = [
     'social.backends.google.GoogleOAuth2',
     'social.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '529089352401-7de23jotqhlen39v1d7aji3pjh5v2i32.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'lVBI4gw7P_wz71Eolv3quxHG'
 
@@ -144,7 +148,6 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
-# SOCIAL_AUTH_LOGIN_URL = '/login-test/'
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
     'social.pipeline.social_auth.social_uid',
@@ -158,16 +161,9 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.user_details',
     'web.pipeline.save_profile',
 )
+
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
-TIME_ZONE = 'Asia/Seoul'
 SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
 SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
-
 SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
-# SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected-redirect-url/'
-
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 SESSION_COOKIE_SECURE=False
