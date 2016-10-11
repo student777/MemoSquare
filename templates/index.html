@@ -242,6 +242,7 @@
                 {% if user.is_authenticated %}
                     <div class="col-lg-8 col-lg-offset-2 text-center">
                         <h2 class="section-heading">네모네모 로그인 됨</h2>
+                        <hr class="primary">
                         <h4>{{ user.get_username }}님, 환영합니다!</h4>
                         <img src="{{  user.userdetail.img_url }}" >
                         <a href="/logout"><button type="button" class="btn btn-danger">Logout</button></a>

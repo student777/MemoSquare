@@ -135,10 +135,16 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'lVBI4gw7P_wz71Eolv3quxHG'
 
 SOCIAL_AUTH_FACEBOOK_KEY = '1052596834838366'
 SOCIAL_AUTH_FACEBOOK_SECRET = '285e8e75e84b5db3674c6c25e358561e'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+  'locale': 'ru_RU',
+  'fields': 'id, name, email, age_range'
+}
+
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_LOGIN_URL = '/login-test/'
+# SOCIAL_AUTH_LOGIN_URL = '/login-test/'
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
     'social.pipeline.social_auth.social_uid',
@@ -158,9 +164,10 @@ SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
 SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
 
 SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
-SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected-redirect-url/'
+# SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected-redirect-url/'
 
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+SESSION_COOKIE_SECURE=False

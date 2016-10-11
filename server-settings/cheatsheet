@@ -1,0 +1,7 @@
+# how to run a server
+# ref)http://brownbears.tistory.com/16
+# 2016.10.11
+
+source workspace/venv/bin/activate
+uwsgi --http :8000 --module MemoSquare.wsgi
+uwsgi --ini uwsgi.ini
