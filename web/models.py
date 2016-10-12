@@ -21,3 +21,22 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.userdetail.save()
+
+
+class Page(models.Model):
+    url = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.url
+
+
+class Memo(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    page = models.ForeignKey('Page', on_delete=models.CASCADE)
+    dom_location = models.CharField(max_length=25)
+    is_private = models.BooleanField()
+
+    def __str__(self):
+        return self.title + "/" + self.user.__str__()
