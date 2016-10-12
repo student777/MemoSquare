@@ -245,7 +245,7 @@
                         <hr class="primary">
                         <h4>{{ user.get_username }}님, 환영합니다!</h4>
                         <img src="{{  user.userdetail.img_url }}" >
-                        <a href="/logout"><button type="button" class="btn btn-danger">Logout</button></a>
+                        <a href="{% url "logout" %}"><button type="button" class="btn btn-danger">Logout</button></a>
                     </div>
                 {% else %}
                     <div class="col-lg-8 col-lg-offset-2 text-center">
