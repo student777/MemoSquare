@@ -33,8 +33,8 @@ class Page(models.Model):
 class Memo(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    page = models.ForeignKey('Page', on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='memo', on_delete=models.CASCADE)
+    page = models.ForeignKey('Page', related_name='page', on_delete=models.CASCADE)
     dom_location = models.CharField(max_length=25)
     is_private = models.BooleanField()
 

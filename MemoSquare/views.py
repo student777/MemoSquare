@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from .models import Memo
-from .serializers import MemoSerializer
+from .serializers import MemoSerializer, UserSerializer
 from rest_framework import generics
+from rest_framework import permissions
+from django.contrib.auth.models import User
+from .permissions import IsOwnerOrReadOnly
 
 
 def index(request):
@@ -18,8 +21,23 @@ def logout_view(request):
 class MemoList(generics.ListCreateAPIView):
     queryset = Memo.objects.all()
     serializer_class = MemoSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class MemoDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Memo.objects.all()
     serializer_class = MemoSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
