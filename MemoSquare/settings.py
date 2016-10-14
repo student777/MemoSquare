@@ -156,12 +156,12 @@ SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
 SESSION_COOKIE_SECURE = False
 
 
-# Rest-api
+# REST-API
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ],
     'PAGE_SIZE': 10,
 }
