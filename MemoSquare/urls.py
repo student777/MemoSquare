@@ -1,23 +1,48 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 from . import views
-from rest_framework.urlpatterns import format_suffix_patterns
+from .views import MemoViewSet, UserViewSet, PageViewSet
+from rest_framework.routers import DefaultRouter
 
 
+memo_list = MemoViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+memo_detail = MemoViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+user_list = UserViewSet.as_view({
+    'get': 'list'
+})
+user_detail = UserViewSet.as_view({
+    'get': 'retrieve'
+})
+page_list = PageViewSet.as_view({
+    'get': 'list'
+})
+page_detail = PageViewSet.as_view({
+    'get': 'retrieve'
+})
+
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r'memo', MemoViewSet)
+router.register(r'page', PageViewSet)
+router.register(r'user', UserViewSet)
+
+# The API URLs are now determined automatically by the router.
+# Additionally, we include the login URLs for the browsable API.
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
     url(r'^logout/', views.logout_view, name="logout"),
-    # REST practice
-    # url(r'^api/', include('MemoSquare.urls-api')),
-    url(r'^memo/$', views.MemoList.as_view(), name='memo-list'),
-    url(r'^memo/(?P<pk>[0-9]+)/$', views.MemoDetail.as_view(), name='memo-detail'),
-    url(r'^user/$', views.UserList.as_view(), name='user-list'),
-    url(r'^user/(?P<pk>[0-9]+)/$', views.UserDetail.as_view(), name='user-detail'),
-    url(r'^page/$', views.PageList.as_view(), name='page-list'),
-    url(r'^page/(?P<pk>[0-9]+)/$', views.PageDetail.as_view(), name='page-detail'),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^$', views.api_root),
     # url(r'^', views.index, name="index"),
+    # url(r'^api/', include('MemoSquare.urls-api')),
+    # REST practice
+    url(r'^', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
-urlpatterns = format_suffix_patterns(urlpatterns)

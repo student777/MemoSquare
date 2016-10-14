@@ -33,10 +33,10 @@ class Page(models.Model):
 class Memo(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
-    owner = models.ForeignKey(User, related_name='memo', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='memo', on_delete=models.CASCADE)
     page = models.ForeignKey('Page', related_name='memo', on_delete=models.CASCADE)
     dom_location = models.CharField(max_length=25)
     is_private = models.BooleanField()
 
     def __str__(self):
-        return self.title + "/" + self.owner.__str__()
+        return self.title + "/" + self.user.__str__()

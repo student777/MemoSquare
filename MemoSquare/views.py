@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from .models import Memo, Page
 from .serializers import MemoSerializer, UserSerializer, PageSerializer
-from rest_framework import generics
+from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -21,37 +21,28 @@ def logout_view(request):
 
 
 # REST framework practice
-class MemoList(generics.ListCreateAPIView):
-    queryset = Memo.objects.all()
-    serializer_class = MemoSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-
-class MemoDetail(generics.RetrieveUpdateDestroyAPIView):
+class MemoViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
     queryset = Memo.objects.all()
     serializer_class = MemoSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user, page=self.request.page)
 
-class PageList(generics.ListCreateAPIView):
+
+class PageViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
     queryset = Page.objects.all()
     serializer_class = PageSerializer
 
 
-class PageDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Page.objects.all()
-    serializer_class = PageSerializer
-
-
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserDetail(generics.RetrieveAPIView):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
