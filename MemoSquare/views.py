@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from .models import Memo
-from .serializers import MemoSerializer, UserSerializer
+from .models import Memo, Page
+from .serializers import MemoSerializer, UserSerializer, PageSerializer
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
 from .permissions import IsOwnerOrReadOnly
 
@@ -33,6 +36,16 @@ class MemoDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
 
 
+class PageList(generics.ListCreateAPIView):
+    queryset = Page.objects.all()
+    serializer_class = PageSerializer
+
+
+class PageDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Page.objects.all()
+    serializer_class = PageSerializer
+
+
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -41,3 +54,12 @@ class UserList(generics.ListAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'memo': reverse('memo-list', request=request, format=format),
+        'page': reverse('page-list', request=request, format=format),
+    })
