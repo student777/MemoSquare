@@ -1,5 +1,5 @@
 from django.conf.urls import url, include
-from .views import MemoViewSet, UserViewSet, PageViewSet
+from .views_api import MemoViewSet, UserViewSet, PageViewSet
 from rest_framework.routers import DefaultRouter
 
 
