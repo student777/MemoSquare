@@ -4,6 +4,10 @@ from . import views, urls_api
 
 
 urlpatterns = [
+    # TEST
+    url(r'^signin/', views.sign_in),
+    url(r'^signout/', views.sign_out),
+
     url(r'^admin/', admin.site.urls),
     url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
     url(r'^logout/', views.logout_view, name="logout"),
