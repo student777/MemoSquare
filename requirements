@@ -1,4 +1,3 @@
 django
-python-social-auth
-uwsgi
 djangorestframework
+oauth2client

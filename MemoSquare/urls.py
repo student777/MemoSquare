@@ -9,7 +9,6 @@ urlpatterns = [
     url(r'^signout/', views.sign_out),
 
     url(r'^admin/', admin.site.urls),
-    url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
     url(r'^logout/', views.logout_view, name="logout"),
     url(r'^api/', include(urls_api)),
     url(r'^$', views.index, name="index"),
