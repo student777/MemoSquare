@@ -4,12 +4,9 @@ from . import views, urls_api
 
 
 urlpatterns = [
-    # TEST
-    url(r'^signin/', views.sign_in),
-    url(r'^signout/', views.sign_out),
-
+    url(r'^sign_in/', views.sign_in),
     url(r'^admin/', admin.site.urls),
-    url(r'^logout/', views.logout_view, name="logout"),
+    url(r'^sign_out/', views.sign_out),
     url(r'^api/', include(urls_api)),
-    url(r'^$', views.index, name="index"),
+    url(r'^$', views.index),
 ]

@@ -9,7 +9,7 @@ def index(request):
     return render(request, 'index.html')
 
 
-def logout_view(request):
+def sign_out(request):
     logout(request)
     return redirect('/')
 
@@ -24,7 +24,3 @@ def sign_in(request):
         login(request, user)
 
     return HttpResponse('hello SunYoung mom, I am MoonOld father')
-
-
-def sign_out(request):
-    return HttpResponse('sign_out hello world')
