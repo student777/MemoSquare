@@ -123,3 +123,9 @@ REST_FRAMEWORK = {
     ],
     'PAGE_SIZE': 10,
 }
+
+# Account managements
+AUTHENTICATION_BACKENDS = [
+    'MemoSquare.backends.GoogleTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
