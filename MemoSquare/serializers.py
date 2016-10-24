@@ -4,12 +4,13 @@ from django.contrib.auth.models import User
 
 
 class MemoSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    owner = serializers.ReadOnlyField(source='owner.username')
     page = serializers.ReadOnlyField(source='page.url')
 
     class Meta:
         model = Memo
-        fields = ('url', 'pk', 'title', 'content', 'dom_location', 'is_private', 'page', 'user')
+        fields = ('url', 'pk', 'content', 'owner', 'page',
+                  'clipper', 'is_private', 'timestamp')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,8 +22,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PageSerializer(serializers.HyperlinkedModelSerializer):
-    memo = serializers.HyperlinkedRelatedField(many=True, view_name='memo-detail', read_only=True)
+    # memo = serializers.HyperlinkedRelatedField(many=True, view_name='memo-detail', read_only=True)
 
     class Meta:
         model = Page
-        fields = ('url', 'pk', 'memo', )
+        fields = ('url', 'pk', 'memo')
