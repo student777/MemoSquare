@@ -6,10 +6,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta name="google-signin-client_id"
-          content="845247378443-ra1842br5nqfau9d455ue1re17dpt4io.apps.googleusercontent.com">
     <title>MemoSquare</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -47,7 +43,6 @@
     </div>
 </nav>
 
-<div id="googlesignin" class="g-signin2" data-onsuccess="onSignIn"></div>
 <div class="text-center">
     <button class="btn btn-primary"><a href="/sign_out" onclick="signOut();">sign out</a></button>
 </div>
@@ -58,20 +53,12 @@
     <tr>
         <th>email</th>
         <th>username</th>
-        <th>zdfzdf</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        {% if user.is_authenticated %}
-            <td>{{ user.email }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.last_name }}</td>
-        {% else %}
-            <td>dfdf</td>
-            <td>dfdf</td>
-            <td>dfdf</td>
-        {% endif %}
+        <td id="user-email">no data</td>
+        <td id="user-name">no auth</td>
     </tr>
     </tbody>
 </table>
@@ -84,31 +71,55 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
-<!-- google login / logout -->
-<script src="https://apis.google.com/js/platform.js" async defer></script>
+<!-- facebook login / logout -->
 <script>
-    function onSignIn(googleUser) {
-        var profile = googleUser.getBasicProfile();
-        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        console.log('Email: ' + profile.getEmail());
-        var id_token = googleUser.getAuthResponse().id_token;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://memosquare.com/sign_in/');
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function () {
-            console.log('Signed in as: ' + xhr.responseText);
-        };
-        xhr.send('idToken=' + id_token);
+    function statusChangeCallback(response) {
+        if (response.status === 'connected') {
+            // Logged into your app and Facebook.
+            testAPI();
+        } else if (response.status === 'not_authorized') {
+            $('#status').text('Please log into this app.');
+        } else {
+            $('#status').text('Please log into Facebook.');
+        }
     }
-    function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-            console.log('User signed out.');
+
+    function checkLoginState() {
+        FB.getLoginStatus(function (response) {
+            statusChangeCallback(response);
+        });
+    }
+
+    $(document).ready(function () {
+        $.ajaxSetup({cache: true});
+        $.getScript('//connect.facebook.net/en_US/sdk.js', function () {
+            FB.init({
+                appId: '1052596834838366',
+                cookie: true,
+                xfbml: true,
+                version: 'v2.5'
+            });
+            $('#loginbutton,#feedbutton').removeAttr('disabled');
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        });
+    });
+
+    function testAPI() {
+        FB.api('/me', {locale: 'en_US', fields: 'name, email'}, function (response) {
+            console.log(response)
+            $('#user-email').text(response.email);
+            $('#user-name').text(response.name);
         });
     }
 </script>
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+
+<div id="status">
+</div>
 </body>
 
 </html>
