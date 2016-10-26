@@ -19,6 +19,7 @@ class Page(models.Model):
 
 
 class Memo(models.Model):
+    title = models.CharField(max_length=100, blank=True)
     content = models.TextField()
     owner = models.ForeignKey(User, related_name='memo', on_delete=models.CASCADE)
     page = models.ForeignKey('Page', related_name='memo', on_delete=models.CASCADE)
