@@ -6,7 +6,6 @@ from MemoSquare.models import UserDetail
 
 
 class FacebookTokenBackend(ModelBackend):
-    # Override
     def authenticate(self, token=None):
         if token is None:
             return None

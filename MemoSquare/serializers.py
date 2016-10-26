@@ -1,29 +1,19 @@
 from rest_framework import serializers
 from MemoSquare.models import Memo, Page
-from django.contrib.auth.models import User
 
 
-class MemoSerializer(serializers.HyperlinkedModelSerializer):
+class MemoSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    page = serializers.ReadOnlyField(source='page.url')
+    page = serializers.CharField(max_length=255)
+    # page = serializers.ReadOnlyField(source='page.url')
+    # page = serializers.PrimaryKeyRelatedField(queryset=Page.objects.all())
 
     class Meta:
         model = Memo
-        fields = ('url', 'pk', 'content', 'owner', 'page',
-                  'clipper', 'is_private', 'timestamp')
+        fields = ('url', 'pk', 'title', 'content', 'owner', 'page', 'clipper', 'is_private', 'timestamp')
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    memo = serializers.HyperlinkedRelatedField(many=True, view_name='memo-detail', read_only=True)
-
-    class Meta:
-        model = User
-        fields = ('url', 'pk', 'username', 'email', 'memo')
-
-
-class PageSerializer(serializers.HyperlinkedModelSerializer):
-    # memo = serializers.HyperlinkedRelatedField(many=True, view_name='memo-detail', read_only=True)
-
+class PageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
-        fields = ('url', 'pk', 'memo')
+        fields = ('pk', 'url', 'memo')
