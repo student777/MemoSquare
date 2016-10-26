@@ -126,6 +126,6 @@ REST_FRAMEWORK = {
 
 # Account managements
 AUTHENTICATION_BACKENDS = [
-    'MemoSquare.backends.GoogleTokenBackend',
+    'MemoSquare.backends.FacebookTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]

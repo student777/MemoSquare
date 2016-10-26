@@ -17,9 +17,8 @@ def sign_out(request):
 @csrf_exempt
 def sign_in(request):
     # (Receive token by HTTPS POST)
-    token = request.POST.get('idToken')
+    token = request.POST.get('token')
     user = authenticate(token=token)
-
     if user is not None:
         login(request, user)
 

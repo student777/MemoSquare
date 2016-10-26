@@ -51,14 +51,21 @@
 <table id="idtable" class="table table-bordered">
     <thead>
     <tr>
+        <th>location</th>
         <th>email</th>
         <th>username</th>
     </tr>
     </thead>
     <tbody>
     <tr>
+        <td>client-side</td>
         <td id="user-email">no data</td>
         <td id="user-name">no auth</td>
+    </tr>
+    <tr>
+        <td>server-side</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
     </tr>
     </tbody>
 </table>
@@ -76,7 +83,7 @@
     function statusChangeCallback(response) {
         if (response.status === 'connected') {
             // Logged into your app and Facebook.
-            testAPI();
+            testAPI(response);
         } else if (response.status === 'not_authorized') {
             $('#status').text('Please log into this app.');
         } else {
@@ -106,20 +113,34 @@
         });
     });
 
-    function testAPI() {
+    function testAPI(response) {
+        var token = response.authResponse.accessToken;
         FB.api('/me', {locale: 'en_US', fields: 'name, email'}, function (response) {
-            console.log(response)
             $('#user-email').text(response.email);
             $('#user-name').text(response.name);
+            sendToken(token);
         });
+    }
+
+    function sendToken(token) {
+        var url = 'http://memosquare.com/sign_in/';
+        var kargs = {
+            method: 'POST',
+            data: {'token': token},
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        };
+        $.ajax(url, kargs);
     }
 </script>
 
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+<fb:login-button autologoutlink="true" scope="public_profile,email" onlogin="checkLoginState();">
 </fb:login-button>
 
-<div id="status">
-</div>
 </body>
 
 </html>
