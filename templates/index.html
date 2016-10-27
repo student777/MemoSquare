@@ -1,84 +1,36 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% block content %}
+    <h1>Welcome to MemoSquare</h1>
+    <img src="/static/memosquare/img/logo_main.gif"/>
+    <table id="idtable">
+        <thead>
+        <tr>
+            <th>location</th>
+            <th>email</th>
+            <th>username</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>client-side</td>
+            <td id="user-email">no data</td>
+            <td id="user-name">no auth</td>
+        </tr>
+        <tr>
+            <td>server-side</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        </tbody>
+    </table>
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MemoSquare</title>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <style>
-        a {
-            color: whitesmoke
-        }
-
-        body {
-            background-color: lightgrey
-        }
-
-        nav > div {
-            background-color: orange
-        }
-
-        .abcRioButton {
-            margin: 0 auto;
-        }
-    </style>
-</head>
-<body>
-
-<nav class="navbar">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/">MemoSquare</a>
-        </div>
-        <ul class="nav navbar-nav">
-            <li><a href="#">YOURS</a></li>
-            <li><a href="#">LIKES</a></li>
-            <li><a href="#">SQUARE</a></li>
-        </ul>
-    </div>
-</nav>
-
-<div class="text-center">
-    <button class="btn btn-primary"><a href="/sign_out" onclick="signOut();">sign out</a></button>
-</div>
-
-<h4>TEST</h4>
-<table id="idtable" class="table table-bordered">
-    <thead>
-    <tr>
-        <th>location</th>
-        <th>email</th>
-        <th>username</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>client-side</td>
-        <td id="user-email">no data</td>
-        <td id="user-name">no auth</td>
-    </tr>
-    <tr>
-        <td>server-side</td>
-        <td>{{ user.username }}</td>
-        <td>{{ user.email }}</td>
-    </tr>
-    </tbody>
-</table>
+    <fb:login-button autologoutlink="true" scope="public_profile,email" onlogin="checkLoginState();">
+    </fb:login-button>
+    <a href="/sign_out" onclick="signOut();" class="waves-effect waves-light btn">sign out</a>
+{% endblock %}
 
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
-        crossorigin="anonymous"></script>
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-<!-- facebook login / logout -->
+{% block javascript %}
 <script>
     function statusChangeCallback(response) {
         if (response.status === 'connected') {
@@ -122,25 +74,20 @@
         });
     }
 
+    // Send FB token to our server, server make a session
     function sendToken(token) {
         var url = 'http://memosquare.com/sign_in/';
-        var kargs = {
+        var settings = {
             method: 'POST',
             data: {'token': token},
-            success: function (response) {
-                console.log(response);
+            success: function success(result, status, xhr) {
+                console.log(result);
             },
-            error: function (response) {
-                console.log(response);
+            error: function (xhr, status, error) {
+                console.log(error);
             }
         };
-        $.ajax(url, kargs);
+        $.ajax(url, settings);
     }
 </script>
-
-<fb:login-button autologoutlink="true" scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
-
-</body>
-
-</html>
+{% endblock %}

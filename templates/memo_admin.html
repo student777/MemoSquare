@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-all memo list: admin user only<br>
-<table border="1px">
+{% extends "base.html" %}
+{% block content %}
+<h2>all memo list: admin user only</h2>
+<table class="bordered">
     <thead>
     <tr>
         <th>pk</th>
@@ -34,5 +29,4 @@ all memo list: admin user only<br>
     {% endfor %}
     </tbody>
 </table>
-</body>
-</html>
+{% endblock %}

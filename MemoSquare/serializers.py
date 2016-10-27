@@ -11,9 +11,3 @@ class MemoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Memo
         fields = ('url', 'pk', 'title', 'content', 'owner', 'page', 'clipper', 'is_private', 'timestamp')
-
-
-class PageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Page
-        fields = ('pk', 'url', 'memo')

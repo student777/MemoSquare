@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{{ user }}'s memo list<br>
+{% extends "base.html" %}
+{% block content %}
+<h3>{{ user }}'s memo list</h3>
 <table border="1px">
     <thead>
     <tr>
@@ -34,5 +29,4 @@
     {% endfor %}
     </tbody>
 </table>
-</body>
-</html>
+{% endblock %}

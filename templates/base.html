@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MemoSquare</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <style>
+        a {
+            color: whitesmoke
+        }
+
+        body {
+            background-color: lightgrey
+        }
+
+        nav > div {
+            background-color: orange
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-wrapper">
+        <a href="/" class="brand-logo">MemoSquare</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="/memo/user/">MY MEMO</a></li>
+            <li><a href="/memo/clipbook/">CLIPBOOK</a></li>
+            <li><a href="/square/">SQUARE</a></li>
+        </ul>
+    </div>
+</nav>
+
+{% block content %}
+{% endblock %}
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+        crossorigin="anonymous"></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+<!-- facebook login / logout -->
+{% block javascript %}
+{% endblock %}
+</body>
+
+</html>
