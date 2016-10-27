@@ -1,8 +1,12 @@
-from django.contrib.auth import logout
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from rest_framework import viewsets, permissions, renderers
+from rest_framework.decorators import list_route
+from rest_framework.response import Response
+from .models import Memo, Page
+from .serializers import MemoSerializer, PageSerializer
+from .url_classifier import classify_url
 
 
 def index(request):
@@ -22,4 +26,44 @@ def sign_in(request):
     if user is not None:
         login(request, user)
 
-    return HttpResponse('hello SunYoung mom, I am MoonOld father')
+
+class MemoViewSet(viewsets.ModelViewSet):
+    queryset = Memo.objects.all()
+    serializer_class = MemoSerializer
+    renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer, )
+
+    def perform_create(self, serializer):
+        page_url = self.request.data['page']
+        page_id = classify_url(page_url)
+        page = Page.objects.get(pk=page_id)
+        serializer.save(owner=self.request.user, page=page)
+
+    @list_route(url_path='user')
+    def get_memo_of_owner(self, request):
+        memo_list = Memo.objects.filter(owner__id=request.user.id)
+        if memo_list is not None:
+            serializer = self.get_serializer(memo_list, many=True)
+            return Response({'memo_list': serializer.data}, template_name='memo_user.html')
+
+    # When ?format=json parameter, Hangul text is broken?
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(data={'memo_list': serializer.data, }, template_name='memo_admin.html')
+
+    # This is stupid function because DRF.decorator permission not working
+    # ref)http://stackoverflow.com/questions/25283797/django-rest-framework-add-additional-permission-in-viewset-update-method
+    def get_permissions(self):
+        if self.request.path.endswith('/user/'):
+            self.permission_classes = [permissions.IsAuthenticated, ]
+        elif self.request.path.endswith('/memo/'):
+            self.permission_classes = [permissions.IsAdminUser, ]
+        else:
+            self.permission_classes = [permissions.IsAuthenticated, ]
+        return super(MemoViewSet, self).get_permissions()
+
+
+class PageViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Page.objects.all()
+    serializer_class = PageSerializer
+    permission_classes = [permissions.IsAdminUser, ]

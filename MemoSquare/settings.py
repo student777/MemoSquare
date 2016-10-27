@@ -129,3 +129,4 @@ AUTHENTICATION_BACKENDS = [
     'MemoSquare.backends.FacebookTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+

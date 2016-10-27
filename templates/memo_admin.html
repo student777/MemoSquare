@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+all memo list: admin user only<br>
+<table border="1px">
+    <thead>
+    <tr>
+        <th>pk</th>
+        <th>title</th>
+        <th>owner</th>
+        <th>content</th>
+        <th>page</th>
+        <th>clipper</th>
+        <th>is_private</th>
+        <th>timestamp</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for memo in memo_list %}
+        <tr>
+            <td>{{ memo.pk }}</td>
+            <td>{{ memo.title }}</td>
+            <td>{{ memo.owner }}</td>
+            <td>{{ memo.content }}</td>
+            <td>{{ memo.page }}</td>
+            <td>{{ memo.clipper }}</td>
+            <td>{{ memo.is_private }}</td>
+            <td>{{ memo.timestamp }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
