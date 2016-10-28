@@ -30,5 +30,3 @@ class Memo(models.Model):
     def __str__(self):
         content_truncated = self.content[:100] + (self.content[100:] and '..')
         return self.owner.__str__() + "/" + content_truncated
-
-

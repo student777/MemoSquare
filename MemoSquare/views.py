@@ -2,11 +2,14 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from rest_framework import viewsets, permissions, renderers
+from rest_framework import status
+from rest_framework import permissions
+from rest_framework.decorators import permission_classes, api_view
 from rest_framework.response import Response
-from .models import Memo, Page
+from .models import Memo
 from .serializers import MemoSerializer
 from .url_classifier import classify_url
+from .permissions import IsOwnerOrReadOnly
 
 
 def index(request):
@@ -32,59 +35,72 @@ def square(request):
     return render(request, 'square.html')
 
 
-class MemoViewSet(viewsets.ModelViewSet):
-    queryset = Memo.objects.all()
-    serializer_class = MemoSerializer
-    renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer, )
+# When ?format=json parameter, Hangul text is broken?
+@api_view()
+@permission_classes((permissions.IsAdminUser, ))
+def all_memo(request):
+    query_set = Memo.objects.all()
+    serializer = MemoSerializer(query_set, many=True)
+    return Response({'memo_list': serializer.data, }, template_name='memo_admin.html')
 
-    def perform_create(self, serializer):
-        page_url = self.request.data['page']
-        page_id = classify_url(page_url)
-        page = Page.objects.get(pk=page_id)
-        serializer.save(owner=self.request.user, page=page)
 
-    def get_memo_of_owner(self, request):
-        memo_list = Memo.objects.filter(owner__id=request.user.id)
-        if memo_list is not None:
-            serializer = self.get_serializer(memo_list, many=True)
-            return Response({'memo_list': serializer.data, }, template_name='memo_user.html')
+@api_view()
+@permission_classes((permissions.IsAuthenticated, ))
+def my_memo(request):
+    query_set = Memo.objects.filter(owner__id=request.user.id)
+    if query_set is not None:
+        serializer = MemoSerializer(query_set, many=True)
+        return Response({'memo_list': serializer.data, }, template_name='memo_user.html')
 
-    # When ?format=json parameter, Hangul text is broken?
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-        return Response({'memo_list': serializer.data, }, template_name='memo_admin.html')
 
-    def clipbook(self, request):
-        memo_list = Memo.objects.filter(owner__id=request.user.id)
-        if memo_list is not None:
-            serializer = self.get_serializer(memo_list, many=True)
-            return Response({'memo_list': serializer.data, }, template_name='memo_clip.html')
+@api_view()
+@permission_classes((permissions.IsAuthenticated, ))
+def clipbook(request):
+    query_set = Memo.objects.filter(owner__id=request.user.id)
+    if query_set is not None:
+        serializer = MemoSerializer(query_set, many=True)
+        return Response({'memo_list': serializer.data, }, template_name='memo_clip.html')
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
+def create_memo(request):
+    serializer = MemoSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        page = classify_url(request.data['page'])
+        serializer.save(owner=request.user, page=page)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST', 'DELETE'])
+@permission_classes((permissions.IsAuthenticated, ))
+def detail_memo(request, pk):
+    try:
+        memo = Memo.objects.get(pk=pk)
+    except Memo.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = MemoSerializer(memo)
         return Response(serializer.data, template_name='memo_detail.html')
 
-    def edit(self, request, pk):
-        memo = Memo.objects.get(pk=pk)
-        serializer = MemoSerializer(memo, context={'request': request})
-        return Response({'serializer': serializer, 'memo': memo, }, template_name='memo_edit.html', )
+    elif request.method == 'POST':
+        serializer = MemoSerializer(memo, data=request.data)
+        if serializer.is_valid():
+            page = classify_url(request.data['page'])
+            serializer.save(owner=request.user, page=page)
+            return Response(serializer.data, template_name='memo_detail.html')
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def perform_update(self, serializer):
-        page_url = self.request.data['page']
-        page_id = classify_url(page_url)
-        page = Page.objects.get(pk=page_id)
-        serializer.save(owner=self.request.user, page=page)
-        return redirect('/')
+    elif request.method == 'DELETE':
+        memo.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # This is stupid function because DRF.decorator permission not working
-    # ref)http://stackoverflow.com/questions/25283797/django-rest-framework-add-additional-permission-in-viewset-update-method
-    def get_permissions(self):
-        if self.request.path.endswith('/user/'):
-            self.permission_classes = [permissions.IsAuthenticated, ]
-        elif self.request.path.endswith('/memo/'):
-            self.permission_classes = [permissions.IsAdminUser, ]
-        else:
-            self.permission_classes = [permissions.IsAuthenticated, ]
-        return super(MemoViewSet, self).get_permissions()
+
+@api_view()
+@permission_classes((IsOwnerOrReadOnly, ))
+def edit_memo(request, pk):
+    memo = Memo.objects.get(pk=pk)
+    serializer = MemoSerializer(memo, context={'request': request})
+    return Response({'serializer': serializer, 'memo': memo, }, template_name='memo_edit.html', )

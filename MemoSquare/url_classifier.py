@@ -9,4 +9,4 @@ def classify_url(url):
         page = Page.objects.get(url=url)
     except Page.DoesNotExist:
         page = Page.objects.create(url=url)
-    return page.pk
+    return page

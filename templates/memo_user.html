@@ -1,34 +1,78 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>{{ user }}'s memo list</h3>
-<table border="1px">
-    <thead>
-    <tr>
-        <th>pk</th>
-        <th>title</th>
-        <th>owner</th>
-        <th>content</th>
-        <th>page</th>
-        <th>clipper</th>
-        <th>is_private</th>
-        <th>timestamp</th>
-        <th>link</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for memo in memo_list %}
+    <h3>{{ user }}'s memo list</h3>
+    <table border="1px">
+        <thead>
         <tr>
-            <td>{{ memo.pk }}</td>
-            <td>{% if memo.title %} Memo created at {{ memo.timestamp }}{% else %}{{ memo.title }}{% endif %}</td>
-            <td>{{ memo.owner }}</td>
-            <td>{{ memo.content }}</td>
-            <td>{{ memo.page }}</td>
-            <td>{{ memo.clipper }}</td>
-            <td>{{ memo.is_private }}</td>
-            <td>{{ memo.timestamp }}</td>
-            <td><a href="/memo/{{ memo.pk }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a></td>
+            <th>pk</th>
+            <th>title</th>
+            <th>owner</th>
+            <th>content</th>
+            <th>page</th>
+            <th>clipper</th>
+            <th>is_private</th>
+            <th>timestamp</th>
+            <th>link</th>
         </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        {% for memo in memo_list %}
+            <tr>
+                <td>{{ memo.pk }}</td>
+                <td>{% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}
+                    {{ memo.title }}{% endif %}</td>
+                <td>{{ memo.owner }}</td>
+                <td>{{ memo.content }}</td>
+                <td>{{ memo.page }}</td>
+                <td>{{ memo.clipper }}</td>
+                <td>{{ memo.is_private }}</td>
+                <td>{{ memo.timestamp }}</td>
+                <td><a href="/memo/{{ memo.pk }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascript %}
+    {# This is test ajax-CREATE/DELETE code #}
+    {# reference: http://ngee.tistory.com/846 #}
+    <script>
+        console.log('{{ csrf_token }}');
+        var delete_test = function (pk) {
+            var settings = {
+                type: 'DELETE',
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function success(result, status, xhr) {
+                    console.log(result);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            };
+            url = 'http://memosquare.com/memo/' + pk + '/';
+            $.ajax(url, settings);
+        };
+        var create_test = function () {
+            var settings = {
+                method: 'POST',
+                data: {
+                    "title": "또바뀜333", "content": "dfadfasdf",
+                    "page": "http://na123ver.com", "clipper": [], "is_private": true,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}'
+                },
+                success: function success(result, status, xhr) {
+                    console.log(result);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            };
+            url = 'http://memosquare.com/memo/';
+            $.ajax(url, settings);
+        };
+    </script>
 {% endblock %}
