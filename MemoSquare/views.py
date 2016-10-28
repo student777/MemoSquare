@@ -49,20 +49,25 @@ class MemoViewSet(viewsets.ModelViewSet):
         memo_list = Memo.objects.filter(owner__id=request.user.id)
         if memo_list is not None:
             serializer = self.get_serializer(memo_list, many=True)
-            return Response({'memo_list': serializer.data}, template_name='memo_user.html')
+            return Response({'memo_list': serializer.data, }, template_name='memo_user.html')
 
     # When ?format=json parameter, Hangul text is broken?
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
-        return Response(data={'memo_list': serializer.data, }, template_name='memo_admin.html')
+        return Response({'memo_list': serializer.data, }, template_name='memo_admin.html')
 
     @list_route(url_path='clipbook')
     def clipbook(self, request):
         memo_list = Memo.objects.filter(owner__id=request.user.id)
         if memo_list is not None:
             serializer = self.get_serializer(memo_list, many=True)
-            return Response({'memo_list': serializer.data}, template_name='clipbook.html')
+            return Response({'memo_list': serializer.data, }, template_name='clipbook.html')
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, template_name='detail.html')
 
     # This is stupid function because DRF.decorator permission not working
     # ref)http://stackoverflow.com/questions/25283797/django-rest-framework-add-additional-permission-in-viewset-update-method
