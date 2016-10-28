@@ -28,7 +28,7 @@ class FacebookTokenBackend(ModelBackend):
 
 
 def get_json_from_facebook(url, code):
-    access_token = '1052596834838366|s3kp56NAMLOnQYgTGTKa_JCm6wQ'
+    access_token = '192456264535234|qblTXSc_roZOfMxm96XMmWpP6YI'
     url = url % (code, access_token)
     r = urllib.request.urlopen(url)
     data = json.loads(r.read().decode(r.info().get_param('charset') or 'utf-8'))

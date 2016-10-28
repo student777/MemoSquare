@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from MemoSquare.models import Memo, Page
+from MemoSquare.models import Memo
 
 
 class MemoSerializer(serializers.ModelSerializer):
@@ -11,4 +11,5 @@ class MemoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Memo
-        fields = ('url', 'pk', 'title', 'content', 'owner', 'page', 'clipper', 'is_private', 'timestamp')
+        fields = ('pk', 'title', 'content', 'owner', 'page', 'clipper', 'is_private', 'timestamp')
+        read_only_fields = ('timestamp',)

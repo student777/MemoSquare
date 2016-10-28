@@ -1,12 +1,6 @@
-from django.conf.urls import url, include
+from django.conf.urls import url
 from django.contrib import admin
 from . import views
-from .views import MemoViewSet
-from rest_framework.routers import DefaultRouter
-
-
-router = DefaultRouter()
-router.register(r'memo', MemoViewSet)
 
 
 urlpatterns = [
@@ -15,5 +9,9 @@ urlpatterns = [
     url(r'^sign_in/', views.sign_in),
     url(r'^sign_out/', views.sign_out),
     url(r'^square/', views.square),
-    url(r'', include(router.urls)),
+    url(r'^memo/clipbook/$', views.MemoViewSet.as_view({'get': 'clipbook'})),
+    url(r'^memo/$', views.MemoViewSet.as_view({'get': 'list'})),
+    url(r'^memo/user/$', views.MemoViewSet.as_view({'get': 'get_memo_of_owner'})),
+    url(r'^memo/(?P<pk>[^/.]+)/$', views.MemoViewSet.as_view({'get': 'retrieve', 'post': 'update'})),
+    url(r'^memo/(?P<pk>[^/.]+)/edit/$', views.MemoViewSet.as_view({'get': 'edit', })),
 ]

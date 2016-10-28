@@ -26,7 +26,7 @@
             <td>{{ memo.clipper }}</td>
             <td>{{ memo.is_private }}</td>
             <td>{{ memo.timestamp }}</td>
-            <td><a href="{{ memo.url }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a></td>
+            <td><a href="/memo/{{ memo.pk }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a></td>
         </tr>
     {% endfor %}
     </tbody>

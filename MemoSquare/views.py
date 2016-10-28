@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import viewsets, permissions, renderers
-from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from .models import Memo, Page
 from .serializers import MemoSerializer
@@ -44,7 +43,6 @@ class MemoViewSet(viewsets.ModelViewSet):
         page = Page.objects.get(pk=page_id)
         serializer.save(owner=self.request.user, page=page)
 
-    @list_route(url_path='user')
     def get_memo_of_owner(self, request):
         memo_list = Memo.objects.filter(owner__id=request.user.id)
         if memo_list is not None:
@@ -57,17 +55,28 @@ class MemoViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response({'memo_list': serializer.data, }, template_name='memo_admin.html')
 
-    @list_route(url_path='clipbook')
     def clipbook(self, request):
         memo_list = Memo.objects.filter(owner__id=request.user.id)
         if memo_list is not None:
             serializer = self.get_serializer(memo_list, many=True)
-            return Response({'memo_list': serializer.data, }, template_name='clipbook.html')
+            return Response({'memo_list': serializer.data, }, template_name='memo_clip.html')
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        return Response(serializer.data, template_name='detail.html')
+        return Response(serializer.data, template_name='memo_detail.html')
+
+    def edit(self, request, pk):
+        memo = Memo.objects.get(pk=pk)
+        serializer = MemoSerializer(memo, context={'request': request})
+        return Response({'serializer': serializer, 'memo': memo, }, template_name='memo_edit.html', )
+
+    def perform_update(self, serializer):
+        page_url = self.request.data['page']
+        page_id = classify_url(page_url)
+        page = Page.objects.get(pk=page_id)
+        serializer.save(owner=self.request.user, page=page)
+        return redirect('/')
 
     # This is stupid function because DRF.decorator permission not working
     # ref)http://stackoverflow.com/questions/25283797/django-rest-framework-add-additional-permission-in-viewset-update-method
