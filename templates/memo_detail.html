@@ -8,5 +8,33 @@
     clipper: {{ clipper }}<br>
     is_private: {{ is_private }}<br>
     timestamp: {{ timestamp }}<br>
-    <a href="edit/" class="waves-effect waves-light btn">edit</a>
+    <a href="/memo/" class="waves-effect waves-light btn">list</a>
+    <a href="edit/" class="waves-effect deep-purple waves-light btn">edit</a>
+    <a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn">delete</a>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        var delete_memo = function (pk) {
+            var is_delete = confirm('삭제하시겠습니까?');
+            if(!is_delete){
+                return false;
+            }
+            var settings = {
+                type: 'DELETE',
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function success(result, status, xhr) {
+                    //delete <td> is troublesome
+                    location.reload();
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            };
+            url = 'http://memosquare.com/memo/' + pk + '/';
+            $.ajax(url, settings);
+        };
+    </script>
 {% endblock %}

@@ -12,7 +12,9 @@
             <th>clipper</th>
             <th>is_private</th>
             <th>timestamp</th>
-            <th>link</th>
+            <th>detail</th>
+            <th>edit</th>
+            <th>delete</th>
         </tr>
         </thead>
         <tbody>
@@ -27,8 +29,9 @@
                 <td>{{ memo.clipper }}</td>
                 <td>{{ memo.is_private }}</td>
                 <td>{{ memo.timestamp }}</td>
-                <td><a href="/memo/{{ memo.pk }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a>
-                </td>
+                <td><a href="/memo/{{ memo.pk }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a></td>
+                <td><a href="/memo/{{ memo.pk }}/edit/" class="waves-effect deep-purple waves-light btn"><i class="small material-icons">mode_edit</i></a></td>
+                <td><a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn"><i class="small material-icons">delete</i></a></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -36,42 +39,27 @@
 {% endblock %}
 
 {% block javascript %}
-    {# This is test ajax-CREATE/DELETE code #}
     {# reference: http://ngee.tistory.com/846 #}
     <script>
-        console.log('{{ csrf_token }}');
-        var delete_test = function (pk) {
+        var delete_memo = function (pk) {
+            var is_delete = confirm('삭제하시겠습니까?');
+            if(!is_delete){
+                return false;
+            }
             var settings = {
                 type: 'DELETE',
                 beforeSend: function (request) {
                     request.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                 },
                 success: function success(result, status, xhr) {
-                    console.log(result);
+                    //delete <td> is troublesome
+                    location.reload();
                 },
                 error: function (response) {
                     console.log(response);
                 }
             };
             url = 'http://memosquare.com/memo/' + pk + '/';
-            $.ajax(url, settings);
-        };
-        var create_test = function () {
-            var settings = {
-                method: 'POST',
-                data: {
-                    "title": "또바뀜333", "content": "dfadfasdf",
-                    "page": "http://na123ver.com", "clipper": [], "is_private": true,
-                    "csrfmiddlewaretoken": '{{ csrf_token }}'
-                },
-                success: function success(result, status, xhr) {
-                    console.log(result);
-                },
-                error: function (response) {
-                    console.log(response);
-                }
-            };
-            url = 'http://memosquare.com/memo/';
             $.ajax(url, settings);
         };
     </script>
