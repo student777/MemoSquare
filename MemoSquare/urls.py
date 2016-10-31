@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^memo/(?P<pk>\d+)/edit/$', views.memo_edit_form),
     url(r'^memo/clipbook/$', views.clipbook),
     url(r'^square/', views.square),
+    url(r'^my_img/', views.my_img),
 ]

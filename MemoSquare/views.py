@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -23,7 +24,6 @@ def sign_out(request):
 
 @csrf_exempt
 def sign_in(request):
-    # (Receive token by HTTPS POST)
     token = request.POST.get('token')
     user = authenticate(token=token)
     if user is not None:
@@ -94,3 +94,9 @@ def clipbook(request):
 
 def square(request):
     return render(request, 'square.html')
+
+
+# some trick
+@login_required
+def my_img(request):
+    return redirect('http://graph.facebook.com/%s/picture' % request.user.detail.code)

@@ -24,9 +24,12 @@
         </tbody>
     </table>
 
+    <img src="{{ user.detail.get_img_url }}"/>
     <fb:login-button autologoutlink="true" scope="public_profile,email" onlogin="checkLoginState();">
     </fb:login-button>
-    <a href="/sign_out" onclick="signOut();" class="waves-effect waves-light btn">sign out</a>
+    {% if not user.is_anonymous %}
+        <a href="/sign_out" onclick="signOut();" class="waves-effect waves-light btn">sign out</a>
+    {% endif %}
 {% endblock %}
 
 
