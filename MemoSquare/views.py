@@ -96,7 +96,11 @@ def square(request):
     return render(request, 'square.html')
 
 
-# some trick
+# img forwarding
 @login_required
 def my_img(request):
-    return redirect('http://graph.facebook.com/%s/picture' % request.user.detail.code)
+    from urllib import request as request2
+    code = request.user.detail.code
+    img = request2.urlretrieve('http://graph.facebook.com/%s/picture' % code)
+    image_data = open(img[0], "rb").read()
+    return HttpResponse(image_data, content_type="image/jpg")
