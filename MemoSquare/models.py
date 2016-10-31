@@ -3,12 +3,14 @@ from django.contrib.auth.models import User
 
 
 class UserDetail(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='detail')
     code = models.CharField(max_length=100)
-    img_url = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return self.user.username
+
+    def get_img_url(self):
+        return 'http://graph.facebook.com/%s/picture' % self.code
 
 
 class Page(models.Model):
