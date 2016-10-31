@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+    <h3>Edit page</h3>
     <div class="row">
         <form action="/memo/{{ memo.pk }}/" method="POST" class="col s12">
             {% csrf_token %}

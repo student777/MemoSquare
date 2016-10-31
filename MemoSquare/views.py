@@ -35,11 +35,12 @@ def sign_in(request):
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.IsAuthenticated, ))
 def memo_list_create(request):
+    is_owner = True
     if request.method == 'GET':
         query_set = Memo.objects.filter(owner__id=request.user.id)
         if query_set is not None:
             serializer = MemoSerializer(query_set, many=True)
-            return Response({'memo_list': serializer.data, }, template_name='memo_list.html')
+            return Response({'memo_list': serializer.data, 'service_name': 'memo list', 'is_owner': is_owner, }, template_name='memo_list.html')
 
     elif request.method == 'POST':
         serializer = MemoSerializer(data=request.data)
@@ -58,9 +59,10 @@ def memo_detail(request, pk):
     except Memo.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    is_owner = memo.owner == request.user
     if request.method == 'GET':
         serializer = MemoSerializer(memo)
-        return Response(serializer.data, template_name='memo_detail.html')
+        return Response({'memo': serializer.data, 'service_name': 'memo detail', 'is_owner': is_owner, }, template_name='memo_detail.html')
 
     elif request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
@@ -74,7 +76,6 @@ def memo_detail(request, pk):
                 is_private = False
             serializer.save(owner=request.user, is_private=is_private)
             return Response({'memo': serializer.data}, template_name='memo_detail.html')
-        print(serializer.errors)
         return Response({'memo': serializer.errors}, status=status.HTTP_400_BAD_REQUEST, template_name='memo_edit.html')
 
     elif request.method == 'DELETE':
@@ -87,16 +88,17 @@ def memo_detail(request, pk):
 def memo_edit_form(request, pk):
     memo = Memo.objects.get(pk=pk)
     serializer = MemoSerializer(memo)
-    return Response({'memo': serializer.data}, template_name='memo_edit.html', )
+    return Response({'memo': serializer.data, }, template_name='memo_edit.html', )
 
 
 @api_view()
 @permission_classes((permissions.IsAuthenticated, ))
 def clipbook(request):
-    query_set = Memo.objects.filter(owner__id=request.user.id)
+    is_owner = False
+    query_set = Memo.objects.filter(clipper__id=request.user.id, is_private=True)
     if query_set is not None:
         serializer = MemoSerializer(query_set, many=True)
-        return Response({'memo_list': serializer.data, }, template_name='memo_clip.html')
+        return Response({'memo_list': serializer.data, 'service_name': 'clip book', 'is_owner': False, }, template_name='memo_list.html')
 
 
 def square(request):
@@ -118,5 +120,5 @@ def my_img(request):
 def memo_all(request):
     query_set = Memo.objects.all()
     serializer = MemoSerializer(query_set, many=True)
-    return Response({'memo_list': serializer.data, }, template_name='memo_list.html')
+    return Response({'memo_list': serializer.data, 'service_name': '테스트용페이지다보인다'}, template_name='memo_list.html')
 

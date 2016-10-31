@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <h3>{{ user }}'s memo list</h3>
+    <h3>{{ user }}'s {{ service_name }}</h3>
     <table border="1px">
         <thead>
         <tr>
@@ -10,15 +10,16 @@
             <th>content</th>
             <th>page</th>
             <th>clipper</th>
-            <th>is_private</th>
             <th>timestamp</th>
             <th>detail</th>
-            <th>edit</th>
-            <th>delete</th>
+            {% if is_owner %}
+                <th>edit</th>
+                <th>delete</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
-        {% for memo in memo_list %}
+            {% for memo in memo_list %}
             <tr>
                 <td>{{ memo.pk }}</td>
                 <td>{% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}
@@ -27,11 +28,15 @@
                 <td>{{ memo.content }}</td>
                 <td>{{ memo.page }}</td>
                 <td>{{ memo.clipper }}</td>
-                <td>{{ memo.is_private }}</td>
                 <td>{{ memo.timestamp }}</td>
-                <td><a href="/memo/{{ memo.pk }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a></td>
-                <td><a href="/memo/{{ memo.pk }}/edit/" class="waves-effect deep-purple waves-light btn"><i class="small material-icons">mode_edit</i></a></td>
-                <td><a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn"><i class="small material-icons">delete</i></a></td>
+                <td><a href="/memo/{{ memo.pk }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a>
+                </td>
+                {% if is_owner %}
+                    <td><a href="/memo/{{ memo.pk }}/edit/" class="waves-effect deep-purple waves-light btn"><i
+                            class="small material-icons">mode_edit</i></a></td>
+                    <td><a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn"><i
+                            class="small material-icons">delete</i></a></td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>
@@ -43,7 +48,7 @@
     <script>
         var delete_memo = function (pk) {
             var is_delete = confirm('삭제하시겠습니까?');
-            if(!is_delete){
+            if (!is_delete) {
                 return false;
             }
             var settings = {
