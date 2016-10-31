@@ -14,4 +14,6 @@ urlpatterns = [
     url(r'^memo/clipbook/$', views.clipbook),
     url(r'^square/', views.square),
     url(r'^my_img/', views.my_img),
+    # TEST only
+    url(r'^memo/all/$', views.memo_all),
 ]

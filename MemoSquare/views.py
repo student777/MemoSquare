@@ -65,10 +65,17 @@ def memo_detail(request, pk):
     elif request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
         if serializer.is_valid():
-            page = classify_url(request.data['page'])
-            serializer.save(owner=request.user, page=page)
-            return Response(serializer.data, template_name='memo_detail.html')
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # materialize form is fuck
+            from django.utils.datastructures import MultiValueDictKeyError
+            try:
+                request.data['is_private']
+                is_private = True
+            except MultiValueDictKeyError:
+                is_private = False
+            serializer.save(owner=request.user, is_private=is_private)
+            return Response({'memo': serializer.data}, template_name='memo_detail.html')
+        print(serializer.errors)
+        return Response({'memo': serializer.errors}, status=status.HTTP_400_BAD_REQUEST, template_name='memo_edit.html')
 
     elif request.method == 'DELETE':
         memo.delete()
@@ -79,8 +86,8 @@ def memo_detail(request, pk):
 @permission_classes((IsOwnerOrReadOnly, ))
 def memo_edit_form(request, pk):
     memo = Memo.objects.get(pk=pk)
-    serializer = MemoSerializer(memo, context={'request': request})
-    return Response({'serializer': serializer, 'memo': memo, }, template_name='memo_edit.html', )
+    serializer = MemoSerializer(memo)
+    return Response({'memo': serializer.data}, template_name='memo_edit.html', )
 
 
 @api_view()
@@ -104,3 +111,12 @@ def my_img(request):
     img = request2.urlretrieve('http://graph.facebook.com/%s/picture' % code)
     image_data = open(img[0], "rb").read()
     return HttpResponse(image_data, content_type="image/jpg")
+
+
+# TEST only
+@api_view()
+def memo_all(request):
+    query_set = Memo.objects.all()
+    serializer = MemoSerializer(query_set, many=True)
+    return Response({'memo_list': serializer.data, }, template_name='memo_list.html')
+
