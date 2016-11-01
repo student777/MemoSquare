@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework.decorators import permission_classes, api_view
@@ -37,6 +38,9 @@ def sign_in(request):
 def memo_list_create(request):
     is_owner = True
     if request.method == 'GET':
+        if request.is_ajax():
+            return render(request, 'csrf_token')
+
         query_set = Memo.objects.filter(owner__id=request.user.id)
         if query_set is not None:
             serializer = MemoSerializer(query_set, many=True)
@@ -52,7 +56,7 @@ def memo_list_create(request):
 
 
 @api_view(['GET', 'POST', 'DELETE'])
-@permission_classes((permissions.IsAuthenticated, ))
+# @permission_classes((permissions.IsAuthenticated, ))
 def memo_detail(request, pk):
     try:
         memo = Memo.objects.get(pk=pk)
@@ -62,7 +66,14 @@ def memo_detail(request, pk):
     is_owner = memo.owner == request.user
     if request.method == 'GET':
         serializer = MemoSerializer(memo)
-        return Response({'memo': serializer.data, 'service_name': 'memo detail', 'is_owner': is_owner, }, template_name='memo_detail.html')
+
+        try:
+            memo.clipper.get(pk=request.user.pk)
+            is_clipped = True
+        except User.DoesNotExist:
+            is_clipped = False
+
+        return Response({'memo': serializer.data, 'service_name': 'memo detail', 'is_owner': is_owner, "is_clipped": is_clipped}, template_name='memo_detail.html')
 
     elif request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
@@ -93,26 +104,34 @@ def memo_edit_form(request, pk):
 
 @api_view()
 @permission_classes((permissions.IsAuthenticated, ))
-def clipbook(request):
+def memo_clipbook(request):
     is_owner = False
     query_set = Memo.objects.filter(clipper__id=request.user.id, is_private=True)
     if query_set is not None:
         serializer = MemoSerializer(query_set, many=True)
-        return Response({'memo_list': serializer.data, 'service_name': 'clip book', 'is_owner': False, }, template_name='memo_list.html')
+        return Response({'memo_list': serializer.data, 'service_name': 'clip book', 'is_owner': is_owner, }, template_name='memo_list.html')
 
 
-def square(request):
+@login_required()
+def memo_clip(request, pk):
+    memo = get_object_or_404(Memo, pk=pk)
+    assert memo.owner != request.user
+
+    if request.method == 'POST':
+        memo.clipper.add(request.user)
+        return HttpResponse("success")
+
+    elif request.method == 'DELETE':
+        memo.clipper.remove(request.user)
+        return HttpResponse("success")
+
+    else:
+        return HttpResponse("fail")
+
+
+@api_view()
+def memo_square(request):
     return render(request, 'square.html')
-
-
-# img forwarding
-@login_required
-def my_img(request):
-    from urllib import request as request2
-    code = request.user.detail.code
-    img = request2.urlretrieve('http://graph.facebook.com/%s/picture' % code)
-    image_data = open(img[0], "rb").read()
-    return HttpResponse(image_data, content_type="image/jpg")
 
 
 # TEST only
@@ -121,4 +140,3 @@ def memo_all(request):
     query_set = Memo.objects.all()
     serializer = MemoSerializer(query_set, many=True)
     return Response({'memo_list': serializer.data, 'service_name': '테스트용페이지다보인다'}, template_name='memo_list.html')
-

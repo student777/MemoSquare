@@ -1,3 +1,3 @@
 django
 djangorestframework
-oauth2client
+corsheaders

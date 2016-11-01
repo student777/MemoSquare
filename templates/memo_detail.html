@@ -14,8 +14,10 @@
     {% if is_owner %}
         <a href="edit/" class="waves-effect deep-purple waves-light btn">edit</a>
         <a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn">delete</a>
+    {% elif is_clipped %}
+        <a onclick="clip_memo({{ memo.pk }}, false)" class="waves-effect green waves-light btn">clipped</a>
     {% else %}
-        <a href="#" class="waves-effect green waves-light btn">clip</a>
+        <a onclick="clip_memo({{ memo.pk }}, true)" class="waves-effect green waves-light btn">clip</a>
     {% endif %}
 {% endblock %}
 
@@ -39,8 +41,32 @@
                     console.log(response);
                 }
             };
-            url = 'http://memosquare.com/memo/' + pk + '/';
+            var url = 'http://memosquare.com/memo/' + pk + '/';
             $.ajax(url, settings);
         };
+        var clip_memo = function (pk, to_clip) {
+            var url = 'http://memosquare.com/memo/' + pk + '/clip/';
+            var settings = {
+                success: function success(result, status, xhr) {
+                    location.reload();
+                    console.log(result);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            }
+
+            if (to_clip == true) {
+                settings.method = 'POST';
+                settings.data = {"csrfmiddlewaretoken": '{{ csrf_token }}'};
+            }
+            else if (to_clip == false) {
+                settings.method = 'DELETE';
+                settings.beforeSend = function (request) {
+                    request.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                }
+            }
+            $.ajax(url, settings);
+        }
     </script>
 {% endblock %}

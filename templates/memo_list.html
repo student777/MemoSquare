@@ -19,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-            {% for memo in memo_list %}
+        {% for memo in memo_list %}
             <tr>
                 <td>{{ memo.pk }}</td>
                 <td>{% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}
