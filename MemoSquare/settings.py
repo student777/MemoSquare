@@ -128,10 +128,13 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Cross-Origin Resource Sharing settings
-CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = (
     'GET',
     'OPTIONS',
     'POST',
+)
+CORS_ORIGIN_WHITELIST = (
+    'jquery.com', # for test
+    'chrome-extension://njlkefpcpojddmjihelliajgkhdgcoea/res/popup.html',
 )
