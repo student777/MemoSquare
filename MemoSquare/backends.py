@@ -24,14 +24,13 @@ class FacebookTokenBackend(ModelBackend):
             email = data_info['email']
             user = User.objects.create_user(username=username, email=email)
             UserDetail.objects.create(user=user, code=user_id)
+
         return user
 
 
 def get_json_from_facebook(url, code):
-    #access_token = '192456264535234|qblTXSc_roZOfMxm96XMmWpP6YI'  # sun
-    access_token = '1052596834838366|s3kp56NAMLOnQYgTGTKa_JCm6wQ'
-    url = url % (code, access_token)
-    r = urllib.request.urlopen(url)
+    access_token = '192456264535234|qblTXSc_roZOfMxm96XMmWpP6YI'
+    r = urllib.request.urlopen(url % (code, access_token))
     data = json.loads(r.read().decode(r.info().get_param('charset') or 'utf-8'))
     return data
 
