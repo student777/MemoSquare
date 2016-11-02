@@ -9,7 +9,6 @@
             <th>owner</th>
             <th>content</th>
             <th>page</th>
-            <th>clipper</th>
             <th>timestamp</th>
             <th>detail</th>
             {% if is_owner %}
@@ -27,7 +26,6 @@
                 <td>{{ memo.owner }}</td>
                 <td>{{ memo.content }}</td>
                 <td>{{ memo.page }}</td>
-                <td>{{ memo.clipper }}</td>
                 <td>{{ memo.timestamp }}</td>
                 <td><a href="/memo/{{ memo.pk }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a>
                 </td>

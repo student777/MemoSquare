@@ -73,7 +73,18 @@ def memo_detail(request, pk):
         except User.DoesNotExist:
             is_clipped = False
 
-        return Response({'memo': serializer.data, 'service_name': 'memo detail', 'is_owner': is_owner, "is_clipped": is_clipped}, template_name='memo_detail.html')
+        num_clips = memo.clipper.count()
+        owner_pic_url = memo.owner.detail.get_img_url()
+
+        data = {}
+        data['memo'] = serializer.data
+        data['service_name'] = 'memo detail'
+        data['is_owner'] = is_owner
+        data['is_clipped'] = is_clipped
+        data['num_clips'] = num_clips
+        data['owner_pic_url'] = owner_pic_url
+
+        return Response(data, template_name='memo_detail.html')
 
     elif request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
