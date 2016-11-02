@@ -2,33 +2,14 @@
 {% block content %}
     <h1>Welcome to MemoSquare</h1>
     <img src="/static/memosquare/img/logo_main.gif"/>
-    <table id="idtable">
-        <thead>
-        <tr>
-            <th>location</th>
-            <th>email</th>
-            <th>username</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>client-side</td>
-            <td id="user-email">no data</td>
-            <td id="user-name">no auth</td>
-        </tr>
-        <tr>
-            <td>server-side</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.username }}</td>
-        </tr>
-        </tbody>
-    </table>
-
-    <img src="{{ user.detail.get_img_url }}"/>
-    <fb:login-button autologoutlink="true" scope="public_profile,email" onlogin="checkLoginState();">
-    </fb:login-button>
-    {% if not user.is_anonymous %}
-        <a href="/sign_out" onclick="signOut();" class="waves-effect waves-light btn">sign out</a>
+    {% if user.is_anonymous %}
+        <a onclick="signIn();" class="waves-effect waves-light btn">sign in</a>
+    {% else %}
+        <div>
+        <p>Hello, {{ user.username }}</p>
+        <img src="{{ user.detail.get_img_url }}"/>
+        <a onclick="signOut();" class="waves-effect waves-light btn">sign out</a>
+        </div>
     {% endif %}
 {% endblock %}
 
@@ -38,11 +19,11 @@
         function statusChangeCallback(response) {
             if (response.status === 'connected') {
                 // Logged into your app and Facebook.
-                testAPI(response);
+                console.log('Already logged on');
             } else if (response.status === 'not_authorized') {
-                $('#status').text('Please log into this app.');
+                console.log('Please log into this app.');
             } else {
-                $('#status').text('Please log into Facebook.');
+                console.log('Please log into Facebook.');
             }
         }
 
@@ -61,21 +42,11 @@
                     xfbml: true,
                     version: 'v2.5'
                 });
-                $('#loginbutton,#feedbutton').removeAttr('disabled');
                 FB.getLoginStatus(function (response) {
                     statusChangeCallback(response);
                 });
             });
         });
-
-        function testAPI(response) {
-            var token = response.authResponse.accessToken;
-            FB.api('/me', {locale: 'en_US', fields: 'name, email'}, function (response) {
-                $('#user-email').text(response.email);
-                $('#user-name').text(response.name);
-                sendToken(token);
-            });
-        }
 
         // Send FB token to our server, server make a session
         function sendToken(token) {
@@ -85,12 +56,33 @@
                 data: {'token': token},
                 success: function success(result, status, xhr) {
                     console.log(result);
+                    location.href = '/';
                 },
                 error: function (xhr, status, error) {
                     console.log(error);
                 }
             };
             $.ajax(url, settings);
+        }
+
+        function signIn() {
+            FB.login(function (response) {
+                if (response.authResponse) {
+                    console.log('Welcome!  Fetching your information.... ');
+                    FB.api('/me', {locale: 'en_US', fields: 'name, email'});
+                    var token = response.authResponse.accessToken;
+                    sendToken(token);
+                } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                }
+            });
+        }
+
+        function signOut() {
+            FB.logout(function (response) {
+                console.log(response)
+            });
+            location.href = '/sign_out';
         }
     </script>
 {% endblock %}
