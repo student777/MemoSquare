@@ -19,9 +19,15 @@ class FacebookTokenBackend(ModelBackend):
         try:
             user_detail = UserDetail.objects.get(code=user_id)
             user = user_detail.user
+
+        # If not exists, create user
         except UserDetail.DoesNotExist:
             username = data_info['name']
-            email = data_info['email']
+            # http://stackoverflow.com/questions/16630972/facebook-graph-api-wont-return-email-address
+            if 'email' in data_info:
+                email = data_info['email']
+            else:
+                email = '%s@facebook.com' % username
             user = User.objects.create_user(username=username, email=email)
             UserDetail.objects.create(user=user, code=user_id)
 
