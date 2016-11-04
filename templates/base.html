@@ -14,13 +14,8 @@
         a {
             color: whitesmoke
         }
-
-        body {
+        #content {
             background-color: lightgrey
-        }
-
-        nav > div {
-            background-color: orange
         }
     </style>
     {% block extra_head %}
@@ -29,19 +24,36 @@
 <body>
 
 <nav>
-    <div class="nav-wrapper">
-        <a href="/" class="brand-logo">MemoSquare</a>
+    <div class="nav-wrapper indigo darken-4">
+        <a href="/" class="brand-logo"><img height="64px"
+                                            src="/static/memosquare/img/logo_main.gif"/><span>MemoSquare</span></a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="/memo/all">all memo(test)</a></li>
-            <li><a href="/memo/">MY MEMO</a></li>
-            <li><a href="/memo/clipbook/">CLIPBOOK</a></li>
-            <li><a href="/square/">SQUARE</a></li>
+            {% if user.is_anonymous %}MemoSquare
+                <li>
+                    <a onclick="signIn();" class="waves-effect waves-light btn">sign in</a>
+                </li>
+            {% else %}
+                <li><a href="#">Hello, {{ user.username }}</a></li>
+                <li style="height:64px"><a><img style="height:64px" src="{{ user.detail.get_img_url }}"/></a></li>
+                <li><a onclick="signOut();" class="waves-effect waves-light btn">sign out</a></li>
+            {% endif %}
+        </ul>
+        <ul class="tabs tabs-transparent">
+            <li class="tab"><a href="/memo/all">all memo(test)</a></li>
+            <li class="tab"><a href="/memo/">MY MEMO</a></li>
+            <li class="tab"><a href="/memo/clipbook/">CLIPBOOK</a></li>
+            <li class="tab"><a href="/square/" class="active">SQUARE</a></li>
         </ul>
     </div>
 </nav>
 
-{% block content %}
-{% endblock %}
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+
+
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
         crossorigin="anonymous"></script>
@@ -49,7 +61,75 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
 <!-- facebook login / logout -->
 {% block javascript %}
-{% endblock %}
-</body>
+    <script>
+        function statusChangeCallback(response) {
+            if (response.status === 'connected') {
+                // Logged into your app and Facebook.
+                console.log('Already logged on');
+            } else if (response.status === 'not_authorized') {
+                console.log('Please log into this app.');
+            } else {
+                console.log('Please log into Facebook.');
+            }
+        }
 
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        $(document).ready(function () {
+            $.ajaxSetup({cache: true});
+            $.getScript('//connect.facebook.net/en_US/sdk.js', function () {
+                FB.init({
+                    appId: '192456264535234',
+                    cookie: true,
+                    xfbml: true,
+                    version: 'v2.5'
+                });
+                FB.getLoginStatus(function (response) {
+                    statusChangeCallback(response);
+                });
+            });
+        });
+
+        // Send FB token to our server, server make a session
+        function sendToken(token) {
+            var url = 'http://memosquare.com/sign_in/';
+            var settings = {
+                method: 'POST',
+                data: {'token': token},
+                success: function success(result, status, xhr) {
+                    console.log(result);
+                    location.href = '/';
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            };
+            $.ajax(url, settings);
+        }
+
+        function signIn() {
+            FB.login(function (response) {
+                if (response.authResponse) {
+                    console.log('Welcome!  Fetching your information.... ');
+                    FB.api('/me', {locale: 'en_US', fields: 'name, email'});
+                    var token = response.authResponse.accessToken;
+                    sendToken(token);
+                } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                }
+            });
+        }
+
+        function signOut() {
+            FB.logout(function (response) {
+                console.log(response)
+            });
+            location.href = '/sign_out';
+        }
+    </script>
+{% endblock %}
 </html>
