@@ -1,69 +1,39 @@
-{% extends "base.html" %}
-{% block content %}
-    <h3>{{ user }}'s {{ service_name }}</h3>
-    <table border="1px">
-        <thead>
+<h3>{{ user }}'s {{ service_name }}</h3>
+<table>
+    <thead>
+    <tr>
+        <th>pk</th>
+        <th>title</th>
+        <th>owner</th>
+        <th>content</th>
+        <th>page</th>
+        <th>timestamp</th>
+        <th>detail</th>
+        {% if is_owner %}
+            <th>edit</th>
+            <th>delete</th>
+        {% endif %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for memo in memo_list %}
         <tr>
-            <th>pk</th>
-            <th>title</th>
-            <th>owner</th>
-            <th>content</th>
-            <th>page</th>
-            <th>timestamp</th>
-            <th>detail</th>
+            <td>{{ memo.pk }}</td>
+            <td>{% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}
+                {{ memo.title }}{% endif %}</td>
+            <td>{{ memo.owner }}</td>
+            <td>{{ memo.content| truncatechars:50 }}</td>
+            <td>{{ memo.page| truncatechars:50 }}</td>
+            <td>{{ memo.timestamp }}</td>
+            <td><a onclick="load_memo('/memo/{{ memo.pk }}')" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a>
+            </td>
             {% if is_owner %}
-                <th>edit</th>
-                <th>delete</th>
+                <td><a onclick="load_memo('/memo/{{ memo.pk }}/edit/')" class="waves-effect deep-purple waves-light btn"><i
+                        class="small material-icons">mode_edit</i></a></td>
+                <td><a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn"><i
+                        class="small material-icons">delete</i></a></td>
             {% endif %}
         </tr>
-        </thead>
-        <tbody>
-        {% for memo in memo_list %}
-            <tr>
-                <td>{{ memo.pk }}</td>
-                <td>{% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}
-                    {{ memo.title }}{% endif %}</td>
-                <td>{{ memo.owner }}</td>
-                <td>{{ memo.content }}</td>
-                <td>{{ memo.page }}</td>
-                <td>{{ memo.timestamp }}</td>
-                <td><a href="/memo/{{ memo.pk }}" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a>
-                </td>
-                {% if is_owner %}
-                    <td><a href="/memo/{{ memo.pk }}/edit/" class="waves-effect deep-purple waves-light btn"><i
-                            class="small material-icons">mode_edit</i></a></td>
-                    <td><a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn"><i
-                            class="small material-icons">delete</i></a></td>
-                {% endif %}
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endblock %}
-
-{% block javascript %}
-    {# reference: http://ngee.tistory.com/846 #}
-    <script>
-        var delete_memo = function (pk) {
-            var is_delete = confirm('삭제하시겠습니까?');
-            if (!is_delete) {
-                return false;
-            }
-            var settings = {
-                type: 'DELETE',
-                beforeSend: function (request) {
-                    request.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                },
-                success: function success(result, status, xhr) {
-                    //delete <td> is troublesome
-                    location.reload();
-                },
-                error: function (response) {
-                    console.log(response);
-                }
-            };
-            url = 'http://memosquare.com/memo/' + pk + '/';
-            $.ajax(url, settings);
-        };
-    </script>
-{% endblock %}
+    {% endfor %}
+    </tbody>
+</table>

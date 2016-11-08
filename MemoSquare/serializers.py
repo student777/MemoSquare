@@ -6,7 +6,7 @@ class MemoSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username', read_only=True)
     page = serializers.CharField(max_length=255, read_only=True)
     timestamp = serializers.DateTimeField(format='%b %d, %Y', read_only=True)
-    is_private = serializers.CharField(max_length=10)  # materialize form is fuck
+    is_private = serializers.BooleanField()
 
     class Meta:
         model = Memo

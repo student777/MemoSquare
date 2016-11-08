@@ -16,4 +16,5 @@ urlpatterns = [
     url(r'^square/', views.memo_square),
     # TEST only
     url(r'^memo/all/$', views.memo_all),
+    url(r'^memo/csrf_test/$', views.csrf_test),
 ]

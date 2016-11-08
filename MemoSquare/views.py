@@ -15,7 +15,7 @@ from .permissions import IsOwnerOrReadOnly
 
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'base.html')
 
 
 def sign_out(request):
@@ -32,15 +32,17 @@ def sign_in(request):
     return HttpResponse('hello %s' % user)
 
 
+def csrf_test(request):
+    if request.is_ajax():
+        return render(request, 'csrf_token')
+
+
 # When ?format=json parameter, Hangul text is broken..
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.IsAuthenticated, ))
 def memo_list_create(request):
     is_owner = True
     if request.method == 'GET':
-        if request.is_ajax():
-            return render(request, 'csrf_token')
-
         query_set = Memo.objects.filter(owner__id=request.user.id)
         if query_set is not None:
             serializer = MemoSerializer(query_set, many=True)
@@ -56,7 +58,7 @@ def memo_list_create(request):
 
 
 @api_view(['GET', 'POST', 'DELETE'])
-# @permission_classes((permissions.IsAuthenticated, ))
+@permission_classes((permissions.IsAuthenticated, ))
 def memo_detail(request, pk):
     try:
         memo = Memo.objects.get(pk=pk)
@@ -126,7 +128,6 @@ def memo_clipbook(request):
 @login_required()
 def memo_clip(request, pk):
     memo = get_object_or_404(Memo, pk=pk)
-    assert memo.owner != request.user
 
     if request.method == 'POST':
         memo.clipper.add(request.user)

@@ -1,4 +1,1 @@
-{% extends "base.html" %}
-{% block content %}
-    <h2>{{ user.username }}'s square</h2>
-{% endblock %}
+<h2>{% if not user.is_anonymous %}{{ user.username }} 's square{% else %}please login{% endif %}</h2>

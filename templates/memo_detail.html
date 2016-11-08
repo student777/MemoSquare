@@ -1,71 +1,18 @@
-{% extends 'base.html' %}
-{% block content %}
-    <h3>{{ service_name }}</h3>
-    pk: {{ memo.pk }}<br>
-    title: {% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}
-    {{ memo.title }}{% endif %}<br>
-    owner: {{ memo.owner }}<br>
-    content: {{ memo.content }}<br>
-    page: {{ memo.page }}<br>
-    is_private: {{ memo.is_private }}<br>
-    timestamp: {{ memo.timestamp }}<br>
-    <a href="/memo/" class="waves-effect waves-light btn">list</a>
-    {% if is_owner %}
-        <a href="edit/" class="waves-effect deep-purple waves-light btn">edit</a>
-        <a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn">delete</a>
-    {% elif is_clipped %}
-        <a onclick="clip_memo({{ memo.pk }}, false)" class="waves-effect green waves-light btn">clipped</a>
-    {% else %}
-        <a onclick="clip_memo({{ memo.pk }}, true)" class="waves-effect green waves-light btn">clip</a>
-    {% endif %}
-{% endblock %}
-
-{% block javascript %}
-    <script>
-        var delete_memo = function (pk) {
-            var is_delete = confirm('삭제하시겠습니까?');
-            if (!is_delete) {
-                return false;
-            }
-            var settings = {
-                type: 'DELETE',
-                beforeSend: function (request) {
-                    request.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                },
-                success: function success(result, status, xhr) {
-                    //delete <td> is troublesome
-                    location.reload();
-                },
-                error: function (response) {
-                    console.log(response);
-                }
-            };
-            var url = 'http://memosquare.com/memo/' + pk + '/';
-            $.ajax(url, settings);
-        };
-        var clip_memo = function (pk, to_clip) {
-            var url = 'http://memosquare.com/memo/' + pk + '/clip/';
-            var settings = {
-                success: function success(result, status, xhr) {
-                    location.reload();
-                    console.log(result);
-                },
-                error: function (response) {
-                    console.log(response);
-                }
-            }
-
-            if (to_clip == true) {
-                settings.method = 'POST';
-                settings.data = {"csrfmiddlewaretoken": '{{ csrf_token }}'};
-            }
-            else if (to_clip == false) {
-                settings.method = 'DELETE';
-                settings.beforeSend = function (request) {
-                    request.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                }
-            }
-            $.ajax(url, settings);
-        }
-    </script>
-{% endblock %}
+<h3>{{ service_name }}</h3>
+pk: {{ memo.pk }}<br>
+title: {% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}
+{{ memo.title }}{% endif %}<br>
+owner: {{ memo.owner }}<br>
+content: {{ memo.content }}<br>
+page: {{ memo.page }}<br>
+is_private: {{ memo.is_private }}<br>
+timestamp: {{ memo.timestamp }}<br>
+<a onclick=load_memo("/memo/") class="waves-effect waves-light btn">list</a>
+{% if is_owner %}
+    <a onclick=load_memo("/memo/{{ memo.pk }}/edit/") class="waves-effect deep-purple waves-light btn">edit</a>
+    <a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn">delete</a>
+{% elif is_clipped %}
+    <a onclick="clip_memo({{ memo.pk }}, false)" class="waves-effect green waves-light btn">clipped</a>
+{% else %}
+    <a onclick="clip_memo({{ memo.pk }}, true)" class="waves-effect green waves-light btn">clip</a>
+{% endif %}
