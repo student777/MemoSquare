@@ -44,7 +44,7 @@ $(document).ready(function () {
 });
 // Send FB token to our server, server make a session
 function sendToken(token) {
-    var url = 'http://memosquare.com/sign_in/';
+    var url = '/sign_in/';
     var settings = {
         method: 'POST',
         data: {'token': token},
@@ -80,7 +80,7 @@ function signOut() {
 
 /* memo_detail.js */
 function edit_memo(pk){
-    var url = 'http://memosquare.com/memo/' + pk + '/?format=html';
+    var url = '/memo/' + pk + '/?format=html';
     var settings = {
         method: 'POST',
         data: {
@@ -101,7 +101,7 @@ function edit_memo(pk){
     $.ajax(url, settings);
 }
 function clip_memo(pk, to_clip) {
-    var url = 'http://memosquare.com/memo/' + pk + '/clip/';
+    var url = '/memo/' + pk + '/clip/';
     var settings = {
         success: function success(result, status, xhr) {
             load_memo('/memo/'+pk+'/');
@@ -144,7 +144,7 @@ function delete_memo(pk) {
             console.log(response);
         }
     };
-    var url = 'http://memosquare.com/memo/' + pk + '/';
+    var url = '/memo/' + pk + '/';
     $.ajax(url, settings);
 }
 

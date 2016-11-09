@@ -138,3 +138,8 @@ CORS_ORIGIN_WHITELIST = (
     'jquery.com', # for test
     'chrome-extension://njlkefpcpojddmjihelliajgkhdgcoea/res/popup.html',
 )
+
+# deploy settings
+ALLOWED_HOSTS = [
+    'estfutures.cafe24.com',
+]
