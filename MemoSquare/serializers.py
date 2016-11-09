@@ -10,4 +10,13 @@ class MemoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Memo
-        fields = ('pk', 'title', 'content', 'owner', 'page', 'is_private', 'timestamp')
+        fields = ('pk', 'title', 'content', 'owner', 'page', 'is_private', 'timestamp', 'clipper')
+
+    def to_representation(self, instance):
+        json = super().to_representation(instance)
+
+        if 'request' in self.context:
+            request = self.context['request']
+            is_clipped = request.user.pk in json['clipper']
+            json['is_clipped'] = is_clipped
+        return json

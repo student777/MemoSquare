@@ -10,7 +10,7 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework.response import Response
 from .models import Memo
 from .serializers import MemoSerializer
-from .url_classifier import classify_url
+from .classifier import classify_url
 from .permissions import IsOwnerOrReadOnly
 
 
@@ -44,8 +44,9 @@ def memo_list_create(request):
     is_owner = True
     if request.method == 'GET':
         query_set = Memo.objects.filter(owner__id=request.user.id)
+
         if query_set is not None:
-            serializer = MemoSerializer(query_set, many=True)
+            serializer = MemoSerializer(query_set, many=True, context={'request': request})
             return Response({'memo_list': serializer.data, 'service_name': 'memo list', 'is_owner': is_owner, }, template_name='memo_list.html')
 
     elif request.method == 'POST':
@@ -125,20 +126,35 @@ def memo_clipbook(request):
         return Response({'memo_list': serializer.data, 'service_name': 'clip book', 'is_owner': is_owner, }, template_name='memo_list.html')
 
 
+@api_view(['POST', 'DELETE'])
 @login_required()
 def memo_clip(request, pk):
     memo = get_object_or_404(Memo, pk=pk)
 
     if request.method == 'POST':
         memo.clipper.add(request.user)
-        return HttpResponse("success")
+        is_clipped = True
 
     elif request.method == 'DELETE':
         memo.clipper.remove(request.user)
-        return HttpResponse("success")
+        is_clipped = False
 
     else:
-        return HttpResponse("fail")
+        pass
+
+    # TODO: response data refactoring...
+    serializer = MemoSerializer(memo)
+    is_owner = memo.owner == request.user
+    num_clips = memo.clipper.count()
+
+    data = {}
+    data['memo'] = serializer.data
+    data['service_name'] = 'memo detail'
+    data['is_owner'] = is_owner
+    data['is_clipped'] = is_clipped
+    data['num_clips'] = num_clips
+
+    return Response(data)
 
 
 @api_view()
@@ -146,9 +162,14 @@ def memo_square(request):
     return render(request, 'square.html')
 
 
+@api_view()
+def memo_page(request):
+    pass
+
+
 # TEST only
 @api_view()
 def memo_all(request):
     query_set = Memo.objects.all()
-    serializer = MemoSerializer(query_set, many=True)
-    return Response({'memo_list': serializer.data, 'service_name': '테스트용페이지다보인다'}, template_name='memo_list.html')
+    serializer = MemoSerializer(query_set, many=True, context={'request': request})
+    return Response({'memo_list': serializer.data, 'service_name': 'All memo(TEST ONLY)'}, template_name='memo_list.html')
