@@ -6,11 +6,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework import permissions
-from rest_framework.decorators import permission_classes, api_view
+from rest_framework.decorators import permission_classes, api_view, renderer_classes
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 from .models import Memo
 from .serializers import MemoSerializer
-from .classifier import classify_url
+from .classifier import classify_url, find_memo
 from .permissions import IsOwnerOrReadOnly
 
 
@@ -163,8 +164,12 @@ def memo_square(request):
 
 
 @api_view()
+@renderer_classes([JSONRenderer])
 def memo_page(request):
-    pass
+    page_url = request.GET['url']
+    query_set = find_memo(page_url)
+    serializer = MemoSerializer(query_set, many=True)
+    return Response(serializer.data)
 
 
 # TEST only

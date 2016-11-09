@@ -1,4 +1,4 @@
-from .models import Page
+from .models import Page, Memo
 
 
 def classify_url(url):
@@ -10,3 +10,12 @@ def classify_url(url):
     except Page.DoesNotExist:
         page = Page.objects.create(url=url)
     return page
+
+
+def find_memo(url):
+    try:
+        page = Page.objects.get(url=url)
+    except Page.DoesNotExist:
+        return
+
+    return Memo.objects.filter(page=page)
