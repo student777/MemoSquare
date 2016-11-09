@@ -1,4 +1,3 @@
-<h3>{{ service_name }}</h3>
 pk: {{ memo.pk }}<br>
 title: {% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}
 {{ memo.title }}{% endif %}<br>
@@ -8,10 +7,11 @@ page: {{ memo.page }}<br>
 is_private: {{ memo.is_private }}<br>
 timestamp: {{ memo.timestamp }}<br>
 <a onclick=load_memo("/memo/") class="waves-effect waves-light btn">list</a>
-{% if is_owner %}
+{% if memo.is_owner %}
     <a onclick=load_memo("/memo/{{ memo.pk }}/edit/") class="waves-effect deep-purple waves-light btn">edit</a>
     <a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn">delete</a>
-{% elif is_clipped %}
+{% endif %}
+{% if memo.is_clipped %}
     <a onclick="clip_memo({{ memo.pk }}, false)" class="waves-effect green waves-light btn">clipped</a>
 {% else %}
     <a onclick="clip_memo({{ memo.pk }}, true)" class="waves-effect green waves-light btn">clip</a>

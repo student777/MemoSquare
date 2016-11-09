@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework.decorators import permission_classes, api_view, renderer_classes
@@ -38,24 +37,22 @@ def csrf_test(request):
         return render(request, 'csrf_token')
 
 
-# When ?format=json parameter, Hangul text is broken..
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.IsAuthenticated, ))
 def memo_list_create(request):
-    is_owner = True
     if request.method == 'GET':
         query_set = Memo.objects.filter(owner__id=request.user.id)
 
         if query_set is not None:
-            serializer = MemoSerializer(query_set, many=True, context={'request': request})
-            return Response({'memo_list': serializer.data, 'service_name': 'memo list', 'is_owner': is_owner, }, template_name='memo_list.html')
+            serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
+            return Response({'memo_list': serializer.data}, template_name='memo_list.html')
 
     elif request.method == 'POST':
         serializer = MemoSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             page = classify_url(request.data['page'])
             serializer.save(owner=request.user, page=page)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({'memo': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -67,40 +64,15 @@ def memo_detail(request, pk):
     except Memo.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    is_owner = memo.owner == request.user
     if request.method == 'GET':
-        serializer = MemoSerializer(memo)
-
-        try:
-            memo.clipper.get(pk=request.user.pk)
-            is_clipped = True
-        except User.DoesNotExist:
-            is_clipped = False
-
-        num_clips = memo.clipper.count()
+        serializer = MemoSerializer(memo, context={'user': request.user})
         owner_pic_url = memo.owner.detail.get_img_url()
-
-        data = {}
-        data['memo'] = serializer.data
-        data['service_name'] = 'memo detail'
-        data['is_owner'] = is_owner
-        data['is_clipped'] = is_clipped
-        data['num_clips'] = num_clips
-        data['owner_pic_url'] = owner_pic_url
-
-        return Response(data, template_name='memo_detail.html')
+        return Response({'memo': serializer.data, 'owner_pic_url': owner_pic_url}, template_name='memo_detail.html')
 
     elif request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
         if serializer.is_valid():
-            # materialize form is fuck
-            from django.utils.datastructures import MultiValueDictKeyError
-            try:
-                request.data['is_private']
-                is_private = True
-            except MultiValueDictKeyError:
-                is_private = False
-            serializer.save(owner=request.user, is_private=is_private)
+            serializer.save(owner=request.user)
             return Response({'memo': serializer.data}, template_name='memo_detail.html')
         return Response({'memo': serializer.errors}, status=status.HTTP_400_BAD_REQUEST, template_name='memo_edit.html')
 
@@ -114,17 +86,16 @@ def memo_detail(request, pk):
 def memo_edit_form(request, pk):
     memo = Memo.objects.get(pk=pk)
     serializer = MemoSerializer(memo)
-    return Response({'memo': serializer.data, }, template_name='memo_edit.html', )
+    return Response({'memo': serializer.data}, template_name='memo_edit.html', )
 
 
 @api_view()
 @permission_classes((permissions.IsAuthenticated, ))
 def memo_clipbook(request):
-    is_owner = False
     query_set = Memo.objects.filter(clipper__id=request.user.id, is_private=True)
     if query_set is not None:
-        serializer = MemoSerializer(query_set, many=True)
-        return Response({'memo_list': serializer.data, 'service_name': 'clip book', 'is_owner': is_owner, }, template_name='memo_list.html')
+        serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
+        return Response({'memo_list': serializer.data}, template_name='memo_list.html')
 
 
 @api_view(['POST', 'DELETE'])
@@ -134,28 +105,13 @@ def memo_clip(request, pk):
 
     if request.method == 'POST':
         memo.clipper.add(request.user)
-        is_clipped = True
-
     elif request.method == 'DELETE':
         memo.clipper.remove(request.user)
-        is_clipped = False
-
     else:
         pass
 
-    # TODO: response data refactoring...
-    serializer = MemoSerializer(memo)
-    is_owner = memo.owner == request.user
-    num_clips = memo.clipper.count()
-
-    data = {}
-    data['memo'] = serializer.data
-    data['service_name'] = 'memo detail'
-    data['is_owner'] = is_owner
-    data['is_clipped'] = is_clipped
-    data['num_clips'] = num_clips
-
-    return Response(data)
+    serializer = MemoSerializer(memo, context={'user': request.user})
+    return Response({'memo':  serializer.data})
 
 
 @api_view()
@@ -168,13 +124,13 @@ def memo_square(request):
 def memo_page(request):
     page_url = request.GET['url']
     query_set = find_memo(page_url)
-    serializer = MemoSerializer(query_set, many=True)
-    return Response(serializer.data)
+    serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
+    return Response({'memo_list': serializer.data})
 
 
 # TEST only
 @api_view()
 def memo_all(request):
     query_set = Memo.objects.all()
-    serializer = MemoSerializer(query_set, many=True, context={'request': request})
-    return Response({'memo_list': serializer.data, 'service_name': 'All memo(TEST ONLY)'}, template_name='memo_list.html')
+    serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
+    return Response({'memo_list': serializer.data}, template_name='memo_list.html')

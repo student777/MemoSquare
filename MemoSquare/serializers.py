@@ -10,13 +10,18 @@ class MemoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Memo
-        fields = ('pk', 'title', 'content', 'owner', 'page', 'is_private', 'timestamp', 'clipper')
+        fields = ('pk', 'title', 'content', 'owner', 'page', 'is_private', 'timestamp')
 
     def to_representation(self, instance):
         json = super().to_representation(instance)
 
-        if 'request' in self.context:
-            request = self.context['request']
-            is_clipped = request.user.pk in json['clipper']
+        # The reason why MemoSerializer's context field is required in ListView, DetailView
+        if 'user' in self.context:
+            user = self.context['user']
+            is_clipped = user in instance.clipper.all()
+            is_owner = user == instance.owner
+            num_clips = instance.clipper.count()
             json['is_clipped'] = is_clipped
+            json['is_owner'] = is_owner
+            json['num_clips'] = num_clips
         return json
