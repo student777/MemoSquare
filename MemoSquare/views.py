@@ -18,11 +18,7 @@ def index(request):
     return render(request, 'base.html')
 
 
-def sign_out(request):
-    logout(request)
-    return redirect('/')
-
-
+# Facebook oauth2 token login
 @csrf_exempt
 def sign_in(request):
     token = request.POST.get('token')
@@ -32,14 +28,22 @@ def sign_in(request):
     return HttpResponse('hello %s' % user)
 
 
+def sign_out(request):
+    logout(request)
+    return redirect('/')
+
+
+# For cross browsing request(chrome extension)
 def csrf_test(request):
     if request.is_ajax():
         return render(request, 'csrf_token')
 
 
+# List & Create API view
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.IsAuthenticated, ))
 def memo_list_create(request):
+    # Memo list of user
     if request.method == 'GET':
         query_set = Memo.objects.filter(owner__id=request.user.id)
 
@@ -47,6 +51,7 @@ def memo_list_create(request):
             serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
             return Response({'memo_list': serializer.data}, template_name='memo_list.html')
 
+    # Create Memo
     elif request.method == 'POST':
         serializer = MemoSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -56,6 +61,7 @@ def memo_list_create(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Retrieve & Update & Destory API view
 @api_view(['GET', 'POST', 'DELETE'])
 @permission_classes((permissions.IsAuthenticated, ))
 def memo_detail(request, pk):
@@ -64,11 +70,12 @@ def memo_detail(request, pk):
     except Memo.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    # Retrieve
     if request.method == 'GET':
         serializer = MemoSerializer(memo, context={'user': request.user})
-        owner_pic_url = memo.owner.detail.get_img_url()
-        return Response({'memo': serializer.data, 'owner_pic_url': owner_pic_url}, template_name='memo_detail.html')
+        return Response({'memo': serializer.data}, template_name='memo_detail.html')
 
+    # Update
     elif request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
         if serializer.is_valid():
@@ -76,11 +83,13 @@ def memo_detail(request, pk):
             return Response({'memo': serializer.data}, template_name='memo_detail.html')
         return Response({'memo': serializer.errors}, status=status.HTTP_400_BAD_REQUEST, template_name='memo_edit.html')
 
+    # Delete
     elif request.method == 'DELETE':
         memo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+# Memo edit form. Same as retrieve view except for template_name, owner_pic_url
 @api_view()
 @permission_classes((IsOwnerOrReadOnly, ))
 def memo_edit_form(request, pk):
@@ -89,6 +98,7 @@ def memo_edit_form(request, pk):
     return Response({'memo': serializer.data}, template_name='memo_edit.html', )
 
 
+# Memo list clipped by user
 @api_view()
 @permission_classes((permissions.IsAuthenticated, ))
 def memo_clipbook(request):
@@ -98,15 +108,21 @@ def memo_clipbook(request):
         return Response({'memo_list': serializer.data}, template_name='memo_list.html')
 
 
+# Clip or Unclip a memo
 @api_view(['POST', 'DELETE'])
 @login_required()
 def memo_clip(request, pk):
     memo = get_object_or_404(Memo, pk=pk)
 
+    # POST request: clip
     if request.method == 'POST':
         memo.clipper.add(request.user)
+
+    # DELETE request: unclip
     elif request.method == 'DELETE':
         memo.clipper.remove(request.user)
+
+    # other request: fuck you
     else:
         pass
 
@@ -119,6 +135,7 @@ def memo_square(request):
     return render(request, 'square.html')
 
 
+# Memo list of an URL. If memo not exists, return None
 @api_view()
 @renderer_classes([JSONRenderer])
 def memo_page(request):

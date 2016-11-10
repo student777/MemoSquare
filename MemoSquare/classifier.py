@@ -1,8 +1,8 @@
 from .models import Page, Memo
 
 
+# Get page or Create Page
 def classify_url(url):
-    # TODO: parse an URI
     # Ignore parameters like '#', only treats proper URI data
     # Treat same thing as same, different things as different
     try:
@@ -12,6 +12,7 @@ def classify_url(url):
     return page
 
 
+# find memo list of specific url
 def find_memo(url):
     try:
         page = Page.objects.get(url=url)
