@@ -15,13 +15,17 @@ class MemoSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         json = super().to_representation(instance)
 
-        # The reason why MemoSerializer's context field is required in ListView, DetailView
+        # Add extra field
+        num_clips = instance.clipper.count()
+        owner_pic_url = instance.owner.detail.get_img_url()
+        json['num_clips'] = num_clips
+        json['owner_pic_url'] = owner_pic_url
+
+        # The reason why MemoSerializer's context field is required
         if 'user' in self.context:
             user = self.context['user']
             is_clipped = user in instance.clipper.all()
             is_owner = user == instance.owner
-            num_clips = instance.clipper.count()
             json['is_clipped'] = is_clipped
-            json['is_owner'] = is_owner
-            json['num_clips'] = num_clips
+            json['is_mymemo'] = is_owner  # fuck Konglish
         return json
