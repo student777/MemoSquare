@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
@@ -11,7 +11,6 @@ from rest_framework.renderers import JSONRenderer
 from .models import Memo
 from .serializers import MemoSerializer
 from .classifier import classify_url, find_memo
-from .permissions import IsOwnerOrReadOnly
 
 
 def index(request):
@@ -31,12 +30,6 @@ def sign_in(request):
 def sign_out(request):
     logout(request)
     return redirect('/')
-
-
-# For cross browsing request(chrome extension)
-def csrf_test(request):
-    if request.is_ajax():
-        return render(request, 'csrf_token')
 
 
 # List & Create API view
@@ -70,13 +63,21 @@ def memo_detail(request, pk):
     except Memo.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    # check object permissions
+    if memo.is_private:
+        return HttpResponseForbidden('this memo is private')
+
     # Retrieve
     if request.method == 'GET':
         serializer = MemoSerializer(memo, context={'user': request.user})
         return Response({'memo': serializer.data}, template_name='memo_detail.html')
 
+    # check object permissions
+    if memo.owner != request.user:
+        return HttpResponseForbidden('fuck you')
+
     # Update
-    elif request.method == 'POST':
+    if request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
@@ -91,9 +92,14 @@ def memo_detail(request, pk):
 
 # Memo edit form. Same as retrieve view except for template_name, owner_pic_url
 @api_view()
-@permission_classes((IsOwnerOrReadOnly, ))
+@permission_classes((permissions.IsAuthenticated, ))
 def memo_edit_form(request, pk):
     memo = Memo.objects.get(pk=pk)
+
+    # check object permissions
+    if memo.owner != request.user:
+        return HttpResponseForbidden('fuck you')
+
     serializer = MemoSerializer(memo)
     return Response({'memo': serializer.data}, template_name='memo_edit.html', )
 
@@ -102,7 +108,7 @@ def memo_edit_form(request, pk):
 @api_view()
 @permission_classes((permissions.IsAuthenticated, ))
 def memo_clipbook(request):
-    query_set = Memo.objects.filter(clipper__id=request.user.id, is_private=True)
+    query_set = Memo.objects.filter(clipper__id=request.user.id)
     if query_set is not None:
         serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
         return Response({'memo_list': serializer.data}, template_name='memo_list.html')
@@ -113,6 +119,10 @@ def memo_clipbook(request):
 @login_required()
 def memo_clip(request, pk):
     memo = get_object_or_404(Memo, pk=pk)
+
+    # check object permissions
+    if memo.is_private and memo.owner != request.user:
+        return HttpResponseForbidden('this memo is private')
 
     # POST request: clip
     if request.method == 'POST':
@@ -130,7 +140,6 @@ def memo_clip(request, pk):
     return Response({'memo':  serializer.data})
 
 
-@api_view()
 def memo_square(request):
     return render(request, 'square.html')
 
@@ -145,9 +154,36 @@ def memo_page(request):
     return Response({'memo_list': serializer.data})
 
 
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
+def memo_lock(request, pk):
+    memo = get_object_or_404(Memo, pk=pk)
+    # check object permissions
+    if memo.owner != request.user:
+        return HttpResponseForbidden('fuck you')
+
+    # toggle boolean value
+    memo.is_private = not memo.is_private
+    memo.save()
+
+    if memo.is_private:
+        result = 'private'
+    else:
+        result = 'public'
+
+    return HttpResponse(result)
+
+
 # TEST only
 @api_view()
 def memo_all(request):
     query_set = Memo.objects.all()
     serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
     return Response({'memo_list': serializer.data}, template_name='memo_list.html')
+
+
+# TEST? For cross browsing request(chrome extension)
+def csrf_test(request):
+    if request.is_ajax():
+        return render(request, 'csrf_token')
+

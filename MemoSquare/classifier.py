@@ -19,4 +19,4 @@ def find_memo(url):
     except Page.DoesNotExist:
         return
 
-    return Memo.objects.filter(page=page)
+    return Memo.objects.filter(page=page, is_private=False)

@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^memo/(?P<pk>\d+)/$', views.memo_detail),
     url(r'^memo/(?P<pk>\d+)/edit/$', views.memo_edit_form),
     url(r'^memo/(?P<pk>\d+)/clip/$', views.memo_clip),
+    url(r'^memo/(?P<pk>\d+)/lock/$', views.memo_lock),
     url(r'^square/', views.memo_square),
     # TEST only
     url(r'^memo/all/$', views.memo_all),
