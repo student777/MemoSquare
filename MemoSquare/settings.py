@@ -115,10 +115,6 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.TemplateHTMLRenderer',
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        # TEST only
-        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
-    ],
 }
 
 # Account managements

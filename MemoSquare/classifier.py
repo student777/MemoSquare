@@ -10,6 +10,7 @@ def classify_url(url):
         page = Page.objects.get(url=url)
     except Page.DoesNotExist:
         # URL must end with slash
+        # Because Chrome extension adds slash to URL...
         if not url.endswith('/'):
             url += '/'
         page = Page.objects.create(url=url)
