@@ -8,6 +8,7 @@ from rest_framework import permissions
 from rest_framework.decorators import permission_classes, api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
+from rest_framework.pagination import LimitOffsetPagination
 from .models import Memo
 from .serializers import MemoSerializer
 from .classifier import classify_url, find_memo
@@ -38,11 +39,14 @@ def sign_out(request):
 def memo_list_create(request):
     # Memo list of user
     if request.method == 'GET':
-        query_set = Memo.objects.filter(owner__id=request.user.id)
+        query_set = Memo.objects.filter(owner__id=request.user.id).order_by('-pk')
 
         if query_set is not None:
-            serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
-            return Response({'memo_list': serializer.data}, template_name='memo_list.html')
+            paginator = LimitOffsetPagination()
+            paginated_query_set = paginator.paginate_queryset(query_set, request)
+            serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
+            return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(),
+                             'next': paginator.get_next_link()}, template_name='memo_list.html')
 
     # Create Memo
     elif request.method == 'POST':
@@ -109,9 +113,14 @@ def memo_edit_form(request, pk):
 @permission_classes((permissions.IsAuthenticated, ))
 def memo_clipbook(request):
     query_set = Memo.objects.filter(clipper__id=request.user.id)
+    paginator = LimitOffsetPagination()
+    paginated_query_set = paginator.paginate_queryset(query_set, request)
+
     if query_set is not None:
-        serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
-        return Response({'memo_list': serializer.data}, template_name='memo_list.html')
+        serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
+        return Response(
+            {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
+            template_name='memo_list.html')
 
 
 # Clip or Unclip a memo
@@ -150,8 +159,12 @@ def memo_square(request):
 def memo_page(request):
     page_url = request.GET['url']
     query_set = find_memo(page_url)
-    serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
-    return Response({'memo_list': serializer.data})
+    paginator = LimitOffsetPagination()
+    paginated_query_set = paginator.paginate_queryset(query_set, request)
+    serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
+    return Response(
+        {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
+        template_name='memo_list.html')
 
 
 @api_view(['POST'])
@@ -178,8 +191,10 @@ def memo_lock(request, pk):
 @api_view()
 def memo_all(request):
     query_set = Memo.objects.all()
-    serializer = MemoSerializer(query_set, many=True, context={'user': request.user})
-    return Response({'memo_list': serializer.data}, template_name='memo_list.html')
+    paginator = LimitOffsetPagination()
+    paginated_query_set = paginator.paginate_queryset(query_set, request)
+    serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
+    return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()}, template_name='memo_list.html')
 
 
 # TEST? For cross browsing request(chrome extension)

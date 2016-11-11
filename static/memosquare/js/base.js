@@ -1,6 +1,7 @@
 /* base.js */
-function load_memo(url) {
-    url += '?format=html';
+function load_memo(url, no_suffix) {
+    // If 2nd parameter not set, add format=html
+    if (no_suffix===undefined) url += '?format=html';
     var options = {
         success: function (response) {
             $("#container").empty();

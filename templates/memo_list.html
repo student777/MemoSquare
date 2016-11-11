@@ -24,10 +24,12 @@
             <td>{{ memo.content| truncatechars:50 }}</td>
             <td>{{ memo.page| truncatechars:50 }}</td>
             <td>{{ memo.timestamp }}</td>
-            <td><a onclick="load_memo('/memo/{{ memo.pk }}')" class="waves-effect waves-light btn"><i class="small material-icons">cloud</i></a>
+            <td><a onclick="load_memo('/memo/{{ memo.pk }}')" class="waves-effect waves-light btn"><i
+                    class="small material-icons">cloud</i></a>
             </td>
             {% if is_owner %}
-                <td><a onclick="load_memo('/memo/{{ memo.pk }}/edit/')" class="waves-effect deep-purple waves-light btn"><i
+                <td><a onclick="load_memo('/memo/{{ memo.pk }}/edit/')"
+                       class="waves-effect deep-purple waves-light btn"><i
                         class="small material-icons">mode_edit</i></a></td>
                 <td><a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn"><i
                         class="small material-icons">delete</i></a></td>
@@ -35,4 +37,9 @@
         </tr>
     {% endfor %}
     </tbody>
+
 </table>
+<div class="row center-align">
+    <a class="waves-effect waves-light btn" onclick="load_memo('{{ prev }}', true)"><i class="material-icons">chevron_left</i></a>
+    <a class="waves-effect waves-light btn" onclick="load_memo('{{ next }}', true)"><i class="material-icons">chevron_right</i></a>
+</div>
