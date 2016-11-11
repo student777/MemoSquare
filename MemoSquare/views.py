@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
@@ -47,6 +47,7 @@ def memo_list_create(request):
             serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
             return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(),
                              'next': paginator.get_next_link()}, template_name='memo_list.html')
+        raise Http404
 
     # Create Memo
     elif request.method == 'POST':
@@ -65,11 +66,12 @@ def memo_detail(request, pk):
     try:
         memo = Memo.objects.get(pk=pk)
     except Memo.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        raise Http404
 
     # check object permissions
-    if memo.is_private:
-        return HttpResponseForbidden('this memo is private')
+    # Think about A-B  <-> A and ~B
+    if memo.is_private and memo.owner != request.user:
+        return HttpResponseForbidden('this memo is private OR you are not owner')
 
     # Retrieve
     if request.method == 'GET':
@@ -121,6 +123,7 @@ def memo_clipbook(request):
         return Response(
             {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
             template_name='memo_list.html')
+    raise Http404
 
 
 # Clip or Unclip a memo
@@ -158,13 +161,15 @@ def memo_square(request):
 @renderer_classes([JSONRenderer])
 def memo_page(request):
     page_url = request.GET['url']
-    query_set = find_memo(page_url)
-    paginator = LimitOffsetPagination()
-    paginated_query_set = paginator.paginate_queryset(query_set, request)
-    serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
-    return Response(
-        {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
-        template_name='memo_list.html')
+    query_set = find_memo(page_url, request)
+    if query_set is not None:
+        paginator = LimitOffsetPagination()
+        paginated_query_set = paginator.paginate_queryset(query_set, request)
+        serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
+        return Response(
+            {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
+            template_name='memo_list.html')
+    raise Http404
 
 
 @api_view(['POST'])
@@ -191,10 +196,12 @@ def memo_lock(request, pk):
 @api_view()
 def memo_all(request):
     query_set = Memo.objects.all()
-    paginator = LimitOffsetPagination()
-    paginated_query_set = paginator.paginate_queryset(query_set, request)
-    serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
-    return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()}, template_name='memo_list.html')
+    if query_set is not None:
+        paginator = LimitOffsetPagination()
+        paginated_query_set = paginator.paginate_queryset(query_set, request)
+        serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
+        return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()}, template_name='memo_list.html')
+    raise Http404
 
 
 # TEST? For cross browsing request(chrome extension)
