@@ -40,6 +40,10 @@
 
 </table>
 <div class="row center-align">
-    <a class="waves-effect waves-light btn" onclick="load_memo('{{ prev }}', true)"><i class="material-icons">chevron_left</i></a>
-    <a class="waves-effect waves-light btn" onclick="load_memo('{{ next }}', true)"><i class="material-icons">chevron_right</i></a>
+    <a class="waves-effect waves-light btn {% if prev == None %}disabled{% endif %}"
+       {% if prev != None %}onclick="load_memo('{{ prev }}', true)"{% endif %}><i
+            class="material-icons">chevron_left</i></a>
+    <a class="waves-effect waves-light btn {% if next == None %}disabled{% endif %}"
+       {% if next != None %}onclick="load_memo('{{ next }}', true)"{% endif %}><i
+            class="material-icons">chevron_right</i></a>
 </div>
