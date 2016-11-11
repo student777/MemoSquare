@@ -7,7 +7,7 @@ from rest_framework.decorators import permission_classes, api_view, renderer_cla
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import LimitOffsetPagination
-from .models import Memo
+from .models import Memo, Clip
 from .serializers import MemoSerializer
 from .classifier import classify_url, find_memo
 
@@ -117,11 +117,15 @@ def clip_unclip(request, pk):
 
     # POST request: clip
     if request.method == 'POST':
-        memo.clipper.add(request.user)
+        # must identify there is no objects
+        clip = Clip(user=request.user, memo=memo)
+        clip.save()
 
     # DELETE request: unclip
     elif request.method == 'DELETE':
-        memo.clipper.remove(request.user)
+        # must return 1 object
+        clip = Clip.objects.get(user=request.user, memo=memo)
+        clip.delete()
 
     # other request: fuck you
     else:

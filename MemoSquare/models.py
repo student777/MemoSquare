@@ -25,10 +25,16 @@ class Memo(models.Model):
     content = models.TextField()
     owner = models.ForeignKey(User, related_name='memo', on_delete=models.CASCADE)
     page = models.ForeignKey('Page', related_name='memo', on_delete=models.CASCADE)
-    clipper = models.ManyToManyField(User, related_name='clipper', blank=True)
+    clipper = models.ManyToManyField(User, through='Clip', related_name='clipper')
     is_private = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         content_truncated = self.content[:100] + (self.content[100:] and '..')
         return self.owner.__str__() + "/" + content_truncated
+
+
+class Clip(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    memo = models.ForeignKey(Memo, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
