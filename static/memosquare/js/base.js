@@ -106,7 +106,6 @@ function clip_memo(pk, to_clip) {
     var settings = {
         success: function success(result, status, xhr) {
             load_memo('/memo/'+pk+'/');
-            console.log(result);
         },
         error: function (response) {
             console.log(response);

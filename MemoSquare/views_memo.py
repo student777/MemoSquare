@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden, Http404
+from django.http import HttpResponse, HttpResponseForbidden, Http404, HttpResponseBadRequest
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework.decorators import permission_classes, api_view, renderer_classes
@@ -94,11 +94,16 @@ def edit_form(request, pk):
 @api_view()
 @permission_classes((permissions.IsAuthenticated, ))
 def clip_list(request):
-    query_set = Memo.objects.filter(clipper__id=request.user.id)
-    paginator = LimitOffsetPagination()
-    paginated_query_set = paginator.paginate_queryset(query_set, request)
+    clips_by_user = Clip.objects.filter(user=request.user).order_by('-timestamp')
+    memo_list = []
+    for clip in clips_by_user:
+        memo_list.append(clip.memo)
 
-    if query_set is not None:
+    paginator = LimitOffsetPagination()
+    # It is okay that memo_list is not query_set..?
+    paginated_query_set = paginator.paginate_queryset(memo_list, request)
+
+    if memo_list is not None:
         serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
         return Response(
             {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
@@ -118,15 +123,20 @@ def clip_unclip(request, pk):
 
     # POST request: clip
     if request.method == 'POST':
-        # must identify there is no objects
+        # check if there is no objects
+        if Clip.objects.filter(user=request.user, memo=memo).exists():
+            return HttpResponseBadRequest('there is no clip')
+
         clip = Clip(user=request.user, memo=memo)
         clip.save()
 
     # DELETE request: unclip
     elif request.method == 'DELETE':
-        # must return 1 object
-        clip = Clip.objects.get(user=request.user, memo=memo)
-        clip.delete()
+        if Clip.objects.filter(user=request.user, memo=memo).count() == 1:
+            # must return 1 object
+            Clip.objects.get(user=request.user, memo=memo).delete()
+        else:
+            return HttpResponseBadRequest('return multiple or no clip')
 
     # other request: fuck you
     else:
