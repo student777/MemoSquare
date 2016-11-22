@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, Http404
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from rest_framework import status
 from rest_framework import permissions
@@ -135,12 +136,21 @@ def clip_unclip(request, pk):
     return Response({'memo':  serializer.data})
 
 
+@api_view()
+@permission_classes((permissions.IsAuthenticated, ))
 def memo_square(request):
-    return render(request, 'square.html')
+    query_set = Memo.objects.filter(Q(is_private=False) | Q(owner=request.user))
+    if query_set is not None:
+        paginator = LimitOffsetPagination()
+        paginated_query_set = paginator.paginate_queryset(query_set, request)
+        serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
+        return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()}, template_name='memo_list.html')
+    raise Http404
 
 
 # Memo list of an URL. If memo not exists, return None
 @api_view()
+@permission_classes((permissions.IsAuthenticated, ))
 @renderer_classes([JSONRenderer])
 def find_by_page(request):
     page_url = request.GET['url']

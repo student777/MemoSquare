@@ -14,7 +14,7 @@ class UserDetail(models.Model):
 
 
 class Page(models.Model):
-    url = models.CharField(max_length=255)
+    url = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.url
