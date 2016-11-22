@@ -121,6 +121,8 @@ def clip_unclip(request, pk):
     if memo.is_private and memo.owner != request.user:
         return HttpResponseForbidden('this memo is private')
 
+    # TODO: Toggle request.  post or delete -> only post. If no clip objects, create clip. Otherwise delete clip.
+
     # POST request: clip
     if request.method == 'POST':
         # check if there is no objects

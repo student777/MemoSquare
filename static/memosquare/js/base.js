@@ -124,6 +124,23 @@ function clip_memo(pk, to_clip) {
     }
     $.ajax(url, settings);
 }
+
+function lock_memo(pk){
+    var url = '/memo/' + pk + '/lock/';
+    var settings = {
+        method: 'POST',
+        data: {"csrfmiddlewaretoken": csrf_token},
+        success: function success(result, status, xhr) {
+            load_memo('/memo/'+pk+'/');
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    };
+    $.ajax(url, settings);
+}
+
+
 // reference: http://ngee.tistory.com/846
 function delete_memo(pk) {
     var is_delete = confirm('삭제하시겠습니까?');

@@ -6,13 +6,16 @@ from django.db.models import Q
 def classify_url(url):
     # Ignore parameters like '#', only treats proper URI data
     # Treat same thing as same, different things as different
+
+    # URL must end with slash
+    # Because Chrome extension adds slash to URL...
+    if not url.endswith('/'):
+        url += '/'
+
+    # If exists, get page. Otherwise create page
     try:
         page = Page.objects.get(url=url)
     except Page.DoesNotExist:
-        # URL must end with slash
-        # Because Chrome extension adds slash to URL...
-        if not url.endswith('/'):
-            url += '/'
         page = Page.objects.create(url=url)
     return page
 
