@@ -17,9 +17,12 @@
         .active {
             color: black !important;
         }
+        .container{
+            background-color: grey !important;
+        }
     </style>
 </head>
-<body class="grey">
+<body style="background-color: grey">
 
 <nav class="nav-extended">
     <div class="nav-wrapper indigo darken-4">
@@ -44,6 +47,12 @@
             {% endif %}
         </ul>
 
+        <!-- Dropdown Structure -->
+        <ul id='dropdown1' class='dropdown-content'>
+            <li><a onclick="signOut()" class="black-text">sign out</a></li>
+        </ul>
+
+
         <ul class="side-nav" id="mobile-demo">
             {% if user.is_anonymous %}
                 <li><a onclick="signIn();" class="waves-effect waves-light btn">sign in</a></li>
@@ -64,10 +73,6 @@
 <br>
 <br>
 <br>
-<!-- Dropdown Structure -->
-<ul id='dropdown1' class='dropdown-content'>
-    <li><a onclick="signOut()" class="black-text">sign out</a></li>
-</ul>
 
 <div id="container" class="container white">
 </div>

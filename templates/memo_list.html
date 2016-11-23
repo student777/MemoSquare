@@ -1,44 +1,28 @@
-<table>
-    <thead>
-    <tr>
-        <th>pk</th>
-        <th>title</th>
-        <th>owner</th>
-        <th>content</th>
-        <th>page</th>
-        <th>timestamp</th>
-        <th>detail</th>
-        {% if is_owner %}
-            <th>edit</th>
-            <th>delete</th>
-        {% endif %}
-    </tr>
-    </thead>
-    <tbody>
+<div class="row">
     {% for memo in memo_list %}
-        <tr>
-            <td>{{ memo.pk }}</td>
-            <td>{% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}
-                {{ memo.title }}{% endif %}</td>
-            <td>{{ memo.owner }}</td>
-            <td>{{ memo.content| truncatechars:50 }}</td>
-            <td>{{ memo.page| truncatechars:50 }}</td>
-            <td>{{ memo.timestamp }}</td>
-            <td><a onclick="load_memo('/memo/{{ memo.pk }}')" class="waves-effect waves-light btn"><i
-                    class="small material-icons">cloud</i></a>
-            </td>
-            {% if is_owner %}
-                <td><a onclick="load_memo('/memo/{{ memo.pk }}/edit/')"
-                       class="waves-effect deep-purple waves-light btn"><i
-                        class="small material-icons">mode_edit</i></a></td>
-                <td><a onclick="delete_memo({{ memo.pk }})" class="waves-effect waves-light red accent-1 btn"><i
-                        class="small material-icons">delete</i></a></td>
-            {% endif %}
-        </tr>
-    {% endfor %}
-    </tbody>
+        <div class="col s12 m4">
+            <div class="card blue-grey darken-1">
+                <div class="card-content white-text">
+                <span class="card-title">
+                    {% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}{{ memo.title }}{% endif %}
+                </span>
+                    <p>{{ memo.content| truncatechars:300 }}</p>
+                    <p><a class="btn" onclick="load_memo('/memo/{{ memo.pk }}')"><i class="small material-icons">web</i></a></p>
+                </div>
+                <div>
 
-</table>
+                </div>
+                <div class="card-action">
+                    <span>{{ memo.owner }}</span>
+                    <span> {{ memo.timestamp }}</span>
+                    <br>
+                    <span><i class="small material-icons">label_outline</i>{{ memo.num_clips }} clipped</span>
+                    <span><img src="{{ memo.owner_pic_url }}"/></span>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
 <div class="row center-align">
     <a class="waves-effect waves-light btn {% if prev == None %}disabled{% endif %}"
        {% if prev != None %}onclick="load_memo('{{ prev }}', true)"{% endif %}><i
