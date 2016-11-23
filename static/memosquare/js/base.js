@@ -164,5 +164,3 @@ function delete_memo(pk) {
     var url = '/memo/' + pk + '/';
     $.ajax(url, settings);
 }
-
-

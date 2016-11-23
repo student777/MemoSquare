@@ -17,7 +17,7 @@ def classify_url(url):
     # By the way, will page.url stored in DB ends with slash or not? It depends on the request which first came
     # If first request's url ends with slash, that url will be stored in DB and never change although next request's url
     # does not ends with slash..
-    
+
     try:
         page = Page.objects.get(url=url)
     except Page.DoesNotExist:

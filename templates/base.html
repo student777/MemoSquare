@@ -9,6 +9,15 @@
     <title>MemoSquare</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .tabs .indicator {
+            background-color: orange
+        }
+
+        .active {
+            color: black !important;
+        }
+    </style>
 </head>
 <body class="grey">
 
@@ -16,34 +25,51 @@
     <div class="nav-wrapper indigo darken-4">
         <a href="/" class="brand-logo">
             <img style="height: 40px" class="responsive-img" src="/static/memosquare/img/logo_main.gif">
-            MemoSquare
+            <img style="height: 40px" class="responsive-img" src="/static/memosquare/img/str_memosquare_orange.png">
         </a>
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             {% if user.is_anonymous %}
                 <li>
                     <a onclick="signIn();" class="waves-effect waves-light btn">sign in</a>
                 </li>
             {% else %}
-                <li><a href="#">Hello, {{ user.username }}</a></li>
-                <li style="height:64px"><a><img style="height:64px" src="{{ user.detail.get_img_url }}"/></a></li>
-                <li><a onclick="signOut();" class="waves-effect waves-light btn">sign out</a></li>
+                <li>{{ user.username }}</li>
+                <li style="height:64px">
+                    <a class='dropdown-button' data-activates='dropdown1'>
+                        <img class="circle" style="height:64px" src="{{ user.detail.get_img_url }}"/>
+                    </a>
+                </li>
             {% endif %}
         </ul>
-        <!-- side-nav is not work -->
+
+        <ul class="side-nav" id="mobile-demo">
+            {% if user.is_anonymous %}
+                <li><a onclick="signIn();" class="waves-effect waves-light btn">sign in</a></li>
+            {% else %}
+                <li class="black-text"><a href="#">{{ user.username }}<img class="circle" src="{{ user.detail.get_img_url }}"/></a></li>
+                <li><a onclick="signOut()" class="black-text">sign out</a></li>
+            {% endif %}
+        </ul>
+
         <ul class="tabs tabs-transparent">
-            <li class="tab"><a onclick="load_memo('/memo/all/')">all memo(test)</a></li>
-            <li class="tab"><a onclick="load_memo('/memo/')">MY MEMO</a></li>
-            <li class="tab"><a onclick="load_memo('/memo/clipbook/')">CLIPBOOK</a></li>
-            <li class="tab"><a onclick="load_memo('/square/')" class="active">SQUARE</a></li>
+            <li class="tab"><a class="grey-text" onclick="load_memo('/memo/')">MY MEMO</a></li>
+            <li class="tab"><a class="grey-text" onclick="load_memo('/memo/clipbook/')">CLIPBOOK</a></li>
+            <li class="tab"><a class="grey-text" onclick="load_memo('/square/')" class="active">SQUARE</a></li>
         </ul>
     </div>
 </nav>
 
 <br>
 <br>
+<br>
+<!-- Dropdown Structure -->
+<ul id='dropdown1' class='dropdown-content'>
+    <li><a onclick="signOut()" class="black-text">sign out</a></li>
+</ul>
+
 <div id="container" class="container white">
-    {% include 'square.html' %}
 </div>
 </body>
 
@@ -52,6 +78,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
 <script>
     var csrf_token = '{{ csrf_token }}';
+    // when side-nav not work
+    (function ($) {
+        $(function () {
+            $('.button-collapse').sideNav();
+        }); // end of document ready
+    })(jQuery); // end of jQuery name space
 </script>
 <script src="/static/memosquare/js/base.js"></script>
 <script>load_memo('/square/');</script>
