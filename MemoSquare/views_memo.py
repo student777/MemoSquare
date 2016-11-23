@@ -14,7 +14,7 @@ from .classifier import classify_url, find_memo
 
 # List & Create API view
 @api_view(['GET', 'POST'])
-@permission_classes((permissions.IsAuthenticated, ))
+@permission_classes((permissions.IsAuthenticated,))
 def list_create(request):
     # Memo list of user
     if request.method == 'GET':
@@ -27,7 +27,7 @@ def list_create(request):
         paginated_query_set = paginator.paginate_queryset(query_set, request)
         serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
         return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(),
-                         'next': paginator.get_next_link()}, template_name='memo_list.html')
+                         'next': paginator.get_next_link(), 'count': len(query_set)}, template_name='memo_list.html')
 
     # Create Memo
     elif request.method == 'POST':
@@ -41,7 +41,7 @@ def list_create(request):
 
 # Retrieve & Update & Destory API view
 @api_view(['GET', 'POST', 'DELETE'])
-@permission_classes((permissions.IsAuthenticated, ))
+@permission_classes((permissions.IsAuthenticated,))
 def detail_update_delete(request, pk):
     try:
         memo = Memo.objects.get(pk=pk)
@@ -78,7 +78,7 @@ def detail_update_delete(request, pk):
 
 # Memo edit form. Same as retrieve view except for template_name, owner_pic_url
 @api_view()
-@permission_classes((permissions.IsAuthenticated, ))
+@permission_classes((permissions.IsAuthenticated,))
 def edit_form(request, pk):
     memo = Memo.objects.get(pk=pk)
 
@@ -92,7 +92,7 @@ def edit_form(request, pk):
 
 # Memo list clipped by user
 @api_view()
-@permission_classes((permissions.IsAuthenticated, ))
+@permission_classes((permissions.IsAuthenticated,))
 def clip_list(request):
     clips_by_user = Clip.objects.filter(user=request.user).order_by('-timestamp')
 
@@ -108,7 +108,8 @@ def clip_list(request):
     paginated_query_set = paginator.paginate_queryset(memo_list, request)
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
     return Response(
-        {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
+        {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link(),
+         'count': len(clips_by_user)},
         template_name='memo_list.html')
 
 
@@ -146,11 +147,11 @@ def clip_unclip(request, pk):
         pass
 
     serializer = MemoSerializer(memo, context={'user': request.user})
-    return Response({'memo':  serializer.data})
+    return Response({'memo': serializer.data})
 
 
 @api_view()
-@permission_classes((permissions.IsAuthenticated, ))
+@permission_classes((permissions.IsAuthenticated,))
 def memo_square(request):
     query_set = Memo.objects.filter(Q(is_private=False) | Q(owner=request.user))
 
@@ -160,12 +161,15 @@ def memo_square(request):
     paginator = LimitOffsetPagination()
     paginated_query_set = paginator.paginate_queryset(query_set, request)
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
-    return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()}, template_name='memo_list.html')
+    return Response(
+        {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link(),
+         'count': len(query_set)},
+        template_name='memo_list.html')
 
 
 # Memo list of an URL. If memo not exists, return None
 @api_view()
-@permission_classes((permissions.IsAuthenticated, ))
+@permission_classes((permissions.IsAuthenticated,))
 @renderer_classes([JSONRenderer])
 def find_by_page(request):
     page_url = request.GET['url']
@@ -177,11 +181,13 @@ def find_by_page(request):
     paginator = LimitOffsetPagination()
     paginated_query_set = paginator.paginate_queryset(query_set, request)
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
-    return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()})
+    return Response(
+        {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link(),
+         'count': len(query_set)})
 
 
 @api_view(['POST'])
-@permission_classes((permissions.IsAuthenticated, ))
+@permission_classes((permissions.IsAuthenticated,))
 def lock_unlock(request, pk):
     memo = get_object_or_404(Memo, pk=pk)
     # check object permissions
