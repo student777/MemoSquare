@@ -17,6 +17,5 @@ urlpatterns = [
     url(r'^memo/(?P<pk>\d+)/lock/$', views_memo.lock_unlock),
     url(r'^square/', views_memo.memo_square),
     # TEST only
-    url(r'^memo/all/$', views_memo.all_list),
     url(r'^memo/csrf_test/$', views.csrf_test),
 ]
