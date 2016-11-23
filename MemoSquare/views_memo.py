@@ -21,7 +21,7 @@ def list_create(request):
         query_set = Memo.objects.filter(owner__id=request.user.id).order_by('-pk')
 
         if query_set is None:
-            return Response({'memo_list': None})
+            return Response({'memo_list': []})
 
         paginator = LimitOffsetPagination()
         paginated_query_set = paginator.paginate_queryset(query_set, request)
@@ -97,7 +97,7 @@ def clip_list(request):
     clips_by_user = Clip.objects.filter(user=request.user).order_by('-timestamp')
 
     if clips_by_user is None:
-        return Response({'memo_list': None})
+        return Response({'memo_list': []})
 
     memo_list = []
     for clip in clips_by_user:
@@ -156,7 +156,7 @@ def memo_square(request):
     query_set = Memo.objects.filter(Q(is_private=False) | Q(owner=request.user))
 
     if query_set is None:
-        return Response({'memo_list': None})
+        return Response({'memo_list': []})
 
     paginator = LimitOffsetPagination()
     paginated_query_set = paginator.paginate_queryset(query_set, request)
@@ -176,7 +176,7 @@ def find_by_page(request):
     query_set = find_memo(page_url, request)
 
     if query_set is None:
-        return Response({'memo_list': None})
+        return Response({'memo_list': []})
 
     paginator = LimitOffsetPagination()
     paginated_query_set = paginator.paginate_queryset(query_set, request)
