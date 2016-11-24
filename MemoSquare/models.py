@@ -10,7 +10,7 @@ class UserDetail(models.Model):
         return self.user.username
 
     def get_img_url(self):
-        return 'https://graph.facebook.com/%s/picture' % self.code
+        return 'https://graph.facebook.com/%s/picture?width=300' % self.code
 
 
 class Page(models.Model):

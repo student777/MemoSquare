@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MemoSquare</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/memosquare/css/base.css">
 </head>
@@ -32,7 +32,7 @@
                 <li>{{ user.username }}</li>
                 <li style="height:64px">
                     <a class='dropdown-button' data-activates='dropdown1'>
-                        <img class="circle" style="height:64px" src="{{ user.detail.get_img_url }}"/>
+                        <img width=64 height="64" class="circle" style="height:64px" src="{{ user.detail.get_img_url }}"/>
                     </a>
                 </li>
             {% endif %}
@@ -49,7 +49,7 @@
             {% if user.is_anonymous %}
                 <li><a onclick="signIn();" class="waves-effect waves-light btn">sign in</a></li>
             {% else %}
-                <li class="black-text"><a href="#">{{ user.username }}<img class="circle" src="{{ user.detail.get_img_url }}"/></a></li>
+                <li class="black-text"><a href="#">{{ user.username }}<img class="circle" width="40" height="40" src="{{ user.detail.get_img_url }}"/></a></li>
                 <li><a onclick="signOut()" class="black-text">sign out</a></li>
             {% endif %}
         </ul>
@@ -57,7 +57,7 @@
         <ul class="tabs tabs-transparent">
             <li class="tab"><a class="grey-text" onclick="load_memo('/memo/')">MY MEMO</a></li>
             <li class="tab"><a class="grey-text" onclick="load_memo('/memo/clipbook/')">CLIPBOOK</a></li>
-            <li class="tab"><a class="grey-text" onclick="load_memo('/square/')" class="active">SQUARE</a></li>
+            <li class="tab"><a class="grey-text active" onclick="load_memo('/square/')">SQUARE</a></li>
         </ul>
     </div>
 </nav>

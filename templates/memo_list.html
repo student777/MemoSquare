@@ -6,7 +6,7 @@
                 <span class="card-title">
                     {% if memo.title == '' %} Memo created at {{ memo.timestamp }}{% else %}{{ memo.title }}{% endif %}
                 </span>
-                    <p>{{ memo.content| truncatechars:300 }}</p>
+                    <p>{{ memo.content| truncatechars:100 }}</p>
                     <p><a class="btn" onclick="load_memo('/memo/{{ memo.pk }}')"><i class="small material-icons">web</i></a></p>
                 </div>
                 <div>
@@ -17,7 +17,7 @@
                     <span> {{ memo.timestamp }}</span>
                     <br>
                     <span><i class="small material-icons">label_outline</i>{{ memo.num_clips }} clipped</span>
-                    <span><img src="{{ memo.owner_pic_url }}"/></span>
+                    <span><img class="circle" src="{{ memo.owner_pic_url }}" width=64 height="64" /></span>
                 </div>
             </div>
         </div>
