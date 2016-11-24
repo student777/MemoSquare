@@ -33,8 +33,9 @@ def csrf_test(request):
 
 @login_required
 def report(request):
-    if request.POST:
+    if request.method == 'POST':
         user = request.user
+        # content = request.POST.get('content', 'ddddd')
         content = request.POST['content']
         Report.objects.create(user=user, content=content)
         return render(request, 'report_close.html')
