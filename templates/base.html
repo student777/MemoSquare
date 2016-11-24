@@ -47,7 +47,6 @@
             <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
         </ul>
 
-
         <ul class="side-nav" id="mobile-demo">
             {% if user.is_anonymous %}
                 <li><a onclick="signIn();" class="waves-effect waves-light btn">Sign in</a></li>
@@ -59,21 +58,25 @@
     </div>
 </nav>
 
-<!-- Tabs -->
+<!-- tabs -->
 <div class="row tab-wrapper">
     <div class="col s12 m4 offset-m4">
         <ul class="tabs tabs-transparent">
-            <li class="tab"><a class="grey-text" onclick="load_memo('/memo/')">MY MEMO</a></li>
-            <li class="tab"><a class="grey-text" onclick="load_memo('/memo/clipbook/')">CLIPBOOK</a></li>
-            <li class="tab"><a class="grey-text active" onclick="load_memo('/square/')">SQUARE</a></li>
+            <li class="tab"><a target="_self" class="grey-text {% if request.path == '/memo/' %}active{% endif %}" href="/memo/">MY MEMO</a></li>
+            <li class="tab"><a target="_self" class="grey-text {% if request.path == '/memo/clipbook/' %}active{% endif %}" href="/memo/clipbook/">CLIPBOOK</a></li>
+            <li class="tab"><a target="_self" class="grey-text {% if request.path == '/square/' or request.path == '/'%}active{% endif %}" href="/square/">SQUARE</a></li>
         </ul>
     </div>
 </div>
 
-<br>
+{% block container %}
+    {% if not request.user.is_authenticated %}
+        please login
+    {% else %}
+        <script>location.href="/square/"</script>
+    {% endif %}
+{% endblock %}
 
-<div id="container" class="container">
-</div>
 </body>
 
 
@@ -89,5 +92,9 @@
     })(jQuery); // end of jQuery name space
 </script>
 <script src="/static/memosquare/js/base.js"></script>
-<script>load_memo('/square/');</script>
+{% block extra_script %}
+<script>
+
+</script>
+{% endblock %}
 </html>

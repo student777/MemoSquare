@@ -1,37 +1,42 @@
-<div class="row white">
-    <div class="right-align col s12 m12">
-        {% if memo.is_clipped %}
-            <i onclick="clip_memo({{ memo.pk }}, false)" class="medium material-icons">turned_in</i>
-        {% else %}
-            <i onclick="clip_memo({{ memo.pk }}, true)" class="medium material-icons">turned_in_not</i>
-        {% endif %}
-        <i onclick='load_memo("/memo/")' class="medium material-icons">view_list</i>
-    </div>
-    <div class="col s1 m1"><img width=40 height=40 class="circle" src="{{ memo.owner_pic_url }}"/></div>
-    <div class="col s2 m2"> {{ memo.timestamp }}<br>{{ memo.owner }}</div>
-    <div class="col s3 m3">
-        {% if memo.is_mymemo %}
-            <i class="small material-icons" onclick='load_memo("/memo/{{ memo.pk }}/edit/")'>mode_edit</i>
-            <i class="small material-icons" onclick="delete_memo({{ memo.pk }})">delete</i>
-            {% if memo.is_private %}
-                <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, false)">lock_outline</i>
+{% extends 'base.html' %}
+{% block container %}
+<div class="container">
+    <div class="row white">
+        <div class="right-align col s12 m12">
+            {% if memo.is_clipped %}
+                <i onclick="clip_memo({{ memo.pk }}, false)" class="medium material-icons">turned_in</i>
             {% else %}
-                <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, true)">lock_open</i>
+                <i onclick="clip_memo({{ memo.pk }}, true)" class="medium material-icons">turned_in_not</i>
             {% endif %}
-        {% endif %}
-    </div>
-    <div class="col s12 m12">
-        <h1>
-        {% if memo.title == '' %}
-            Memo created at {{ memo.timestamp }}
-        {% else %}
-            {{ memo.title }}
-        {% endif %}
-        </h1>
-    </div>
-    <div class="col s12 m12">
-        <h3>
-        {{ memo.content }}
-        </h3>
+            <i onclick='load_memo("/memo/")' class="medium material-icons">view_list</i>
+        </div>
+        <div class="col s1 m1"><img width=40 height=40 class="circle" src="{{ memo.owner_pic_url }}"/></div>
+        <div class="col s2 m2"> {{ memo.timestamp }}<br>{{ memo.owner }}</div>
+        <div class="col s3 m3">
+            {% if memo.is_mymemo %}
+                <i class="small material-icons" onclick="location.href='/memo/{{ memo.pk }}/edit/'">mode_edit</i>
+                <i class="small material-icons" onclick="delete_memo({{ memo.pk }})">delete</i>
+                {% if memo.is_private %}
+                    <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, false)">lock_outline</i>
+                {% else %}
+                    <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, true)">lock_open</i>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="col s12 m12">
+            <h1>
+            {% if memo.title == '' %}
+                Memo created at {{ memo.timestamp }}
+            {% else %}
+                {{ memo.title }}
+            {% endif %}
+            </h1>
+        </div>
+        <div class="col s12 m12">
+            <h3>
+            {{ memo.content }}
+            </h3>
+        </div>
     </div>
 </div>
+{% endblock %}

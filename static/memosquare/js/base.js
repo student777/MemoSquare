@@ -1,18 +1,3 @@
-/* base.js */
-function load_memo(url, no_suffix) {
-    // If 2nd parameter not set, add format=html
-    if (no_suffix===undefined) url += '?format=html';
-    var options = {
-        success: function (response) {
-            $("#container").empty();
-            $("#container").append(response);
-        },
-        error: function (response) {
-            console.log(response)
-        },
-    };
-    $.ajax(url, options)
-}
 /* account */
 function statusChangeCallback(response) {
     if (response.status === 'connected') {
@@ -92,8 +77,8 @@ function edit_memo(pk){
         },
         success: function (response) {
             console.log(response);
-            $('#container').empty();
-            $('#container').append(response);
+            //TODO: response at views_memo is memo object...
+            location.href = '/memo/'+pk+'/';
         },
         error: function (response) {
             console.log(response);
@@ -105,7 +90,7 @@ function clip_memo(pk, to_clip) {
     var url = '/memo/' + pk + '/clip/';
     var settings = {
         success: function success(result, status, xhr) {
-            load_memo('/memo/'+pk+'/');
+            location.href = '/memo/'+pk+'/';
         },
         error: function (response) {
             console.log(response);
@@ -131,7 +116,7 @@ function lock_memo(pk){
         method: 'POST',
         data: {"csrfmiddlewaretoken": csrf_token},
         success: function success(result, status, xhr) {
-            load_memo('/memo/'+pk+'/');
+            location.href = '/memo/' + pk + '/'
         },
         error: function (response) {
             console.log(response);
@@ -155,7 +140,7 @@ function delete_memo(pk) {
         success: function success(result, status, xhr) {
             //delete <td> is troublesome
             //일단나의메모페에지로
-            load_memo('/memo/');
+            location.href = '/memo/'
         },
         error: function (response) {
             console.log(response);

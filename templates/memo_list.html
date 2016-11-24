@@ -1,38 +1,50 @@
-<div class="row">
-    {% for memo in memo_list %}
-        <div class="col s12 m4" onclick="load_memo('/memo/{{ memo.pk }}')">
-            <div style="cursor:pointer;" class="card white darken-1">
-                
-                <div class="card-content">
-                    <span class="card-title black-text">
-                        {% if memo.title == '' %} Memo created on {{ memo.timestamp }}{% else %}{{ memo.title }}{% endif %}
-                    </span>
-                        <p>{{ memo.content| truncatechars:100 }}</p>
-                </div>
+{% extends 'base.html' %}
+{% block container %}
+    <div class="container">
+        <div class="row">
+            {% for memo in memo_list %}
+                <div class="col s12 m4">
+                    <div class="card white darken-1">
+                        <div class="card-content" style="cursor:pointer;"onclick="location.href='/memo/{{ memo.pk }}/'">
+                        <span class="card-title black-text">
+                            {% if memo.title == '' %} Memo created on {{ memo.timestamp }}{% else %}
+                                {{ memo.title }}{% endif %}
+                        </span>
+                            <p>{{ memo.content| truncatechars:100 }}</p>
+                        </div>
 
-                <div class="card-action">
-                    <div class="row">
-                            <div class="col s4 valign-wrapper">
-                                <span class="valign"><i class="small material-icons">turned_in_not</i>{{ memo.num_clips }} clipped</span>
+                        <div class="card-action">
+                            <div class="row">
+                                <div class="col s4 valign-wrapper">
+                                <span class="valign">            {% if memo.is_clipped %}
+                                    <i onclick="clip_memo({{ memo.pk }}, false)"
+                                       class="small material-icons">turned_in</i>
+                                {% else %}
+                                    <i onclick="clip_memo({{ memo.pk }}, true)" class="small material-icons">turned_in_not</i>
+                                {% endif %}{{ memo.num_clips }} clipped</span>
+                                </div>
+                                <div class="col s5 right-align">
+                                    <span> {{ memo.timestamp }}</span><br>
+                                    <span>by {{ memo.owner }}</span>
+                                </div>
+                                <div class="col s3">
+                                    <span><img class="circle" src="{{ memo.owner_pic_url }}" width=64
+                                               height="64"/></span>
+                                </div>
                             </div>
-                            <div class="col s5 right-align">
-                                <span> {{ memo.timestamp }}</span><br> 
-                                <span>by {{ memo.owner }}</span>
-                            </div>    
-                            <div class="col s3">
-                                <span><img class="circle" src="{{ memo.owner_pic_url }}" width=64 height="64" /></span>  
-                            </div>                    
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
-<div class="row center-align">
-    <a class="waves-effect waves-light btn {% if prev == None %}disabled{% endif %}"
-       {% if prev != None %}onclick="load_memo('{{ prev }}', true)"{% endif %}><i
-            class="material-icons">chevron_left</i></a>
-    <a class="waves-effect waves-light btn {% if next == None %}disabled{% endif %}"
-       {% if next != None %}onclick="load_memo('{{ next }}', true)"{% endif %}><i
-            class="material-icons">chevron_right</i></a>
-</div>
+        <div class="row center-align">
+            <a class="waves-effect waves-light btn {% if prev == None %}disabled{% endif %}"
+               {% if prev != None %}onclick="load_memo('{{ prev }}', true)"{% endif %}><i
+                    class="material-icons">chevron_left</i></a>
+            <a class="waves-effect waves-light btn {% if next == None %}disabled{% endif %}"
+               {% if next != None %}onclick="load_memo('{{ next }}', true)"{% endif %}><i
+                    class="material-icons">chevron_right</i></a>
+        </div>
+    </div>
+{% endblock %}
+
