@@ -1,7 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
+from .models import Report
 
 
 def index(request):
@@ -28,3 +30,13 @@ def csrf_test(request):
     if request.is_ajax():
         return render(request, 'csrf_token')
 
+
+@login_required
+def report(request):
+    if request.POST:
+        user = request.user
+        content = request.POST['content']
+        Report.objects.create(user=user, content=content)
+        return render(request, 'report_close.html')
+
+    return render(request, 'report.html')

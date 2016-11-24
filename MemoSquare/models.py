@@ -41,3 +41,11 @@ class Clip(models.Model):
 
     def __str__(self):
         return self.user.username + '/' + self.memo.title
+
+
+class Report(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+
+    def __str__(self):
+        return self.user.username + '/' + self.content[:30]

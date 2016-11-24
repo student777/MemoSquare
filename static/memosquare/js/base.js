@@ -164,3 +164,7 @@ function delete_memo(pk) {
     var url = '/memo/' + pk + '/';
     $.ajax(url, settings);
 }
+
+function open_report(){
+    window.open("/report/", "", "width=500,height=400");
+}
