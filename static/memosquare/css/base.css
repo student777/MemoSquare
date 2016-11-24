@@ -11,10 +11,51 @@
     background-color: #EBEFF1 !important;
 }
 
-nav{
-	background-color: #171C61;
-}
-
 i {
 	cursor:pointer;
 }
+
+/*nav*/
+nav{
+	background-color: #171C61;
+	height: 60px;
+}
+
+div.nav-wrapper{
+	padding: 0 40px;
+}
+
+a.brand-logo{
+	height: 60px;
+}
+
+#nav-mobile li{
+	height: 60px;
+}
+
+img.responsive-img{
+	height: 30px;
+}
+
+a.dropdown-button{
+	padding: 10px 15px;
+	height: 60px;
+}
+
+/*tabs*/
+div.row.tab-wrapper{
+	background-color: white;
+}
+
+
+/*memo-list*/
+div.card-action{
+	padding-bottom: 0;
+}
+
+
+
+
+
+
+

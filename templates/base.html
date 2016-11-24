@@ -15,24 +15,27 @@
 <body style="background-color: #EBEFF1">
 
 <!--header-->
-<nav class="nav-extended">
+<nav class="nav-extended z-depth-0">
     <div class="nav-wrapper">
+
+        <!-- left side -->
         <a href="/" class="brand-logo">
-            <img style="height: 40px" class="responsive-img" src="/static/memosquare/img/logo_main.gif">
-            <img style="height: 40px" class="responsive-img" src="/static/memosquare/img/str_memosquare_white.png">
+            <img class="responsive-img" src="/static/memosquare/img/logo_and_str.png">
         </a>
+
+        <!-- right side -->
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             {% if user.is_anonymous %}
                 <li>
-                    <a onclick="signIn();" class="waves-effect waves-light btn">sign in</a>
+                    <a onclick="signIn();">Sign in</a>
                 </li>
             {% else %}
                 <li>{{ user.username }}</li>
-                <li style="height:64px">
+                <li>
                     <a class='dropdown-button' data-activates='dropdown1'>
-                        <img width=64 height="64" class="circle" style="height:64px" src="{{ user.detail.get_img_url }}"/>
+                        <img width=40 height="40" class="circle profile" src="{{ user.detail.get_img_url }}"/>
                     </a>
                 </li>
             {% endif %}
@@ -40,30 +43,33 @@
 
         <!-- Dropdown Structure -->
         <ul id='dropdown1' class='dropdown-content'>
-            <li><a onclick="signOut()" class="black-text">sign out</a></li>
-            <li><a onclick="open_report()" class="black-text">report</a></li>
+            <li><a onclick="signOut()" class="black-text">Sign out</a></li>
+            <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
         </ul>
 
 
         <ul class="side-nav" id="mobile-demo">
             {% if user.is_anonymous %}
-                <li><a onclick="signIn();" class="waves-effect waves-light btn">sign in</a></li>
+                <li><a onclick="signIn();" class="waves-effect waves-light btn">Sign in</a></li>
             {% else %}
-                <li class="black-text"><a href="#">{{ user.username }}<img class="circle" width="40" height="40" src="{{ user.detail.get_img_url }}"/></a></li>
-                <li><a onclick="signOut()" class="black-text">sign out</a></li>
+                <li class="black-text"><a href="#">{{ user.username }}</a></li>
+                <li><a onclick="signOut()" class="black-text">Sign out</a></li>
             {% endif %}
         </ul>
+    </div>
+</nav>
 
+<!-- Tabs -->
+<div class="row tab-wrapper">
+    <div class="col s12 m4 offset-m4">
         <ul class="tabs tabs-transparent">
             <li class="tab"><a class="grey-text" onclick="load_memo('/memo/')">MY MEMO</a></li>
             <li class="tab"><a class="grey-text" onclick="load_memo('/memo/clipbook/')">CLIPBOOK</a></li>
             <li class="tab"><a class="grey-text active" onclick="load_memo('/square/')">SQUARE</a></li>
         </ul>
     </div>
-</nav>
+</div>
 
-<br>
-<br>
 <br>
 
 <div id="container" class="container">
