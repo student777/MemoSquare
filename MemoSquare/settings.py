@@ -138,4 +138,5 @@ CORS_ORIGIN_WHITELIST = (
 # deploy settings
 ALLOWED_HOSTS = [
     'estfutures.cafe24.com',
+    'localhost',
 ]

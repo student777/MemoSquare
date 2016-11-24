@@ -1,0 +1,17 @@
+
+.tabs .indicator {
+	background-color: #F39800;
+}
+
+.active {
+	color: #ED7100 !important;
+}
+
+.container{
+    background-color: #EBEFF1 !important;
+}
+
+nav{
+	background-color: #171C61;
+}
+
