@@ -27,7 +27,7 @@ def list_create(request):
         paginated_query_set = paginator.paginate_queryset(query_set, request)
         serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
         return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(),
-                         'next': paginator.get_next_link(), 'count': len(query_set)}, template_name='memo_list.html')
+                         'next': paginator.get_next_link(), 'count': len(serializer.data)}, template_name='memo_list.html')
 
     # Create Memo
     elif request.method == 'POST':
@@ -163,7 +163,7 @@ def memo_square(request):
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
     return Response(
         {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link(),
-         'count': len(query_set)},
+         'count': len(serializer.data)},
         template_name='memo_list.html')
 
 
@@ -183,7 +183,7 @@ def find_by_page(request):
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
     return Response(
         {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link(),
-         'count': len(query_set)})
+         'count': len(serializer.data)})
 
 
 @api_view(['POST'])
