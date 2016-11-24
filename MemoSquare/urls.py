@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^sign_in/', views.sign_in),
     url(r'^sign_out/', views.sign_out),
+    url(r'^report/', views.report),
     url(r'^memo/$', views_memo.list_create),
     url(r'^memo/page/$', views_memo.find_by_page),
     url(r'^memo/clipbook/$', views_memo.clip_list),
