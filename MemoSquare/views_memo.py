@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions
 from rest_framework.decorators import permission_classes, api_view, renderer_classes
@@ -149,11 +148,13 @@ def clip_unclip(request, pk):
     return Response({'memo': serializer.data})
 
 
-@api_view()
-@permission_classes((permissions.IsAuthenticated,))
+# @api_view()
+# @permission_classes((permissions.IsAuthenticated,))
 def memo_square(request):
-    query_set = Memo.objects.filter(Q(is_private=False) | Q(owner=request.user))
 
+    '''
+    from django.db.models import Q
+    query_set = Memo.objects.filter(Q(is_private=False) | Q(owner=request.user))
     if query_set is None:
         return Response({'memo_list': []})
 
@@ -163,6 +164,9 @@ def memo_square(request):
     return Response(
         {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
         template_name='memo_list.html')
+    '''
+    from django.shortcuts import render
+    return render(request, 'coming_soon.html')
 
 
 # Memo list of an URL. If memo not exists, return None

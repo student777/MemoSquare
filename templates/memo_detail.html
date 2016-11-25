@@ -10,7 +10,7 @@
         <div class="row">
             <div class="right-align col s12">
                 <span class="url">{{ memo.page }}</span>
-                <i onclick='load_memo("/memo/")' class="small material-icons tooltipped" data-position="top" data-delay="50" data-tooltip="go to the page">web</i>
+                <i onclick='window.open("{{ memo.page }}")' class="small material-icons tooltipped" data-position="top" data-delay="50" data-tooltip="go to the page">web</i>
             </div>
         </div>
 
@@ -32,9 +32,9 @@
             <!-- edit, delete, lock button -->
             <div class="col s12 m6 right-align">
                 {% if memo.is_clipped %}
-                    <i onclick="clip_memo({{ memo.pk }}, false, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="clip">turned_in</i>
+                    <i onclick="clip_memo({{ memo.pk }}, false, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="clip/unclip">turned_in</i>
                 {% else %}
-                    <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="clip">turned_in_not</i>
+                    <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="clip/unclip">turned_in_not</i>
                 {% endif %}
 
                 {% if memo.is_mymemo %}

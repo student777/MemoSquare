@@ -5,14 +5,17 @@
             <li class="tab"><a target="_self" class="grey-text active" href="/memo/">MY MEMO</a></li>
             <li class="tab"><a target="_self" class="grey-text" href="/memo/clipbook/">CLIPBOOK</a></li>
             <li class="tab"><a target="_self" class="grey-text" href="/square/">SQUARE</a></li>
+
             {% elif request.path == '/memo/clipbook/' %}
             <li class="tab"><a target="_self" class="grey-text" href="/memo/">MY MEMO</a></li>
             <li class="tab"><a target="_self" class="grey-text active" href="/memo/clipbook/">CLIPBOOK</a></li>
             <li class="tab"><a target="_self" class="grey-text" href="/square/">SQUARE</a></li>
+
             {% elif request.path == '/square/' %}
             <li class="tab"><a target="_self" class="grey-text" href="/memo/">MY MEMO</a></li>
             <li class="tab"><a target="_self" class="grey-text" href="/memo/clipbook/">CLIPBOOK</a></li>
             <li class="tab"><a target="_self" class="grey-text active" href="/square/">SQUARE</a></li>
+
             {% else %}
             <li class="tab"><a target="_self" class="grey-text" href="/memo/">MY MEMO</a></li>
             <li class="tab"><a target="_self" class="grey-text" href="/memo/clipbook/">CLIPBOOK</a></li>

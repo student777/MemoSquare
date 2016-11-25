@@ -2,7 +2,7 @@
 {% block container %}
 <div class="container">
     <h3>Edit page</h3>
-    <div class="row">
+    <div class="row white">
         <form class="col s12" onsubmit="return false">
             <div class="row" >
                 <div class="input-field col s12">
@@ -28,7 +28,6 @@
             </div>
             <div class="row">
                 <button onclick="edit_memo({{ memo.pk }})" class="btn btn-default deep-purple waves-light">Save</button>
-                <button onclick="load_memo('/memo/{{ memo.pk }}/')" class="btn btn-default">Back</button>
             </div>
         </form>
     </div>

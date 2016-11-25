@@ -131,7 +131,6 @@ CORS_ALLOW_METHODS = (
     'POST',
 )
 CORS_ORIGIN_WHITELIST = (
-    'jquery.com', # for test
     'chrome-extension://njlkefpcpojddmjihelliajgkhdgcoea/res/popup.html',
 )
 
@@ -139,4 +138,5 @@ CORS_ORIGIN_WHITELIST = (
 ALLOWED_HOSTS = [
     'estfutures.cafe24.com',
     'localhost',
+    'memo-square.com',
 ]
