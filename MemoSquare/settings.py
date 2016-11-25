@@ -123,20 +123,3 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-# Cross-Origin Resource Sharing settings
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_METHODS = (
-    'GET',
-    'OPTIONS',
-    'POST',
-)
-CORS_ORIGIN_WHITELIST = (
-    'chrome-extension://njlkefpcpojddmjihelliajgkhdgcoea/res/popup.html',
-)
-
-# deploy settings
-ALLOWED_HOSTS = [
-    'estfutures.cafe24.com',
-    'localhost',
-    'memo-square.com',
-]
