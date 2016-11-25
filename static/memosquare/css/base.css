@@ -53,6 +53,10 @@ div.row.tab-wrapper{
 	margin: 0;
 }
 
+p.list-content{
+	height: 7em;
+}
+
 .card .card-action{
 	padding: 15px;
 }
