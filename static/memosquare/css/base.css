@@ -83,6 +83,11 @@ div.detail.card{
 	padding: 3em 8em;
 }
 
+html span.url{
+	font-style: italic; 
+	color: blue;
+}
+
 .row .col.detail-profile-col{
 	padding: 0;
 }
