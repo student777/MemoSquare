@@ -59,19 +59,18 @@
 </nav>
 
 <!-- tabs -->
-<div class="row tab-wrapper">
-    <div class="col s12 m4 offset-m4">
-        <ul class="tabs tabs-transparent">
-            <li class="tab"><a target="_self" class="grey-text {% if request.path == '/memo/' %}active{% endif %}" href="/memo/">MY MEMO</a></li>
-            <li class="tab"><a target="_self" class="grey-text {% if request.path == '/memo/clipbook/' %}active{% endif %}" href="/memo/clipbook/">CLIPBOOK</a></li>
-            <li class="tab"><a target="_self" class="grey-text {% if request.path == '/square/' or request.path == '/'%}active{% endif %}" href="/square/">SQUARE</a></li>
-        </ul>
-    </div>
-</div>
+{% include 'tabs.html' %}
 
 {% block container %}
     {% if not request.user.is_authenticated %}
-        please login
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m4 offset-m4 white center-align">
+                <img onclick="signIn();" width="100%" src="/static/memosquare/img/login_modal.png" />
+                <img onclick="signIn();" width="70%" src="/static/memosquare/img/facebook-sign-in-button-png-26.png" />
+            </div>
+        </div>
+    </div>
     {% else %}
         <script>location.href="/square/"</script>
     {% endif %}
@@ -93,8 +92,5 @@
 </script>
 <script src="/static/memosquare/js/base.js"></script>
 {% block extra_script %}
-<script>
-
-</script>
 {% endblock %}
 </html>
