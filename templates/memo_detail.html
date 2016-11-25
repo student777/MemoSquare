@@ -10,11 +10,11 @@
         <div class="row">
             <div class="right-align col s12">
                 {% if memo.is_clipped %}
-                    <i onclick="clip_memo({{ memo.pk }}, false)" class="small material-icons">turned_in</i>
+                    <i onclick="clip_memo({{ memo.pk }}, false)" class="small material-icons tooltipped" data-position="top" data-delay="50" data-tooltip="clip">turned_in</i>
                 {% else %}
-                    <i onclick="clip_memo({{ memo.pk }}, true)" class="small material-icons">turned_in_not</i>
+                    <i onclick="clip_memo({{ memo.pk }}, true)" class="small material-icons tooltipped" data-position="top" data-delay="50" data-tooltip="clip">turned_in_not</i>
                 {% endif %}
-                <i onclick='load_memo("/memo/")' class="small material-icons">view_list</i>
+                <i onclick='load_memo("/memo/")' class="small material-icons tooltipped" data-position="top" data-delay="50" data-tooltip="view on the web">view_list</i>
             </div>
         </div>
 
@@ -36,12 +36,12 @@
             <!-- edit, delete, lock button -->
             <div class="col s12 m6 right-align">
                 {% if memo.is_mymemo %}
-                    <i class="small material-icons" onclick="location.href='/memo/{{ memo.pk }}/edit/'">mode_edit</i>
-                    <i class="small material-icons" onclick="delete_memo({{ memo.pk }})">delete</i>
+                    <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="edit" onclick="location.href='/memo/{{ memo.pk }}/edit/'">mode_edit</i>
+                    <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="delete" onclick="delete_memo({{ memo.pk }})">delete</i>
                     {% if memo.is_private %}
-                        <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, false)">lock_outline</i>
+                        <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="private/public" onclick="lock_memo({{ memo.pk }}, false)">lock_outline</i>
                     {% else %}
-                        <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, true)">lock_open</i>
+                        <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="private/public" onclick="lock_memo({{ memo.pk }}, true)">lock_open</i>
                     {% endif %}
                 {% endif %}
             </div>
