@@ -49,10 +49,53 @@ div.row.tab-wrapper{
 
 
 /*memo-list*/
-div.card-action{
-	padding-bottom: 0;
+#card-footer.row{
+	margin: 0;
 }
 
+.card .card-action{
+	padding: 15px;
+}
+
+.row .col.clip-icon{
+	padding:10px 0;
+}
+
+.row .col.clip-text{
+	padding-top: 15px;
+	padding-right: 0;
+	padding-left: 0;
+	padding-bottom: 10px;
+}
+
+
+.row .col.list-description{
+	padding-top: 5px;
+}
+
+img.circle.list-profile{
+	width: 56px;
+	height: 56px;
+}
+
+/*memo_detail*/
+div.detail.card{
+	padding: 3em 8em;
+}
+
+.row .col.detail-profile-col{
+	padding: 0;
+}
+
+img.circle.detail-profile{
+	width: 4.5rem;
+	height: 4.5rem;
+}
+
+.row .col.detail-description{
+	padding: 0.75rem 0.75rem;
+	font-weight: bold;
+}
 
 
 

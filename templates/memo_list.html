@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block container %}
     <div class="container">
+       
+        <br>
+
         <div class="row">
             {% for memo in memo_list %}
                 <div class="col s12 m4">
@@ -14,22 +17,31 @@
                         </div>
 
                         <div class="card-action">
-                            <div class="row">
-                                <div class="col s4 valign-wrapper">
-                                <span class="valign">            {% if memo.is_clipped %}
-                                    <i onclick="clip_memo({{ memo.pk }}, false)"
-                                       class="small material-icons">turned_in</i>
-                                {% else %}
-                                    <i onclick="clip_memo({{ memo.pk }}, true)" class="small material-icons">turned_in_not</i>
-                                {% endif %}{{ memo.num_clips }} clipped</span>
+                            <div id="card-footer" class="row">
+                                <!-- clip -->
+                                <div class="col s11 m1 clip-icon">   
+                                        {% if memo.is_clipped %}
+                                            <i onclick="clip_memo({{ memo.pk }}, false)"
+                                               class="small material-icons">turned_in</i>
+                                        {% else %}
+                                            <i onclick="clip_memo({{ memo.pk }}, true)" class="small material-icons">turned_in_not</i>
+                                        {% endif %}
                                 </div>
-                                <div class="col s5 right-align">
-                                    <span> {{ memo.timestamp }}</span><br>
-                                    <span>by {{ memo.owner }}</span>
+                                 <div class="col s11 m4 clip-text">   
+                                    <span>
+                                        {{ memo.num_clips }} clipped
+                                    </span>
                                 </div>
-                                <div class="col s3">
-                                    <span><img class="circle" src="{{ memo.owner_pic_url }}" width=64
-                                               height="64"/></span>
+
+                                <!-- description -->
+                                <div class="col s6 m4 right-align list-description">
+                                        <span> {{ memo.timestamp }}</span><br>
+                                        <span>by {{ memo.owner }}</span>
+                                </div>
+
+                                <!-- profile picture -->
+                                <div class="col s6 m3">
+                                    <span><img class="circle list-profile" src="{{ memo.owner_pic_url }}" /></span>
                                 </div>
                             </div>
                         </div>
