@@ -55,6 +55,7 @@ div.row.tab-wrapper{
 
 p.list-content{
 	height: 7em;
+	word-wrap: break-word;
 }
 
 .card .card-action{
