@@ -21,10 +21,10 @@
                                 <!-- clip -->
                                 <div class="col s11 m1 clip-icon">   
                                         {% if memo.is_clipped %}
-                                            <i onclick="clip_memo({{ memo.pk }}, false)"
+                                            <i onclick="clip_memo({{ memo.pk }}, false, this)"
                                                class="small material-icons">turned_in</i>
                                         {% else %}
-                                            <i onclick="clip_memo({{ memo.pk }}, true)" class="small material-icons">turned_in_not</i>
+                                            <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons">turned_in_not</i>
                                         {% endif %}
                                 </div>
                                  <div class="col s11 m4 clip-text">   

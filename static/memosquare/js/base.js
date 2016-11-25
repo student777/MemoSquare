@@ -86,37 +86,55 @@ function edit_memo(pk){
     }
     $.ajax(url, settings);
 }
-function clip_memo(pk, to_clip) {
+function clip_memo(pk, to_clip, caller) {
     var url = '/memo/' + pk + '/clip/';
     var settings = {
         success: function success(result, status, xhr) {
-            location.href = '/memo/'+pk+'/';
+            return;
         },
         error: function (response) {
             console.log(response);
         }
-    }
+    };
 
     if (to_clip == true) {
         settings.method = 'POST';
         settings.data = {"csrfmiddlewaretoken": csrf_token};
+        settings.success = function(){
+            $(caller).text('turned_in');
+            var new_onclick = $(caller).attr('onClick').replace("true", "false");
+            $(caller).attr('onClick', new_onclick);
+        };
+
     }
     else if (to_clip == false) {
         settings.method = 'DELETE';
         settings.beforeSend = function (request) {
             request.setRequestHeader("X-CSRFToken", csrf_token);
-        }
+        };
+        settings.success = function(){
+            $(caller).text('turned_in_not');
+            var new_onclick = $(caller).attr('onClick').replace("false", "true");
+            $(caller).attr('onClick', new_onclick);
+        };
     }
     $.ajax(url, settings);
 }
 
-function lock_memo(pk){
+function lock_memo(pk, caller){
     var url = '/memo/' + pk + '/lock/';
     var settings = {
         method: 'POST',
         data: {"csrfmiddlewaretoken": csrf_token},
         success: function success(result, status, xhr) {
-            location.href = '/memo/' + pk + '/'
+            var lock = $(caller).text();
+            if(lock=='lock_open'){
+                lock = 'lock_outline';
+            }
+            else if(lock=='lock_outline'){
+                lock = 'lock_open';
+            }
+            $(caller).text(lock);
         },
         error: function (response) {
             console.log(response);
