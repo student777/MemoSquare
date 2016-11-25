@@ -1,42 +1,72 @@
 {% extends 'base.html' %}
 {% block container %}
 <div class="container">
-    <div class="row white">
-        <div class="right-align col s12 m12">
-            {% if memo.is_clipped %}
-                <i onclick="clip_memo({{ memo.pk }}, false)" class="medium material-icons">turned_in</i>
-            {% else %}
-                <i onclick="clip_memo({{ memo.pk }}, true)" class="medium material-icons">turned_in_not</i>
-            {% endif %}
-            <i onclick='load_memo("/memo/")' class="medium material-icons">view_list</i>
-        </div>
-        <div class="col s1 m1"><img width=40 height=40 class="circle" src="{{ memo.owner_pic_url }}"/></div>
-        <div class="col s2 m2"> {{ memo.timestamp }}<br>{{ memo.owner }}</div>
-        <div class="col s3 m3">
-            {% if memo.is_mymemo %}
-                <i class="small material-icons" onclick="location.href='/memo/{{ memo.pk }}/edit/'">mode_edit</i>
-                <i class="small material-icons" onclick="delete_memo({{ memo.pk }})">delete</i>
-                {% if memo.is_private %}
-                    <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, false)">lock_outline</i>
+
+    <br>
+
+    <div class="detail card white" >
+
+    <!-- bookmark, goto web icon -->
+        <div class="row">
+            <div class="right-align col s12">
+                {% if memo.is_clipped %}
+                    <i onclick="clip_memo({{ memo.pk }}, false)" class="small material-icons">turned_in</i>
                 {% else %}
-                    <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, true)">lock_open</i>
+                    <i onclick="clip_memo({{ memo.pk }}, true)" class="small material-icons">turned_in_not</i>
                 {% endif %}
-            {% endif %}
+                <i onclick='load_memo("/memo/")' class="small material-icons">view_list</i>
+            </div>
         </div>
-        <div class="col s12 m12">
-            <h1>
-            {% if memo.title == '' %}
-                Memo created at {{ memo.timestamp }}
-            {% else %}
-                {{ memo.title }}
-            {% endif %}
-            </h1>
+
+
+        <div class="row">
+            <!-- profile image, description -->
+            <div class="col s12 m1 detail-profile-col">
+                <div class="box">
+                    <img class="detail-profile circle" src="{{ memo.owner_pic_url }}"/>
+                </div>
+            </div>
+            
+            <div class="col s12 m5 detail-description">
+                <span>{{ memo.timestamp }}</span><br>
+                <span>by {{ memo.owner }}</span>
+            </div>
+
+
+            <!-- edit, delete, lock button -->
+            <div class="col s12 m6 right-align">
+                {% if memo.is_mymemo %}
+                    <i class="small material-icons" onclick="location.href='/memo/{{ memo.pk }}/edit/'">mode_edit</i>
+                    <i class="small material-icons" onclick="delete_memo({{ memo.pk }})">delete</i>
+                    {% if memo.is_private %}
+                        <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, false)">lock_outline</i>
+                    {% else %}
+                        <i class="small material-icons" onclick="lock_memo({{ memo.pk }}, true)">lock_open</i>
+                    {% endif %}
+                {% endif %}
+            </div>
         </div>
-        <div class="col s12 m12">
-            <h3>
-            {{ memo.content }}
-            </h3>
+            
+
+        <div class="row">
+
+            <div class="col s12">
+                <h4>
+                    {% if memo.title == '' %}
+                        Memo created on {{ memo.timestamp }}
+                    {% else %}
+                        {{ memo.title }}
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="col s12">
+                <p>
+                    {{ memo.content }}
+                </p>
+            </div>
+        
         </div>
+    
     </div>
 </div>
 {% endblock %}
