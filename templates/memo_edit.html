@@ -1,53 +1,52 @@
 {% extends 'base.html' %}
 {% block container %}
-<div class="container">
+    <div class="container">
+        <br>
+        <div class="card white">
+            <div class="row">
+                <form class="col s12" onsubmit="return false">
+                    <div class="row">
+                        <br>
+                        <br>
+                        <br>
+                        <div class="input-field col s8 offset-s2">
+                            <input name="title" placeholder="Placeholder" id="title" type="text" class="validate"
+                                   value="{{ memo.title }}">
+                            <label for="title">Title</label>
+                        </div>
+                    </div>
 
-    <br>
+                    <div class="row">
+                        <div class="input-field col s8 offset-s2">
+                            <textarea name="content" id="content"
+                                      class="materialize-textarea">{{ memo.content }}</textarea>
+                            <label for="content">Content</label>
+                        </div>
+                    </div>
 
-    <div class="card white">
+                    <!-- Switch -->
+                    <div class="row switch">
+                        <div class="col s8 offset-s2 right-align">
+                            <label>
+                                public
+                                <input id="fucking_switch" type="checkbox" name="is_private"
+                                       {% if memo.is_private %}checked{% endif %}>
+                                <span class="lever"></span>
+                                private
+                            </label>
+                        </div>
+                    </div>
 
-        <div class="row">
-            <form class="col s12" onsubmit="return false">
-
-                <div class="row">
+                    <div class="row">
+                        <div class="col s12 center">
+                            <button style="background-color: #f39800 !important;" onclick="edit_memo({{ memo.pk }})"
+                                    class="btn btn-default deep-purple waves-light">Save
+                            </button>
+                        </div>
+                    </div>
                     <br>
-                    <br>
-                    <br>
-
-                    <div class="input-field col s8 offset-s2">
-                        <input name="title" placeholder="Placeholder" id="title" type="text" class="validate"
-                               value="{{ memo.title }}">
-                        <label for="title">Title</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="input-field col s8 offset-s2">
-                        <textarea name="content" id="content" class="materialize-textarea">{{ memo.content }}</textarea>
-                        <label for="content">Content</label>
-                    </div>
-                </div>
-
-                <!-- Switch -->
-                <div class="row switch">
-                    <div class="col s8 offset-s2 right-align">
-                        <label>
-                            public
-                            <input id="fucking_switch" type="checkbox" name="is_private" {% if memo.is_private %}checked{% endif %}>
-                            <span class="lever"></span>
-                            private
-                        </label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col s12 center">
-                        <button style="background-color: #f39800 !important;" onclick="edit_memo({{ memo.pk }})" class="btn btn-default deep-purple waves-light">Save</button>
-                    </div>
-                </div>
-            <br>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

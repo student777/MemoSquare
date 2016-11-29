@@ -1,69 +1,3 @@
-/* account */
-function statusChangeCallback(response) {
-    if (response.status === 'connected') {
-        // Logged into your app and Facebook.
-        console.log('Already logged on');
-    } else if (response.status === 'not_authorized') {
-        console.log('Please log into this app.');
-    } else {
-        console.log('Please log into Facebook.');
-    }
-}
-function checkLoginState() {
-    FB.getLoginStatus(function (response) {
-        statusChangeCallback(response);
-    });
-}
-$(document).ready(function () {
-    $.ajaxSetup({cache: true});
-    $.getScript('//connect.facebook.net/en_US/sdk.js', function () {
-        FB.init({
-            appId: '192456264535234',
-            cookie: true,
-            xfbml: true,
-            version: 'v2.5'
-        });
-        FB.getLoginStatus(function (response) {
-            statusChangeCallback(response);
-        });
-    });
-});
-// Send FB token to our server, server make a session
-function sendToken(token) {
-    var url = '/sign_in/';
-    var settings = {
-        method: 'POST',
-        data: {'token': token},
-        success: function success(result, status, xhr) {
-            console.log(result);
-            location.href = '/';
-        },
-        error: function (xhr, status, error) {
-            console.log(error);
-        }
-    };
-    $.ajax(url, settings);
-}
-function signIn() {
-    FB.login(function (response) {
-        if (response.authResponse) {
-            console.log('Welcome!  Fetching your information.... ');
-            FB.api('/me', {locale: 'en_US', fields: 'name, email'});
-            var token = response.authResponse.accessToken;
-            sendToken(token);
-        } else {
-            console.log('User cancelled login or did not fully authorize.');
-        }
-    });
-}
-function signOut() {
-    FB.logout(function (response) {
-        console.log(response)
-    });
-    location.href = '/sign_out';
-}
-
-
 /* memo_detail.js */
 function edit_memo(pk){
     var url = '/memo/' + pk + '/?format=html';
@@ -120,7 +54,6 @@ function clip_memo(pk, to_clip, caller) {
     }
     $.ajax(url, settings);
 }
-
 function lock_memo(pk, caller){
     var url = '/memo/' + pk + '/lock/';
     var settings = {
@@ -142,7 +75,6 @@ function lock_memo(pk, caller){
     };
     $.ajax(url, settings);
 }
-
 
 // reference: http://ngee.tistory.com/846
 function delete_memo(pk) {
@@ -168,6 +100,26 @@ function delete_memo(pk) {
     $.ajax(url, settings);
 }
 
+
+/* report page */
 function open_report(){
     window.open("/report/", "", "width=500,height=400");
+}
+
+/* account */
+// Send token to our server, server make a session
+function sendToken(token) {
+    var url = '/sign_in/';
+    var settings = {
+        method: 'POST',
+        data: {'token': token},
+        success: function success(result, status, xhr) {
+            console.log(result);
+            location.href = '/memo/';     // No materials in root page for auth_users
+        },
+        error: function (xhr, status, error) {
+            console.log(error);
+        }
+    };
+    $.ajax(url, settings);
 }

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='detail')
     code = models.CharField(max_length=100)
+    provider = models.CharField(max_length=10)  # i hate foreign key...
 
     def __str__(self):
         return self.user.username

@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 {% block container %}
 <div class="container">
-
     <br>
-
     <div class="detail card white" >
-
     <!-- bookmark, goto web icon -->
         <div class="row">
             <div class="right-align col s12">
@@ -13,7 +10,6 @@
                 <i onclick='window.open("{{ memo.page }}")' class="small material-icons tooltipped" data-position="top" data-delay="50" data-tooltip="go to the page">web</i>
             </div>
         </div>
-
 
         <div class="row">
             <!-- profile image, description -->
@@ -28,7 +24,6 @@
                 <span>by {{ memo.owner }}</span>
             </div>
 
-
             <!-- edit, delete, lock button -->
             <div class="col s12 m6 right-align">
                 {% if memo.is_clipped %}
@@ -42,13 +37,11 @@
                     <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="delete" onclick="delete_memo({{ memo.pk }})">delete</i>
                     <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="private/public" onclick="lock_memo({{ memo.pk }}, this)">{% if memo.is_private %}lock_outline{% else %}lock_open{% endif %}</i>
                 {% endif %}
-
             </div>
         </div>
             
 
         <div class="row">
-
             <div class="col s12">
                 <h4>
                     {% if memo.title == '' %}
@@ -63,9 +56,7 @@
                     {{ memo.content }}
                 </p>
             </div>
-        
         </div>
-    
     </div>
 </div>
 {% endblock %}

@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 {% block container %}
     <div class="container">
-       
         <br>
-
         <div class="row">
             {% for memo in memo_list %}
                 <div class="col s12 m4">
                     <div class="card white darken-1">
-                        <div class="card-content" style="cursor:pointer;"onclick="location.href='/memo/{{ memo.pk }}/'">
+                        <div class="card-content" style="cursor:pointer;"
+                             onclick="location.href='/memo/{{ memo.pk }}/'">
                         <span class="card-title black-text">
                             {% if memo.title == '' %} Memo created on {{ memo.timestamp }}{% else %}
                                 {{ memo.title| truncatechars:40 }}{% endif %}
@@ -19,15 +18,15 @@
                         <div class="card-action">
                             <div id="card-footer" class="row">
                                 <!-- clip -->
-                                <div class="col s11 m1 clip-icon">   
-                                        {% if memo.is_clipped %}
-                                            <i onclick="clip_memo({{ memo.pk }}, false, this)"
-                                               class="small material-icons">turned_in</i>
-                                        {% else %}
-                                            <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons">turned_in_not</i>
-                                        {% endif %}
+                                <div class="col s11 m1 clip-icon">
+                                    {% if memo.is_clipped %}
+                                        <i onclick="clip_memo({{ memo.pk }}, false, this)"
+                                           class="small material-icons">turned_in</i>
+                                    {% else %}
+                                        <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons">turned_in_not</i>
+                                    {% endif %}
                                 </div>
-                                 <div class="col s11 m4 clip-text">   
+                                <div class="col s11 m4 clip-text">
                                     <span>
                                         {{ memo.num_clips }} clipped
                                     </span>
@@ -35,13 +34,13 @@
 
                                 <!-- description -->
                                 <div class="col s6 m4 right-align list-description">
-                                        <span> {{ memo.timestamp }}</span><br>
-                                        <span>by {{ memo.owner }}</span>
+                                    <span> {{ memo.timestamp }}</span><br>
+                                    <span>by {{ memo.owner }}</span>
                                 </div>
 
                                 <!-- profile picture -->
                                 <div class="col s6 m3">
-                                    <span><img class="circle list-profile" src="{{ memo.owner_pic_url }}" /></span>
+                                    <span><img class="circle list-profile" src="{{ memo.owner_pic_url }}"/></span>
                                 </div>
                             </div>
                         </div>
@@ -50,13 +49,19 @@
             {% endfor %}
         </div>
         <div class="row center-align">
-            <a class="waves-effect waves-light btn {% if prev == None %}disabled{% endif %}" {% if prev != None %}href="{{ prev }}"{% endif %}>
+            <a class="waves-effect waves-light btn {% if prev == None %}disabled{% endif %}"
+               {% if prev != None %}href="{{ prev }}"{% endif %}>
                 <i class="material-icons">chevron_left</i>
             </a>
-            <a class="waves-effect waves-light btn {% if next == None %}disabled{% endif %}" {% if next != None %}href="{{ next }}"{% endif %}>
+            <a class="waves-effect waves-light btn {% if next == None %}disabled{% endif %}"
+               {% if next != None %}href="{{ next }}"{% endif %}>
                 <i class="material-icons">chevron_right</i>
             </a>
         </div>
     </div>
+
+    <!-- fucking this item... without this button logout is not work...-->
+    <div style="display:none" class="g-signin2 center-align" data-width="300" data-onsuccess="sign_in_google"
+                         data-longtitle="true"></div>
 {% endblock %}
 

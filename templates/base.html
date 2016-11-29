@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/memosquare/css/base.css">
+    <!-- gooogle oauth2 -->
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id"
+          content="12130227580-iq5bv8mnu8dcv88c1luuimt6dmlgqk1u.apps.googleusercontent.com">
 </head>
 
 <body style="background-color: #EBEFF1">
@@ -29,7 +33,7 @@
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             {% if user.is_anonymous %}
                 <li>
-                    <a onclick="signIn();">Sign in</a>
+                    <a onclick="alert('need to be a dialog');">Sign in</a>
                 </li>
             {% else %}
                 <li>{{ user.username }}</li>
@@ -43,16 +47,25 @@
 
         <!-- Dropdown Structure -->
         <ul id='dropdown1' class='dropdown-content'>
-            <li><a onclick="signOut()" class="black-text">Sign out</a></li>
+            {% if user.detail == 'facebook' %}
+                <li><a onclick="sign_out_FB()" class="black-text">Sign out</a></li>
+            {% else %}
+                <li><a onclick="sign_out_google()" class="black-text">Sign out</a></li>
+            {% endif %}
             <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
         </ul>
 
         <ul class="side-nav" id="mobile-demo">
             {% if user.is_anonymous %}
-                <li><a onclick="signIn();" class="waves-effect waves-light btn">Sign in</a></li>
+                <li><a onclick="alert('need to be a dialog');" class="waves-effect waves-light btn">Sign in</a></li>
             {% else %}
                 <li class="black-text"><a href="#">{{ user.username }}</a></li>
-                <li><a onclick="signOut()" class="black-text">Sign out</a></li>
+                {% if user.detail == 'facebook' %}
+                    <li><a onclick="sign_out_FB()" class="black-text">Sign out</a></li>
+                {% else %}
+                    <li><a onclick="sign_out_google()" class="black-text">Sign out</a></li>
+                {% endif %}
+                <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
             {% endif %}
         </ul>
     </div>
@@ -60,27 +73,33 @@
 
 <!-- tabs -->
 {% include 'tabs.html' %}
-
 {% block container %}
     {% if not request.user.is_authenticated %}
-    <div class="container">
-        <div class="row">
-            <div class="col s12 m4 offset-m4 white center-align">
-                <img onclick="signIn();" width="100%" src="/static/memosquare/img/login_modal.png" />
-                <img onclick="signIn();" width="70%" src="/static/memosquare/img/facebook-sign-in-button-png-26.png" />
+        <div class="container">
+            <div class="row">
+                <div class="col s12 m4 offset-m4 white center-align"><img width="100%"
+                                                                          src="/static/memosquare/img/login_modal.png"/>
+                </div>
+                <div class="col s12 m4 offset-m4 white center-align"><img width="70%" style="cursor:pointer"
+                                                                          onclick="sign_in_FB();"
+                                                                          src="/static/memosquare/img/facebook-sign-in-button.png"/>
+                </div>
+                <div class="col s12 m4 offset-m4 white center-align">
+                    <div class="g-signin2 center-align" data-width="300" data-onsuccess="sign_in_google"
+                         data-longtitle="true"></div>
+                </div>
             </div>
         </div>
-    </div>
     {% else %}
-        <script>location.href="/memo/"</script>
+        <script>location.href = "/memo/"</script>
     {% endif %}
 {% endblock %}
-
 </body>
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+<script src="/static/memosquare/js/base.js"></script>
 <script>
     var csrf_token = '{{ csrf_token }}';
     // when side-nav not work
@@ -89,8 +108,12 @@
             $('.button-collapse').sideNav();
         }); // end of document ready
     })(jQuery); // end of jQuery name space
+
+    //global variable( fuck google oauth2)
+    var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
 </script>
-<script src="/static/memosquare/js/base.js"></script>
-{% block extra_script %}
-{% endblock %}
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="/static/memosquare/js/oauth2_facebook.js"></script>
+<script src="/static/memosquare/js/oauth2_google.js"></script>
+
 </html>
