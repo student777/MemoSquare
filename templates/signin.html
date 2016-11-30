@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sign in</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/memosquare/css/signin.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+</head>
+
+<body style="background-color: #BEC0C2;">
+
+<div class="container">
+    <div class="row" style="margin-top: 15rem">
+        <div class="col s12 m4 offset-m4 center">
+            <div class="card">
+                <div class="row">
+                    <div class="col s10 offset-s1 center-align">
+                        <img width="100%" src="/static/memosquare/img/login_modal.png"/>
+                    </div>
+
+                    <div class="col s12 center-align">
+                        <img class="z-depth-1" width="70%" style="cursor:pointer" onclick="sign_in_FB();" src="/static/memosquare/img/facebook-sign-in-button.png"/>
+                    </div>
+
+                    <div class="col s10 offset-s1 center-align">
+                        <div class="g-signin2 center-align" data-width="300" data-onsuccess="sign_in_google" data-longtitle="true"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
