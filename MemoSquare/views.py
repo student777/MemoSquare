@@ -10,14 +10,15 @@ def index(request):
     return render(request, 'base.html')
 
 
-# Facebook oauth2 token login
+# Facebook & Google oauth2 token login
 @csrf_exempt
 def sign_in(request):
-    token = request.POST.get('token')
-    user = authenticate(token=token)
-    if user is not None:
-        login(request, user)
-    return HttpResponse('hello %s' % user)
+    if request.method == 'POST':
+        token = request.POST.get('token')
+        user = authenticate(token=token)
+        if user is not None:
+            login(request, user)
+        return HttpResponse('hello %s' % user)
 
 
 def sign_out(request):
