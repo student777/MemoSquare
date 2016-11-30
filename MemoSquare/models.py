@@ -4,12 +4,11 @@ from django.contrib.auth.models import User
 
 class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='detail')
-    code = models.CharField(max_length=50)
     provider = models.CharField(max_length=10)  # i hate foreign key...
-    img_url = models.CharField(max_length=100)  # google fuck
+    img_url = models.CharField(max_length=100)  # this has to be created because of fuck google
 
     def __str__(self):
-        return self.user.username
+        return self.user.first_name + ' ' + self.user.last_name
 
 
 class Page(models.Model):

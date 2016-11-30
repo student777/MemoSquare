@@ -3,7 +3,7 @@ from MemoSquare.models import Memo
 
 
 class MemoSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username', read_only=True)
+    owner = serializers.ReadOnlyField(source='owner.get_full_name', read_only=True)
     page = serializers.CharField(max_length=255, read_only=True)
     timestamp = serializers.DateTimeField(format='%b %d, %Y', read_only=True)
 

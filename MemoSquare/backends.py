@@ -19,25 +19,28 @@ class FacebookTokenBackend(ModelBackend):
         except KeyError:
             return None
 
-        url_info = 'https://graph.facebook.com/v2.8/%s?access_token=%s&fields=email,name'
+        url_info = 'https://graph.facebook.com/v2.8/%s?access_token=%s&fields=email,first_name,last_name'
         data_info = get_json_from_facebook(url_info, code)
 
         try:
-            user_detail = UserDetail.objects.get(code=code)
-            user = user_detail.user
+            user = User.objects.get(username=code)
 
         # If not exists, create user
-        except UserDetail.DoesNotExist:
-            username = data_info['name']
+        except User.DoesNotExist:
+            # Since User.username is unique, fb app code will be saved in it.
+            first_name = data_info['first_name']
+            last_name = data_info['last_name']
+            img_url = 'https://graph.facebook.com/%s/picture?width=300' % code
+
             # http://stackoverflow.com/questions/16630972/facebook-graph-api-wont-return-email-address
             if 'email' in data_info:
                 email = data_info['email']
             else:
-                email = '%s@facebook.com' % username
+                email = '%s@facebook.com' % code
 
-            img_url = 'https://graph.facebook.com/%s/picture?width=300' % code
-            user = User.objects.create_user(username=username, email=email)
-            UserDetail.objects.create(user=user, code=code, provider='facebook', img_url=img_url)
+            # create user & user_detail
+            user = User.objects.create_user(username=code, email=email, first_name=first_name, last_name=last_name)
+            UserDetail.objects.create(user=user, provider='facebook', img_url=img_url)
 
         return user
 
@@ -75,12 +78,12 @@ class GoogleTokenBackend(ModelBackend):
 
         code = data_verified['sub']
         try:
-            user_detail = UserDetail.objects.get(code=code)
-            user = user_detail.user
-        except UserDetail.DoesNotExist:
-            username = data_verified['name']
+            user = User.objects.get(username=code)
+        except User.DoesNotExist:
+            first_name = data_verified['family_name']
+            last_name = data_verified['given_name']
             email = data_verified['email']
             img_url = data_verified['picture']
-            user = User.objects.create_user(username=username, email=email)
-            UserDetail.objects.create(user=user, provider='google', code=code, img_url=img_url)
+            user = User.objects.create_user(username=code, first_name=first_name, last_name=last_name, email=email)
+            UserDetail.objects.create(user=user, provider='google', img_url=img_url)
         return user
