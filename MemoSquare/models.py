@@ -4,14 +4,12 @@ from django.contrib.auth.models import User
 
 class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='detail')
-    code = models.CharField(max_length=100)
+    code = models.CharField(max_length=50)
     provider = models.CharField(max_length=10)  # i hate foreign key...
+    img_url = models.CharField(max_length=100)  # google fuck
 
     def __str__(self):
         return self.user.username
-
-    def get_img_url(self):
-        return 'https://graph.facebook.com/%s/picture?width=300' % self.code
 
 
 class Page(models.Model):

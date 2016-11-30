@@ -16,7 +16,7 @@ class MemoSerializer(serializers.ModelSerializer):
 
         # Add extra field
         num_clips = instance.clipper.count()
-        owner_pic_url = instance.owner.detail.get_img_url()
+        owner_pic_url = instance.owner.detail.img_url
         json['num_clips'] = num_clips
         json['owner_pic_url'] = owner_pic_url
 

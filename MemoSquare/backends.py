@@ -15,15 +15,15 @@ class FacebookTokenBackend(ModelBackend):
 
         # exit condition to google
         try:
-            user_id = data_debug['data']['user_id']
+            code = data_debug['data']['user_id']
         except KeyError:
             return None
 
         url_info = 'https://graph.facebook.com/v2.8/%s?access_token=%s&fields=email,name'
-        data_info = get_json_from_facebook(url_info, user_id)
+        data_info = get_json_from_facebook(url_info, code)
 
         try:
-            user_detail = UserDetail.objects.get(code=user_id)
+            user_detail = UserDetail.objects.get(code=code)
             user = user_detail.user
 
         # If not exists, create user
@@ -34,8 +34,10 @@ class FacebookTokenBackend(ModelBackend):
                 email = data_info['email']
             else:
                 email = '%s@facebook.com' % username
+
+            img_url = 'https://graph.facebook.com/%s/picture?width=300' % code
             user = User.objects.create_user(username=username, email=email)
-            UserDetail.objects.create(user=user, code=user_id, provider='facebook')
+            UserDetail.objects.create(user=user, code=code, provider='facebook', img_url=img_url)
 
         return user
 
@@ -71,10 +73,6 @@ class GoogleTokenBackend(ModelBackend):
             # if data_verified['hd'] != APPS_DOMAIN_NAME:
             #    raise crypt.AppIdentityError("Wrong hosted domain.")
 
-        #TODO: set picture
-        print(data_verified['picture'])
-        print(data_verified)
-
         code = data_verified['sub']
         try:
             user_detail = UserDetail.objects.get(code=code)
@@ -82,8 +80,7 @@ class GoogleTokenBackend(ModelBackend):
         except UserDetail.DoesNotExist:
             username = data_verified['name']
             email = data_verified['email']
+            img_url = data_verified['picture']
             user = User.objects.create_user(username=username, email=email)
-            UserDetail.objects.create(user=user, provider='google', code=code)
+            UserDetail.objects.create(user=user, provider='google', code=code, img_url=img_url)
         return user
-
-
