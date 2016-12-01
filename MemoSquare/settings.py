@@ -123,4 +123,6 @@ AUTHENTICATION_BACKENDS = [
     'MemoSquare.backends.GoogleTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
-
+# Unless it, DRF pagination's 'prev', 'next' not work
+# ref)http://stackoverflow.com/questions/32166549/how-do-i-configure-the-django-rest-framework-pagination-url
+USE_X_FORWARDED_HOST = True
