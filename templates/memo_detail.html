@@ -53,7 +53,8 @@
             </div>
             <div class="col s12">
                 <p>
-                    {{ memo.content }}
+                    {% load memo_filter %}
+                    {{ memo.content | to_plain | linebreaksbr }}
                 </p>
             </div>
         </div>

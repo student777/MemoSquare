@@ -9,10 +9,11 @@
                         <div class="card-content" style="cursor:pointer;"
                              onclick="location.href='/memo/{{ memo.pk }}/'">
                                 <span class="card-title black-text">
-                                    {% if memo.title == '' %} Memo created on {{ memo.timestamp }}{% else %}
-                                        {{ memo.title| truncatechars:49 }}{% endif %}
+                                {% if memo.title == '' %} Memo created on {{ memo.timestamp }}{% else %}
+                                    {{ memo.title| truncatechars:49 }}{% endif %}
                                 </span>
-                                <p class="list-content">{{ memo.content| truncatechars:288}}</p>
+                            {% load memo_filter %}
+                            <p class="list-content">{{ memo.content | truncatechars:288 | to_plain | linebreaksbr }}</p>
                         </div>
 
                         <div class="card-action">
@@ -62,5 +63,5 @@
 
     <!-- fucking this item... without this button logout is not work...-->
     <div style="display:none" class="g-signin2 center-align" data-width="300" data-onsuccess="sign_in_google"
-                         data-longtitle="true"></div>
+         data-longtitle="true"></div>
 {% endblock %}
