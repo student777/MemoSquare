@@ -8,4 +8,5 @@ register = template.Library()
 def to_plain(value):
     value = re.sub(r'</p>|</?br>', '\n', value)
     value = re.sub(r'<.*?>', '', value)
-    return value
+    from html import unescape
+    return unescape(value)

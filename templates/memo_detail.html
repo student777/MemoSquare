@@ -42,7 +42,7 @@
             
 
         <div class="row">
-            <div class="col s12">
+            <div style="word-wrap: break-word;" class="col s12">
                 <h4>
                     {% if memo.title == '' %}
                         Memo created on {{ memo.timestamp }}
@@ -51,7 +51,7 @@
                     {% endif %}
                 </h4>
             </div>
-            <div class="col s12">
+            <div style="word-wrap: break-word;" class="col s12" >
                 <p>
                     {% load memo_filter %}
                     {{ memo.content | to_plain | linebreaksbr }}

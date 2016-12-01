@@ -1,6 +1,6 @@
 /* memo_detail.js */
 function edit_memo(pk){
-    var url = '/memo/' + pk + '/?format=html';
+    var url = '/memo/' + pk + '/';
     var settings = {
         method: 'POST',
         data: {
