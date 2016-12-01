@@ -25,8 +25,13 @@ div.nav-wrapper{
 	padding: 0 40px;
 }
 
-a.brand-logo{
-	height: 60px;
+nav .brand-logo{
+	position: relative;
+}
+
+img.brand-logo-img{
+	height: 30px;
+	margin-top: 15px;
 }
 
 #nav-mobile li{
@@ -54,8 +59,9 @@ div.row.tab-wrapper{
 }
 
 p.list-content{
-	height: 7em;
+	height: 8em;
 	word-wrap: break-word;
+	overflow-y: hidden;
 }
 
 .card .card-action{
@@ -89,7 +95,7 @@ div.detail.card{
 }
 
 html span.url{
-	font-style: italic; 
+	font-style: italic;
 	color: #888888;
 }
 
@@ -106,9 +112,3 @@ img.circle.detail-profile{
 	padding: 0.75rem 0.75rem;
 	font-weight: bold;
 }
-
-
-
-
-
-

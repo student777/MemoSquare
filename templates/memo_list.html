@@ -26,14 +26,14 @@
                                         <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons">turned_in_not</i>
                                     {% endif %}
                                 </div>
-                                <div class="col s11 m4 clip-text">
-                                    <span>
+                                <div class="col s11 m3 clip-text">
+                                    <span style="padding-left: 0.2rem">
                                         {{ memo.num_clips }} clipped
                                     </span>
                                 </div>
 
                                 <!-- description -->
-                                <div class="col s6 m4 right-align list-description">
+                                <div class="col s6 m5 right-align list-description">
                                     <span> {{ memo.timestamp }}</span><br>
                                     <span>by {{ memo.owner }}</span>
                                 </div>
@@ -64,4 +64,3 @@
     <div style="display:none" class="g-signin2 center-align" data-width="300" data-onsuccess="sign_in_google"
                          data-longtitle="true"></div>
 {% endblock %}
-
