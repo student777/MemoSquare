@@ -58,8 +58,16 @@ div.row.tab-wrapper{
 	margin: 0;
 }
 
+span.card-title{
+	display: block;
+	max-height: 4em;
+	word-wrap: break-word;
+	overflow-y: hidden;
+}
+
 p.list-content{
-	height: 8em;
+	display: block;
+	height: 10em;
 	word-wrap: break-word;
 	overflow-y: hidden;
 }
