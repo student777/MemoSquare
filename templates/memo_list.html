@@ -13,7 +13,7 @@
                                     {{ memo.title| truncatechars:49 }}{% endif %}
                                 </span>
                             {% load memo_filter %}
-                            <p class="list-content">{{ memo.content | truncatechars:288 | to_plain | linebreaksbr }}</p>
+                            <p class="list-content">{{ memo.content | to_plain | truncatechars:288 | linebreaksbr }}</p>
                         </div>
 
                         <div class="card-action">
