@@ -3,10 +3,29 @@ from django.db.models import Q
 
 
 # Get page or Create Page
-def classify_url(url):
+# Used when /memo/ POST request
+def find_page(url):
     # Ignore parameters like '#', only treats proper URI data
     # Treat same thing as same, different things as different
 
+    page = filter_slash(url)
+    if page is None:
+        page = Page.objects.create(url=url)
+
+    return page
+
+
+# find memo list of specific url
+# Used when /memo/page?url={url}
+def find_memo(url, request):
+    page = filter_slash(url)
+    if page is None:
+        return
+
+    return Memo.objects.filter(page=page).filter(Q(is_private=False) | Q(owner=request.user))
+
+
+def filter_slash(url):
     # Server doesn't know that if url in DB ends with slash or not, so search both
     if url.endswith('/'):
         url_trans = url[:-1]
@@ -20,28 +39,12 @@ def classify_url(url):
 
     try:
         page = Page.objects.get(url=url)
+        return page
     except Page.DoesNotExist:
-        try:
-            page = Page.objects.get(url=url_trans)
-        except Page.DoesNotExist:
-            page = Page.objects.create(url=url)
-    return page
-
-
-# find memo list of specific url
-def find_memo(url, request):
-    # Server doesn't know that if url in DB ends with slash or not, so search both
-    if url.endswith('/'):
-        url_trans = url[:-1]
-    else:
-        url_trans = url + '/'
+        pass
 
     try:
-        page = Page.objects.get(url=url)
+        page = Page.objects.get(url=url_trans)
+        return page
     except Page.DoesNotExist:
-        try:
-            page = Page.objects.get(url=url_trans)
-        except Page.DoesNotExist:
-            return
-
-    return Memo.objects.filter(page=page).filter(Q(is_private=False) | Q(owner=request.user))
+        pass

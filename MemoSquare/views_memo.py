@@ -8,7 +8,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import LimitOffsetPagination
 from .models import Memo, Clip
 from .serializers import MemoSerializer
-from .classifier import classify_url, find_memo
+from .finder import find_page, find_memo
 
 
 # List & Create API view
@@ -32,7 +32,7 @@ def list_create(request):
     elif request.method == 'POST':
         serializer = MemoSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            page = classify_url(request.data['page'])
+            page = find_page(request.data['page'])
             serializer.save(owner=request.user, page=page)
             return Response({'memo': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
