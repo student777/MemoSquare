@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from rest_framework import status, permissions
 from rest_framework.decorators import permission_classes, api_view, renderer_classes
 from rest_framework.response import Response
@@ -8,7 +8,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import LimitOffsetPagination
 from .models import Memo, Clip
 from .serializers import MemoSerializer
-from .finder import find_page, find_memo
+from .finder import get_or_create_page, find_memo
 
 
 # List & Create API view
@@ -32,7 +32,7 @@ def list_create(request):
     elif request.method == 'POST':
         serializer = MemoSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            page = find_page(request.data['page'])
+            page = get_or_create_page(request.data['page'])
             serializer.save(owner=request.user, page=page)
             return Response({'memo': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -151,21 +151,6 @@ def clip_unclip(request, pk):
 # @api_view()
 # @permission_classes((permissions.IsAuthenticated,))
 def memo_square(request):
-
-    '''
-    from django.db.models import Q
-    query_set = Memo.objects.filter(Q(is_private=False) | Q(owner=request.user))
-    if query_set is None:
-        return Response({'memo_list': []})
-
-    paginator = LimitOffsetPagination()
-    paginated_query_set = paginator.paginate_queryset(query_set, request)
-    serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
-    return Response(
-        {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
-        template_name='memo_list.html')
-    '''
-    from django.shortcuts import render
     return render(request, 'coming_soon.html')
 
 
