@@ -1,5 +1,5 @@
 /* memo_detail.js */
-function edit_memo(pk){
+function edit_memo(pk) {
     var url = '/memo/' + pk + '/';
     var settings = {
         method: 'POST',
@@ -12,7 +12,7 @@ function edit_memo(pk){
         success: function (response) {
             console.log(response);
             //TODO: response at views_memo is memo object...
-            location.href = '/memo/'+pk+'/';
+            location.href = '/memo/' + pk + '/';
         },
         error: function (response) {
             console.log(response);
@@ -34,7 +34,7 @@ function clip_memo(pk, to_clip, caller) {
     if (to_clip == true) {
         settings.method = 'POST';
         settings.data = {"csrfmiddlewaretoken": csrf_token};
-        settings.success = function(){
+        settings.success = function () {
             $(caller).text('turned_in');
             var new_onclick = $(caller).attr('onClick').replace("true", "false");
             $(caller).attr('onClick', new_onclick);
@@ -46,7 +46,7 @@ function clip_memo(pk, to_clip, caller) {
         settings.beforeSend = function (request) {
             request.setRequestHeader("X-CSRFToken", csrf_token);
         };
-        settings.success = function(){
+        settings.success = function () {
             $(caller).text('turned_in_not');
             var new_onclick = $(caller).attr('onClick').replace("false", "true");
             $(caller).attr('onClick', new_onclick);
@@ -54,17 +54,17 @@ function clip_memo(pk, to_clip, caller) {
     }
     $.ajax(url, settings);
 }
-function lock_memo(pk, caller){
+function lock_memo(pk, caller) {
     var url = '/memo/' + pk + '/lock/';
     var settings = {
         method: 'POST',
         data: {"csrfmiddlewaretoken": csrf_token},
         success: function success(result, status, xhr) {
             var lock = $(caller).text();
-            if(lock=='lock_open'){
+            if (lock == 'lock_open') {
                 lock = 'lock_outline';
             }
-            else if(lock=='lock_outline'){
+            else if (lock == 'lock_outline') {
                 lock = 'lock_open';
             }
             $(caller).text(lock);
@@ -100,26 +100,9 @@ function delete_memo(pk) {
     $.ajax(url, settings);
 }
 
-
-/* report page */
-function open_report(){
-    window.open("/report/", "", "width=500,height=400");
-}
-
-/* account */
-// Send token to our server, server make a session
-function sendToken(token) {
-    var url = '/sign_in/';
-    var settings = {
-        method: 'POST',
-        data: {'token': token},
-        success: function success(result, status, xhr) {
-            console.log(result);
-            location.href = '/memo/';     // No materials in root page for auth_users
-        },
-        error: function (xhr, status, error) {
-            console.log(error);
-        }
-    };
-    $.ajax(url, settings);
+// Move new page and pop chrome-extension up
+function edit_form(pk) {
+    document.dispatchEvent(
+        new CustomEvent("loadEditor", {'detail': {'pk': pk}})
+    );
 }

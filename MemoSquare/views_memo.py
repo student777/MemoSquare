@@ -75,20 +75,6 @@ def detail_update_delete(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# Memo edit form. Same as retrieve view except for template_name, owner_pic_url
-@api_view()
-@permission_classes((permissions.IsAuthenticated,))
-def edit_form(request, pk):
-    memo = Memo.objects.get(pk=pk)
-
-    # check object permissions
-    if memo.owner != request.user:
-        return HttpResponseForbidden('fuck you')
-
-    serializer = MemoSerializer(memo)
-    return Response({'memo': serializer.data}, template_name='memo_edit.html', )
-
-
 # Memo list clipped by user
 @api_view()
 @permission_classes((permissions.IsAuthenticated,))
