@@ -80,8 +80,8 @@ class GoogleTokenBackend(ModelBackend):
         try:
             user = User.objects.get(username=code)
         except User.DoesNotExist:
-            first_name = data_verified['family_name']
-            last_name = data_verified['given_name']
+            first_name = data_verified['given_name']
+            last_name = data_verified['family_name']
             email = data_verified['email']
             img_url = data_verified['picture']
             user = User.objects.create_user(username=code, first_name=first_name, last_name=last_name, email=email)

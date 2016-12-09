@@ -8,7 +8,7 @@ class UserDetail(models.Model):
     img_url = models.CharField(max_length=255)  # this has to be created because of fuck google
 
     def __str__(self):
-        return self.user.first_name + ' ' + self.user.last_name
+        return self.user.get_full_name()
 
 
 class Page(models.Model):

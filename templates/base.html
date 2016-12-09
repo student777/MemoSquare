@@ -32,7 +32,7 @@
 
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             {% if not user.is_anonymous %}
-                <li>{{ user.first_name }}{{ user.last_name }}</li>
+                <li>{{ user.get_full_name }}</li>
                 <li>
                     <a class='dropdown-button' data-activates='dropdown1'>
                         <img width=40 height="40" class="circle profile" src="{{ user.detail.img_url }}"/>
@@ -53,7 +53,7 @@
 
         <ul class="side-nav" id="mobile-demo">
             {% if not user.is_anonymous %}
-                <li class="black-text"><a href="#">{{ user.first_name }}{{ user.last_name }}</a></li>
+                <li class="black-text"><a href="#">{{ user.get_full_name }}</a></li>
                 {% if user.detail.provider == 'facebook' %}
                     <li><a onclick="sign_out_FB()" class="black-text">Sign out</a></li>
                 {% else %}
