@@ -1,4 +1,4 @@
-from .models import Page, Memo
+from .models import Page, Memo, Category
 from django.db.models import Q
 
 
@@ -12,6 +12,17 @@ def get_or_create_page(url):
         page = Page.objects.create(url=url)
 
     return page
+
+
+def get_or_create_category(name, owner):
+    # first find category
+    try:
+        category = Category.objects.get(name=name, owner=owner)
+        return category
+    except Category.DoesNotExist:
+        category = Category.objects.create(name=name, owner=owner)
+
+    return category
 
 
 # find memo list of specific url

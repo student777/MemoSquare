@@ -8,7 +8,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import LimitOffsetPagination
 from .models import Memo, Clip
 from .serializers import MemoSerializer
-from .finder import get_or_create_page, find_memo
+from .finder import get_or_create_page, find_memo, get_or_create_category
 
 
 # List & Create API view
@@ -33,7 +33,8 @@ def list_create(request):
         serializer = MemoSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             page = get_or_create_page(request.data['page'])
-            serializer.save(owner=request.user, page=page)
+            category = get_or_create_category(request.data['category'], request.user)
+            serializer.save(owner=request.user, page=page, category=category)
             return Response({'memo': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -59,13 +60,14 @@ def detail_update_delete(request, pk):
 
     # check object permissions
     if memo.owner != request.user:
-        return HttpResponseForbidden('fuck you')
+        return HttpResponseForbidden('This memo is not yours')
 
     # Update
     if request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=request.user)
+            category = get_or_create_category(request.data['category'], request.user)
+            serializer.save(owner=request.user, category=category)
             return Response({'memo': serializer.data}, template_name='memo_detail.html')
         return Response({'memo': serializer.errors}, status=status.HTTP_400_BAD_REQUEST, template_name='memo_edit.html')
 
@@ -107,7 +109,7 @@ def clip_unclip(request, pk):
     if memo.is_private and memo.owner != request.user:
         return HttpResponseForbidden('this memo is private')
 
-    # TODO: Toggle request.  POST or DELETE -> only POST. If no clip objects, create clip. Otherwise delete clip.
+    # Toggle request?  POST or DELETE -> only POST. If no clip objects, create clip. Otherwise delete clip.
 
     # POST request: clip
     if request.method == 'POST':

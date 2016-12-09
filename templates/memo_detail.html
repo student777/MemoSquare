@@ -21,7 +21,8 @@
             
             <div class="col s12 m5 detail-description">
                 <span>{{ memo.timestamp }}</span><br>
-                <span>by {{ memo.owner }}</span>
+                <span>by {{ memo.owner }}</span><br>
+                <span>category: {% if memo.category %}{{ memo.category }}{% else %}uncategorized{% endif %}</span>
             </div>
 
             <!-- edit, delete, lock button -->

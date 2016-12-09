@@ -6,10 +6,11 @@ class MemoSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.get_full_name', read_only=True)
     page = serializers.CharField(max_length=255, read_only=True)
     timestamp = serializers.DateTimeField(format='%b %d, %Y', read_only=True)
+    category = serializers.CharField(max_length=45, allow_null=True)
 
     class Meta:
         model = Memo
-        fields = ('pk', 'title', 'content', 'owner', 'page', 'is_private', 'timestamp')
+        fields = ('pk', 'title', 'content', 'owner', 'page', 'is_private', 'timestamp', 'category')
 
     def to_representation(self, instance):
         json = super().to_representation(instance)
