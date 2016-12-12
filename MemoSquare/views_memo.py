@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from rest_framework import status, permissions
 from rest_framework.decorators import permission_classes, api_view, renderer_classes
@@ -19,8 +19,9 @@ def list_create(request):
     if request.method == 'GET':
         query_set = Memo.objects.filter(owner__id=request.user.id).order_by('-pk')
 
-        if query_set is None:
-            return Response({'memo_list': []})
+        # for faster response speed
+        if not query_set:
+            return Response({'memo_list': []}, template_name='memo_list.html')
 
         paginator = LimitOffsetPagination()
         paginated_query_set = paginator.paginate_queryset(query_set, request)
@@ -46,21 +47,18 @@ def detail_update_delete(request, pk):
     try:
         memo = Memo.objects.get(pk=pk)
     except Memo.DoesNotExist:
-        return HttpResponseNotFound()
+        return Response(status=status.HTTP_404_NOT_FOUND, template_name='error_msg.html')
 
     # check object permissions
     # Think about A-B  <-> A and ~B
     if memo.is_private and memo.owner != request.user:
-        return HttpResponseForbidden('this memo is private OR you are not owner')
+        data = {'msg': 'this memo is private OR you are not owner'}
+        return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
     # Retrieve
     if request.method == 'GET':
         serializer = MemoSerializer(memo, context={'user': request.user})
         return Response({'memo': serializer.data}, template_name='memo_detail.html')
-
-    # check object permissions
-    if memo.owner != request.user:
-        return HttpResponseForbidden('This memo is not yours')
 
     # Update
     if request.method == 'POST':
@@ -69,11 +67,12 @@ def detail_update_delete(request, pk):
             category = get_or_create_category(request.data['category'], request.user)
             serializer.save(owner=request.user, category=category)
             return Response({'memo': serializer.data}, template_name='memo_detail.html')
-        return Response({'memo': serializer.errors}, status=status.HTTP_400_BAD_REQUEST, template_name='memo_edit.html')
+        return Response({'memo': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     # Delete
     elif request.method == 'DELETE':
         memo.delete()
+        # No need to redirect for web user ..?
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -83,8 +82,8 @@ def detail_update_delete(request, pk):
 def clip_list(request):
     clips_by_user = Clip.objects.filter(user=request.user).order_by('-timestamp')
 
-    if clips_by_user is None:
-        return Response({'memo_list': []})
+    if not clips_by_user:
+        return Response({'memo_list': []}, template_name='memo_list.html')
 
     memo_list = []
     for clip in clips_by_user:
@@ -107,7 +106,8 @@ def clip_unclip(request, pk):
 
     # check object permissions
     if memo.is_private and memo.owner != request.user:
-        return HttpResponseForbidden('this memo is private')
+        data = {'msg': 'this memo is private'}
+        return Response(data, status=status.HTTP_403_FORBIDDEN)
 
     # Toggle request?  POST or DELETE -> only POST. If no clip objects, create clip. Otherwise delete clip.
 
@@ -115,7 +115,8 @@ def clip_unclip(request, pk):
     if request.method == 'POST':
         # check if there is no objects
         if Clip.objects.filter(user=request.user, memo=memo).exists():
-            return HttpResponseBadRequest('there is no clip')
+            data = {'msg': 'there is no clip'}
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
         clip = Clip(user=request.user, memo=memo)
         clip.save()
@@ -126,18 +127,15 @@ def clip_unclip(request, pk):
             # must return 1 object
             Clip.objects.get(user=request.user, memo=memo).delete()
         else:
-            return HttpResponseBadRequest('return multiple or no clip')
+            data = {'return multiple or no clip'}
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
     # other request: fuck you
     else:
         pass
 
-    serializer = MemoSerializer(memo, context={'user': request.user})
-    return Response({'memo': serializer.data})
 
-
-# @api_view()
-# @permission_classes((permissions.IsAuthenticated,))
+@permission_classes((permissions.IsAuthenticated,))
 def memo_square(request):
     return render(request, 'coming_soon.html')
 
@@ -147,10 +145,16 @@ def memo_square(request):
 @permission_classes((permissions.IsAuthenticated,))
 @renderer_classes([JSONRenderer])
 def find_by_page(request):
-    page_url = request.GET['url']
+    if 'url' in request.GET:
+        page_url = request.GET['url']
+    else:
+        data = 'param "url" does not exist'
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
     query_set = find_memo(page_url, request)
 
-    if query_set is None:
+    # for faster response speed
+    if not query_set:
         return Response({'memo_list': []})
 
     paginator = LimitOffsetPagination()
@@ -167,7 +171,8 @@ def lock_unlock(request, pk):
     memo = get_object_or_404(Memo, pk=pk)
     # check object permissions
     if memo.owner != request.user:
-        return HttpResponseForbidden('fuck you')
+        data = {'msg': 'you are not owner'}
+        return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
     # toggle boolean value
     memo.is_private = not memo.is_private

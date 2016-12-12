@@ -32,7 +32,7 @@ def find_memo(url, request):
     if page is None:
         return
 
-    return Memo.objects.filter(page=page).filter(Q(is_private=False) | Q(owner=request.user))
+    return Memo.objects.filter(page=page).filter(Q(is_private=False) | Q(owner=request.user)).order_by('-pk')
 
 
 def find_page(url):
