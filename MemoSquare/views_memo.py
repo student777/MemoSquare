@@ -6,8 +6,8 @@ from rest_framework.decorators import permission_classes, api_view, renderer_cla
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import LimitOffsetPagination
-from .models import Memo, Clip
-from .serializers import MemoSerializer
+from .models import Memo, Clip, Category
+from .serializers import MemoSerializer, CategorySerializer
 from .finder import get_or_create_page, find_memo, get_or_create_category
 
 
@@ -17,17 +17,27 @@ from .finder import get_or_create_page, find_memo, get_or_create_category
 def list_create(request):
     # Memo list of user
     if request.method == 'GET':
-        query_set = Memo.objects.filter(owner__id=request.user.id).order_by('-pk')
+        # Filter memo by category
+        # If memo is uncategorized, category_id is 0 in request, but map as None because of query
+        if 'category' in request.GET:
+            category_id = None if request.GET['category'] is '0' else request.GET['category']
+            query_set = Memo.objects.filter(owner=request.user, category_id=category_id).order_by('-pk')
+        # No category assigned, return all memo
+        else:
+            query_set = Memo.objects.filter(owner=request.user).order_by('-pk')
 
-        # for faster response speed
-        if not query_set:
-            return Response({'memo_list': []}, template_name='memo_list.html')
+        # set category list
+        query_set_category = Category.objects.filter(owner=request.user)
+        serializer_category = CategorySerializer(query_set_category, many=True)
 
         paginator = LimitOffsetPagination()
         paginated_query_set = paginator.paginate_queryset(query_set, request)
         serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
-        return Response({'memo_list': serializer.data, 'prev': paginator.get_previous_link(),
-                         'next': paginator.get_next_link()}, template_name='memo_list.html')
+        return Response({'memo_list': serializer.data,
+                         'prev': paginator.get_previous_link(),
+                         'next': paginator.get_next_link(),
+                         'category_list': serializer_category.data,
+                         }, template_name='memo_list.html')
 
     # Create Memo
     elif request.method == 'POST':
@@ -82,6 +92,7 @@ def detail_update_delete(request, pk):
 def clip_list(request):
     clips_by_user = Clip.objects.filter(user=request.user).order_by('-timestamp')
 
+    # for faster response speed
     if not clips_by_user:
         return Response({'memo_list': []}, template_name='memo_list.html')
 
@@ -93,9 +104,10 @@ def clip_list(request):
     # It is okay that memo_list is not query_set..?
     paginated_query_set = paginator.paginate_queryset(memo_list, request)
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
-    return Response(
-        {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link()},
-        template_name='memo_list.html')
+    return Response({'memo_list': serializer.data,
+                     'prev': paginator.get_previous_link(),
+                     'next': paginator.get_next_link()
+                     }, template_name='memo_list.html')
 
 
 # Clip or Unclip a memo
@@ -130,12 +142,7 @@ def clip_unclip(request, pk):
             data = {'return multiple or no clip'}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-    # other request: fuck you
-    else:
-        pass
 
-
-@permission_classes((permissions.IsAuthenticated,))
 def memo_square(request):
     return render(request, 'coming_soon.html')
 
@@ -160,9 +167,10 @@ def find_by_page(request):
     paginator = LimitOffsetPagination()
     paginated_query_set = paginator.paginate_queryset(query_set, request)
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
-    return Response(
-        {'memo_list': serializer.data, 'prev': paginator.get_previous_link(), 'next': paginator.get_next_link(),
-         'count': len(query_set)})
+    return Response({'memo_list': serializer.data,
+                     'prev': paginator.get_previous_link(),
+                     'next': paginator.get_next_link(),
+                     'count': len(query_set)})
 
 
 @api_view(['POST'])

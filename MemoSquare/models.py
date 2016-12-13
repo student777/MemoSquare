@@ -19,6 +19,7 @@ class Page(models.Model):
 
 
 class Category(models.Model):
+    # Need for sub primary key starting from 1 for each user
     name = models.CharField(max_length=45)
     owner = models.ForeignKey(User, related_name='category', on_delete=models.CASCADE)
 

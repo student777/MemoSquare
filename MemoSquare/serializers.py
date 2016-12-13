@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from MemoSquare.models import Memo
+from MemoSquare.models import Memo, Category
 
 
 class MemoSerializer(serializers.ModelSerializer):
@@ -29,3 +29,10 @@ class MemoSerializer(serializers.ModelSerializer):
             json['is_clipped'] = is_clipped
             json['is_mymemo'] = is_owner  # fuck Konglish
         return json
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = ['pk', 'name']

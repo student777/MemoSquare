@@ -1,0 +1,8 @@
+<input name="group" type="radio" onchange="location.href='/memo/'" id="radio_all"/>
+<label for="radio_all">all</label>
+<input name="group" type="radio" onchange="location.href='/memo/?category=0'" id="radio0"/>
+<label for="radio0">uncategorized</label>
+{% for category in category_list %}
+<input name="group" type="radio" onchange="location.href='/memo/?category={{ category.pk }}'" id="radio{{ forloop.counter }}"/>
+<label for="radio{{ forloop.counter }}">{{ category.name }}</label>
+{% endfor %}

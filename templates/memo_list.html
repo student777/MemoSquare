@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block container %}
     <div class="container">
-        <br>
+        <div class="row">
+            {% include 'category.html' %}
+        </div>
         <div class="row">
             {% for memo in memo_list %}
                 <div class="col s12 m4">
