@@ -1,8 +1,23 @@
 <input name="group" type="radio" onchange="location.href='/memo/'" id="radio_all"/>
 <label for="radio_all">all</label>
+
 <input name="group" type="radio" onchange="location.href='/memo/?category=0'" id="radio0"/>
 <label for="radio0">uncategorized</label>
+
 {% for category in category_list %}
-<input name="group" type="radio" onchange="location.href='/memo/?category={{ category.pk }}'" id="radio{{ forloop.counter }}"/>
-<label for="radio{{ forloop.counter }}">{{ category.name }}</label>
+    <input name="group" type="radio" onchange="location.href='/memo/?category={{ category.pk }}'"
+           id="radio{{ category.pk }}"/>
+    <label for="radio{{ category.pk }}">{{ category.name }}</label>
 {% endfor %}
+
+<script>
+    //jQuery $.ready() does not work here
+    window.onload = function(){
+        {% if request.GET.category %}
+            var category_id = {{ request.GET.category }};
+            $("#radio" + category_id).prop('checked', true);
+        {% else %}
+            $("#radio_all").prop('checked', true);
+        {% endif %}
+    }
+</script>

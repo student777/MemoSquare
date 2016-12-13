@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 {% block container %}
     <div class="container">
+        {% if category_list %}
+        <!-- this is for my_memo view -->
         <div class="row">
             {% include 'category.html' %}
         </div>
+        {% endif %}
         <div class="row">
             {% for memo in memo_list %}
                 <div class="col s12 m4">
