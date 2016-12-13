@@ -1,14 +1,15 @@
+{% load static %}
 <div class="container">
     <div class="row" style="margin-top: 10%">
         <div class="col s12 m6 offset-m3 center-align">
             <div class="card">
                 <div class="row">
                     <div class="col s10 offset-s1 center-align">
-                        <img width="100%" src="/static/memosquare/img/login_modal.png"/>
+                        <img width="100%" src="{% static 'memosquare/img/login_modal.png' %}"/>
                     </div>
                     <div class="col s7 offset-s3">
                         <img class="left z-depth-2" style="width: 300px; cursor:pointer" onclick="sign_in_FB();"
-                             src="/static/memosquare/img/facebook-sign-in-button.png"/>
+                             src="{% static 'memosquare/img/facebook-sign-in-button.png' %}"/>
                     </div>
                 </div>
                 <div class="row">

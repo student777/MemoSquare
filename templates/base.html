@@ -9,7 +9,7 @@
     <title>MemoSquare</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/static/memosquare/css/base.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'memosquare/css/base.css' %}">
     <!-- gooogle oauth2 -->
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id"
@@ -22,7 +22,7 @@
     <div class="nav-wrapper">
         <!-- left side -->
         <a href="/" class="brand-logo-wrapper">
-            <img class="brand-logo-img" src="/static/memosquare/img/logo_and_str.png">
+            <img class="brand-logo-img" src="{% static 'memosquare/img/logo_and_str.png' %}">
         </a>
         <!-- right side -->
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
@@ -79,8 +79,8 @@
 
 <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
-<script src="/static/memosquare/js/memo.js"></script>
-<script src="/static/memosquare/js/account.js"></script>
+<script src="{% static 'memosquare/js/memo.js' %}"></script>
+<script src="{% static 'memosquare/js/account.js' %}"></script>
 <script>
     var csrf_token = '{{ csrf_token }}';
     // when side-nav not work
@@ -94,6 +94,6 @@
     var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
 </script>
 <script src="https://apis.google.com/js/platform.js" async defer></script>
-<script src="/static/memosquare/js/oauth2_facebook.js"></script>
-<script src="/static/memosquare/js/oauth2_google.js"></script>
+<script src="{% static 'memosquare/js/oauth2_facebook.js' %}"></script>
+<script src="{% static 'memosquare/js/oauth2_google.js' %}"></script>
 </html>
