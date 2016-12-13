@@ -2,7 +2,21 @@
 <div class="row tab-wrapper">
     <div class="col s12 m4 offset-m4">
         <ul class="tabs tabs-transparent">
-            {% if request.path == '/memo/' %}
+            {% if request.path == '/' %}
+                <li class="tab"><a target="_self" class="grey-text" href="/memo/">MY MEMO</a></li>
+                <li class="tab"><a target="_self" class="grey-text" href="/memo/clipbook/">CLIPBOOK</a></li>
+                <li class="tab"><a target="_self" class="grey-text" href="/square/">SQUARE</a></li>
+                <script>
+                // remove tab indicator and active
+                function removeTab(){
+                    $('li.tab > a').removeClass('active');
+                    $('.indicator').hide();
+                }
+                window.onload = function() {
+                    window.setTimeout(removeTab, 1);
+                }
+                </script>
+            {% elif request.path == '/memo/' %}
                 <li class="tab"><a target="_self" class="grey-text active" href="/memo/">MY MEMO</a></li>
                 <li class="tab"><a target="_self" class="grey-text" href="/memo/clipbook/">CLIPBOOK</a></li>
                 <li class="tab"><a target="_self" class="grey-text" href="/square/">SQUARE</a></li>
