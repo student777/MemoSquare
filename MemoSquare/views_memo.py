@@ -19,6 +19,7 @@ def list_create(request):
     if request.method == 'GET':
         # Filter memo by category
         # If memo is uncategorized, category_id is 0 in request, but map as None because of query
+        # In short, 1: category_id, 0: uncategorized, None: all memo
         if 'category' in request.GET:
             category_id = None if request.GET['category'] is '0' else request.GET['category']
             query_set = Memo.objects.filter(owner=request.user, category_id=category_id).order_by('-pk')
@@ -71,7 +72,7 @@ def detail_update_delete(request, pk):
         return Response({'memo': serializer.data}, template_name='memo_detail.html')
 
     # Update
-    if request.method == 'POST':
+    elif request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
         if serializer.is_valid():
             category = get_or_create_category(request.data['category'], request.user)

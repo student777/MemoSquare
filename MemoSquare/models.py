@@ -35,7 +35,7 @@ class Memo(models.Model):
     clipper = models.ManyToManyField(User, through='Clip', related_name='clipper')
     is_private = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
-    category = models.ForeignKey(Category, related_name='memo', null=True, blank=True)
+    category = models.ForeignKey(Category, related_name='memo', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         content_truncated = self.content[:100] + (self.content[100:] and '..')

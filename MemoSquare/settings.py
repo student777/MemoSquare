@@ -12,7 +12,8 @@ SECRET_KEY = '90h-_z$56k@b3ed#kt7wsa#3x&88tck#)a0ae6l9t!d$t8kyz#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Dev settings. This will be overridden in production
+ALLOWED_HOSTS = ['memosquare.com']
 
 # Application definition
 
@@ -123,6 +124,7 @@ AUTHENTICATION_BACKENDS = [
     'MemoSquare.backends.GoogleTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
 # Unless it, DRF pagination's 'prev', 'next' not work
 # ref)http://stackoverflow.com/questions/32166549/how-do-i-configure-the-django-rest-framework-pagination-url
 USE_X_FORWARDED_HOST = True

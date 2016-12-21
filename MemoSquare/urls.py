@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.contrib import admin
-from . import views, views_memo
+from . import views, views_memo, views_category
 
 
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^memo/(?P<pk>\d+)/clip/$', views_memo.clip_unclip),
     url(r'^memo/(?P<pk>\d+)/lock/$', views_memo.lock_unlock),
     url(r'^square/', views_memo.memo_square),
+    url(r'^category/(?P<pk>\d+)/$', views_category.detail_update_delete),
     # TEST only
     url(r'^memo/csrf_test/$', views.csrf_test),
 ]
