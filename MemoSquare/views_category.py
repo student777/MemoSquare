@@ -6,6 +6,23 @@ from rest_framework.renderers import JSONRenderer
 from MemoSquare.serializers import CategorySerializer
 
 
+@api_view(['GET', 'POST'])
+@renderer_classes([JSONRenderer])
+@permission_classes((permissions.IsAuthenticated,))
+def list_create(request):
+    if request.method == 'GET':
+        query_set = Category.objects.filter(owner=request.user)
+        serializer = CategorySerializer(query_set, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET', 'POST', 'DELETE'])
 @renderer_classes([JSONRenderer])
 @permission_classes((permissions.IsAuthenticated,))
