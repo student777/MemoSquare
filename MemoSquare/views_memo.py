@@ -59,7 +59,8 @@ def detail_update_delete(request, pk):
     try:
         memo = Memo.objects.get(pk=pk)
     except Memo.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND, template_name='error_msg.html')
+        data = {'msg': 'memo does not exist'}
+        return Response(data, status=status.HTTP_404_NOT_FOUND, template_name='error_msg.html')
     '''
     Check object permissions(GET)
     Let A be a set for is_private=True, B be a set for is_owner=True
@@ -132,7 +133,7 @@ def clip_unclip(request, pk):
     # check object permissions
     if memo.is_private and memo.owner != request.user:
         data = {'msg': 'this memo is private'}
-        return Response(data, status=status.HTTP_403_FORBIDDEN)
+        return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
     # Toggle request?  POST or DELETE -> only POST. If no clip objects, create clip. Otherwise delete clip.
 
