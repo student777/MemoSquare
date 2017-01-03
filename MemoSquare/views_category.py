@@ -16,7 +16,7 @@ def list_create(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = CategorySerializer(data=request.data)
+        serializer = CategorySerializer(data=request.data, context={'user': request.user})
         if serializer.is_valid(raise_exception=True):
             serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)

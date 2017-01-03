@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 from MemoSquare.models import Memo, Category
 
 
@@ -34,8 +33,15 @@ class MemoSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
 
+    def validate(self, data):
+        # When Category is created, check unique_together constraint
+        if 'user' in self.context:
+            user = self.context['user']
+            if Category.objects.filter(owner=user, name=data['name']).exists():
+                raise serializers.ValidationError('That category name already exists')
+        return data
+
     class Meta:
         model = Category
         fields = ['pk', 'name']
-        # Works well..? without this, raise 500 Integrity error
-        validators = [UniqueTogetherValidator(queryset=Category.objects.all(), fields=('name', 'owner'))]
+        extra_kwargs = {'owner': {'required': 'False'}}
