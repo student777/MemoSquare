@@ -23,6 +23,9 @@ class Category(models.Model):
     name = models.CharField(max_length=45)
     owner = models.ForeignKey(User, related_name='category', on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ('name', 'owner')
+
     def __str__(self):
         return self.name
 

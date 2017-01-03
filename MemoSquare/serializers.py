@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from MemoSquare.models import Memo, Category
 
 
@@ -36,3 +37,5 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['pk', 'name']
+        # Works well..? without this, raise 500 Integrity error
+        validators = [UniqueTogetherValidator(queryset=Category.objects.all(), fields=('name', 'owner'))]
