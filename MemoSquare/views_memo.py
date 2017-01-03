@@ -9,6 +9,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from .models import Memo, Clip, Category
 from .serializers import MemoSerializer, CategorySerializer
 from .finder import get_or_create_page, find_memo, get_or_create_category
+from .magic import catch_image
 
 
 # List & Create API view
@@ -46,7 +47,8 @@ def list_create(request):
         if serializer.is_valid(raise_exception=True):
             page = get_or_create_page(request.data['page'])
             category = get_or_create_category(request.data['category'], request.user)
-            serializer.save(owner=request.user, page=page, category=category)
+            content = catch_image(request.data['content'])
+            serializer.save(owner=request.user, page=page, category=category, content=content)
             return Response({'memo': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
