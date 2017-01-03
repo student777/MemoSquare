@@ -80,7 +80,7 @@ def detail_update_delete(request, pk):
     We should kick ~B out, but we already kicked A-B out.
     So we should kick ~A and ~B out additionally
     '''
-    if not memo.is_private and memo.owner == request.user:
+    if not memo.is_private and memo.owner != request.user:
         data = {'msg': 'you are not an owner'}
         return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
