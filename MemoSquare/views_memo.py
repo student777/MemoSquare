@@ -55,17 +55,18 @@ def list_create(request):
 
 # Retrieve & Update & Destory API view
 @api_view(['GET', 'POST', 'DELETE'])
-@permission_classes((permissions.IsAuthenticated,))
 def detail_update_delete(request, pk):
     try:
         memo = Memo.objects.get(pk=pk)
     except Memo.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND, template_name='error_msg.html')
-
-    # check object permissions
-    # Think about A-B  <-> A and ~B
+    '''
+    Check object permissions(GET)
+    Let A be a set for is_private=True, B be a set for is_owner=True
+    We should kick A-B out first. ref) A-B  <-> A and ~B
+    '''
     if memo.is_private and memo.owner != request.user:
-        data = {'msg': 'this memo is private OR you are not owner'}
+        data = {'msg': 'this memo is private OR you are not owner. Please log in'}
         return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
     # Retrieve
@@ -73,8 +74,17 @@ def detail_update_delete(request, pk):
         serializer = MemoSerializer(memo, context={'user': request.user})
         return Response({'memo': serializer.data}, template_name='memo_detail.html')
 
+    '''
+    Second check object permissions(POST, DELETE)
+    We should kick ~B out, but we already kicked A-B out.
+    So we should kick ~A and ~B out additionally
+    '''
+    if not memo.is_private and memo.owner == request.user:
+        data = {'msg': 'you are not an owner'}
+        return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
+
     # Update
-    elif request.method == 'POST':
+    if request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
         if serializer.is_valid():
             category = get_or_create_category(request.data['category'], request.user)
