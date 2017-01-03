@@ -1,25 +1,4 @@
 /* memo_detail.js */
-function edit_memo(pk) {
-    var url = '/memo/' + pk + '/';
-    var settings = {
-        method: 'POST',
-        data: {
-            "title": $("#title").val(),
-            "content": $("textarea[name=content]").val(),
-            "is_private": $('#fucking_switch').prop('checked'),
-            "csrfmiddlewaretoken": csrf_token,
-        },
-        success: function (response) {
-            console.log(response);
-            //TODO: response at views_memo is memo object...
-            location.href = '/memo/' + pk + '/';
-        },
-        error: function (response) {
-            console.log(response);
-        }
-    }
-    $.ajax(url, settings);
-}
 function clip_memo(pk, to_clip, caller) {
     var url = '/memo/' + pk + '/clip/';
     var settings = {
