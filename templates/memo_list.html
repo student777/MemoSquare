@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% block container %}
-    <div class="container">
-        {% if category_list %}
-        <!-- this is for my_memo view -->
+    <div class="custom-container">
+
+        <!-- category 이름 뜨게 해주세요 -->
         <div class="row">
-            {% include 'category.html' %}
+            <div class="col s12">
+                <h5 class="category-name">category name</h5>
+            </div>
         </div>
-        {% endif %}
+
         <div class="row">
             {% for memo in memo_list %}
                 <div class="col s12 m4">
