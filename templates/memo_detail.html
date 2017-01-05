@@ -55,7 +55,7 @@
             <div style="word-wrap: break-word;" class="col s12" >
                 <p>
                     {% load memo_filter %}
-                    {{ memo.content | to_plain | linebreaksbr }}
+                    {{ memo.content | safe | linebreaksbr }}
                 </p>
             </div>
         </div>

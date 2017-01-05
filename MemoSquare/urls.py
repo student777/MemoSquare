@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from django.contrib import admin
 from . import views, views_memo, views_category
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', views.index),
@@ -21,3 +22,6 @@ urlpatterns = [
     # TEST only
     url(r'^memo/csrf_test/$', views.csrf_test),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
