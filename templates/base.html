@@ -17,13 +17,16 @@
 </head>
 
 <body style="background-color: #EBEFF1">
-<!--header-->
+
+<!--nav-header-->
 <nav class="nav-extended z-depth-0">
     <div class="nav-wrapper">
+
         <!-- left side -->
         <a href="/" class="brand-logo-wrapper">
             <img class="brand-logo-img" src="{% static 'memosquare/img/logo_and_str.png' %}">
         </a>
+       
         <!-- right side -->
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -63,6 +66,9 @@
 <!-- tabs -->
 {% include 'tabs.html' %}
 
+<!-- left-side nav bar -->
+{% include 'left_side_navbar.html' %}
+
 <!-- fucking this item... without this button logout is not work...-->
 <div style="display:none" class="g-signin2 center-align" data-width="300" data-onsuccess="sign_in_google"
      data-longtitle="true"></div>
@@ -74,9 +80,8 @@
         <script>location.href = "/memo/"</script>
     {% endif %}
 {% endblock %}
+
 </body>
-
-
 <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
 <script src="{% static 'memosquare/js/memo.js' %}"></script>
@@ -92,6 +97,10 @@
 
     //global variable( fuck google oauth2)
     var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+
+    $(document).ready(function(){
+    $('.modal-trigger').leanModal();
+  });
 </script>
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 <script src="{% static 'memosquare/js/oauth2_facebook.js' %}"></script>

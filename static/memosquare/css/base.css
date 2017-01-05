@@ -7,8 +7,11 @@
 	font-weight: bold;
 }
 
-.container{
+.custom-container{
     background-color: #EBEFF1 !important;
+    display: inline-block;
+    width: 66%;
+    margin-left: 3%;
 }
 
 i {
@@ -52,8 +55,64 @@ div.row.tab-wrapper{
 	background-color: white;
 }
 
+/*left-side navbar*/
+#left-nav {
+	border: 0px;
+	width: 14%;
+	display: inline-block;
+	float: left;
+	overflow-y: auto;
+}
+
+a{
+	color: #6B6B6B;
+}
+
+a svg{
+	fill: #6B6B6B;
+	height: 24px;
+	width: 24px;
+
+}
+
+a span{
+	padding-left: 16px;
+	vertical-align: super;
+	
+}
+
+.custom-collection .custom-collection-item {
+	background-color: #EBEFF1;
+	border-bottom: #EBEFF1;
+	margin-left: 32px;
+}
+
+/*Category*/
+div svg{
+	fill: #6B6B6B;
+	height: 24px;
+	width: 24px;
+}
+
+[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after{
+	background-color: #f39800;
+}
+
+[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after{
+	border: 2px solid #f39800;
+}
+
+#category-modal{
+	width: 30%;
+}
+
+
 
 /*memo-list*/
+.category-name{
+	display: inline-block;
+}
+
 #card-footer.row{
 	margin: 0;
 }
