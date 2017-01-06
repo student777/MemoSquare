@@ -42,32 +42,28 @@
 
         <!-- Dropdown Structure -->
         <ul id='dropdown1' class='dropdown-content'>
+            <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
             {% if user.detail == 'facebook' %}
                 <li><a onclick="sign_out_FB()" class="black-text">Sign out</a></li>
             {% else %}
                 <li><a onclick="sign_out_google()" class="black-text">Sign out</a></li>
-            {% endif %}
-            <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
+            {% endif %}           
         </ul>
+
         <ul class="side-nav" id="mobile-demo">
-            {% if not user.is_anonymous %}
-                <li class="black-text"><a href="#">{{ user.get_full_name }}</a></li>
-                {% if user.detail.provider == 'facebook' %}
-                    <li><a onclick="sign_out_FB()" class="black-text">Sign out</a></li>
-                {% else %}
-                    <li><a onclick="sign_out_google()" class="black-text">Sign out</a></li>
-                {% endif %}
-                <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
-            {% endif %}
+            {% include 'mobile_left_side_navbar.html' %}
         </ul>
     </div>
 </nav>
 
+{% if not user.is_anonymous %}
 <!-- tabs -->
 {% include 'tabs.html' %}
 
 <!-- left-side nav bar -->
+<!-- from-sun-todo 1/4 : 카테고리 my memo tab일 때만 보이지 말구, 로그인 하면 어디서든 보이게 해주세요 -->
 {% include 'left_side_navbar.html' %}
+{% endif %}
 
 <!-- fucking this item... without this button logout is not work...-->
 <div style="display:none" class="g-signin2 center-align" data-width="300" data-onsuccess="sign_in_google"

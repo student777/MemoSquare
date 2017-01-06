@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block container %}
-<div class="container">
+<div class="custom-container">
     <br>
     <div class="detail card white" >
     <!-- bookmark, goto web icon -->
@@ -25,14 +25,21 @@
                 <span>category: {% if memo.category %}{{ memo.category }}{% else %}uncategorized{% endif %}</span>
             </div>
 
-            <!-- edit, delete, lock button -->
+            <!-- Buttons -->
             <div class="col s12 m6 right-align">
+            
+                <!-- fb share, clip -->
+
+                <!-- from-sun-todo 4/4 : onclick 페이스북 공유 처리-->
+                    <a href=""><img id="btn-share-fb" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="share on facebook" onclick="" src="/static/memosquare/img/ic_share_web_fb.png"></img></a>
+
                 {% if memo.is_clipped %}
                     <i onclick="clip_memo({{ memo.pk }}, false, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="clip/unclip">turned_in</i>
                 {% else %}
                     <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="clip/unclip">turned_in_not</i>
                 {% endif %}
 
+                <!-- edit, delete, lock button -->
                 {% if memo.is_mymemo %}
                     <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="edit" onclick="edit_form({{ memo.pk }})">mode_edit</i>
                     <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="delete" onclick="delete_memo({{ memo.pk }})">delete</i>
