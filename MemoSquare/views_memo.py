@@ -22,11 +22,17 @@ def list_create(request):
         # If memo is uncategorized, category_id is 0 in request, but map as None because of query
         # In short, 1: category_id, 0: uncategorized, None: all memo
         if 'category' in request.GET:
-            category_id = None if request.GET['category'] is '0' else request.GET['category']
+            if request.GET['category'] is '0':
+                category_id = None
+                category_name = 'uncategorized'
+            else:
+                category_id = request.GET['category']
+                category_name = Category.objects.get(pk=category_id).name
             query_set = Memo.objects.filter(owner=request.user, category_id=category_id).order_by('-pk')
         # No category assigned, return all memo
         else:
             query_set = Memo.objects.filter(owner=request.user).order_by('-pk')
+            category_name = 'All memo'
 
         # set category list
         query_set_category = Category.objects.filter(owner=request.user)
@@ -39,6 +45,7 @@ def list_create(request):
                          'prev': paginator.get_previous_link(),
                          'next': paginator.get_next_link(),
                          'category_list': serializer_category.data,
+                         'category_name': category_name,
                          }, template_name='memo_list.html')
 
     # Create Memo
@@ -118,9 +125,17 @@ def clip_list(request):
     # It is okay that memo_list is not query_set..?
     paginated_query_set = paginator.paginate_queryset(memo_list, request)
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
+
+    # Add category info
+    query_set_category = Category.objects.filter(owner=request.user)
+    serializer_category = CategorySerializer(query_set_category, many=True)
+    category_name = 'Clipped memo'
+
     return Response({'memo_list': serializer.data,
                      'prev': paginator.get_previous_link(),
-                     'next': paginator.get_next_link()
+                     'next': paginator.get_next_link(),
+                     'category_list': serializer_category.data,
+                     'category_name': category_name
                      }, template_name='memo_list.html')
 
 
@@ -156,9 +171,13 @@ def clip_unclip(request, pk):
             data = {'return multiple or no clip'}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-
+@api_view()
+@permission_classes((permissions.IsAuthenticated,))
 def memo_square(request):
-    return render(request, 'coming_soon.html')
+    # Add category info
+    query_set_category = Category.objects.filter(owner=request.user)
+    serializer_category = CategorySerializer(query_set_category, many=True)
+    return Response({'category_list': serializer_category.data, 'msg': 'Coming Soon!'}, template_name='error_msg.html')
 
 
 # Memo list of an URL. If memo not exists, return None
