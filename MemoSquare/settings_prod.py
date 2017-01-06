@@ -13,8 +13,6 @@ DATABASES = {
 
 # deploy settings
 ALLOWED_HOSTS = [
-    'estfutures.cafe24.com',
-    'localhost',
     'memo-square.com',
 ]
 
