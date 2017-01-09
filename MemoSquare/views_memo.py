@@ -80,7 +80,11 @@ def detail_update_delete(request, pk):
     # Retrieve
     if request.method == 'GET':
         serializer = MemoSerializer(memo, context={'user': request.user})
-        return Response({'memo': serializer.data}, template_name='memo_detail.html')
+        # Add category info
+        query_set_category = Category.objects.filter(owner=request.user)
+        serializer_category = CategorySerializer(query_set_category, many=True)
+        return Response({'memo': serializer.data, 'category_list': serializer_category.data},
+                        template_name='memo_detail.html')
 
     '''
     Second check object permissions(POST, DELETE)

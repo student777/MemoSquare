@@ -1,3 +1,4 @@
+{% load static %}
 <li>
     <a class="custom-collection-item">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -11,7 +12,6 @@
     </a>
 
     <!-- Category 수정/삭제 모달 -->
-    <!-- from-sun-todo 3/4 : onclick 수정, 삭제 처리-->
     <div id="category-modal" class="modal">
         <div class="modal-content">
             <h5>Edit Category</h5>
@@ -20,17 +20,16 @@
             {% for category in category_list %}
                 <div class="row">
                     <div class="col s8 offset-m2 m6 input-field">
-                        <input value="{{ category.name }}" id="categoryname(여기 지정해주세염)" type="text">
+                        <input value="{{ category.name }}" type="text">
                     </div>
                     <div class="col s4 m4">
-                        <i class="material-icons">delete</i>
+                        <i class="material-icons" onclick="delete_category({{ category.pk }}, this)">delete</i>
+                    </div>
+                    <div class="col s4 m4">
+                        <i class="material-icons" onclick="edit_category({{ category.pk }}, this)">save</i>
                     </div>
                 </div>
             {% endfor %}
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
-            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Ok</a>
         </div>
     </div>
 
@@ -83,3 +82,4 @@
         {% endif %}
     }
 </script>
+<script src="{% static 'memosquare/js/category.js' %}"></script>
