@@ -69,17 +69,3 @@
         <span class="li-title">Add category</span>
     </a>
 </li>
-
-
-<script>
-    //jQuery $.ready() does not work here
-    window.onload = function () {
-        {% if request.GET.category %}
-            var category_id = {{ request.GET.category }};
-            $("#radio" + category_id).prop('checked', true);
-        {% else %}
-            $("#radio_all").prop('checked', true);
-        {% endif %}
-    }
-</script>
-<script src="{% static 'memosquare/js/category.js' %}"></script>

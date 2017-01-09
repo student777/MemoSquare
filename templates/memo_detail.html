@@ -29,9 +29,7 @@
             <div class="col s12 m6 right-align">
             
                 <!-- fb share, clip -->
-
-                <!-- from-sun-todo 4/4 : onclick 페이스북 공유 처리-->
-                    <a href=""><img id="btn-share-fb" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="share on facebook" onclick="" src="/static/memosquare/img/ic_share_web_fb.png"></img></a>
+                <a href="#"><img id="btn-share-fb" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="share on facebook" onclick="share_memo()" src="/static/memosquare/img/ic_share_web_fb.png" /></a>
 
                 {% if memo.is_clipped %}
                     <i onclick="clip_memo({{ memo.pk }}, false, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="clip/unclip">turned_in</i>
@@ -68,4 +66,10 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    var memo = {"pk": {{ memo.pk }}, "content": '{{ memo.content | safe }}', "title": '{{ memo.title }}'}
+</script>
 {% endblock %}

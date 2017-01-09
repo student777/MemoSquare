@@ -1,8 +1,3 @@
-/* report page */
-function open_report() {
-    window.open("/report/", "", "width=500,height=400");
-}
-
 /* account */
 // Send token to our server, server make a session
 function sendToken(token) {

@@ -1,0 +1,34 @@
+{% if not user.is_anonymous %}
+    <!-- Home -->
+    <li class="black-text"><a href="/">Home</a></li>
+    <div class="divider"></div>
+
+    <li class="black-text">
+        <a>Category</a>
+    </li>
+
+    <!-- Category-->
+    {% for category in category_list %}
+        <li>
+            <a href='/memo/?category={{ category.pk }}'>{{ category.name }}</a>
+        </li>
+    {% endfor %}
+    <li>
+        <a href='/memo/?category={{ category.pk }}'>uncategorized</a>
+    </li>
+
+    <li>
+        <a href='/memo/?category={{ category.pk }}'>+add category</a>
+    </li>
+
+    <div class="divider"></div>
+    <!-- Suggestion -->
+    <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
+
+    <!-- Log out -->
+    {% if user.detail.provider == 'facebook' %}
+        <li><a onclick="sign_out_FB()" class="black-text">Sign out</a></li>
+    {% else %}
+        <li><a onclick="sign_out_google()" class="black-text">Sign out</a></li>
+    {% endif %}
+{% endif %}

@@ -1,4 +1,3 @@
-/* memo_detail.js */
 function clip_memo(pk, to_clip, caller) {
     var url = '/memo/' + pk + '/clip/';
     var settings = {
@@ -84,4 +83,13 @@ function edit_form(pk) {
     document.dispatchEvent(
         new CustomEvent("loadEditor", {'detail': {'pk': pk}})
     );
+}
+
+function share_memo(){
+    if(typeof memo != undefined) {
+        var facebookURL = "https://www.facebook.com/sharer/sharer.php"
+            + "?u=http://memo-square.com/memo/" + memo.pk
+            + "&title=" + memo.title;
+        window.open(facebookURL, "", "width=500,height=400");
+    }
 }

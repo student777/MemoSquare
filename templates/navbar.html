@@ -1,0 +1,45 @@
+{% load static %}
+<nav class="nav-extended z-depth-0">
+    <div class="nav-wrapper">
+
+        <!-- left side -->
+        <a href="/" class="brand-logo-wrapper">
+            <img class="brand-logo-img" src="{% static 'memosquare/img/logo_and_str.png' %}">
+        </a>
+
+        <!-- right side -->
+        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            {% if not user.is_anonymous %}
+                <li>{{ user.get_full_name }}</li>
+                <li>
+                    <a class='dropdown-button' data-activates='dropdown1'>
+                        <img width=40 height="40" class="circle profile" src="{{ user.detail.img_url }}"/>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+
+        <!-- Dropdown Structure -->
+        <ul id='dropdown1' class='dropdown-content'>
+            <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
+            {% if user.detail == 'facebook' %}
+                <li><a onclick="sign_out_FB()" class="black-text">Sign out</a></li>
+            {% else %}
+                <li><a onclick="sign_out_google()" class="black-text">Sign out</a></li>
+            {% endif %}
+        </ul>
+
+        <ul class="side-nav" id="mobile-demo">
+            {% include 'navbar_mobile.html' %}
+        </ul>
+    </div>
+</nav>
+
+{% if not user.is_anonymous %}
+    <!-- tabs -->
+    {% include 'navbar_tab.html' %}
+
+    <!-- left-side nav bar -->
+    {% include 'navbar_left.html' %}
+{% endif %}

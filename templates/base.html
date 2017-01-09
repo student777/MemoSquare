@@ -19,50 +19,8 @@
 <body style="background-color: #EBEFF1">
 
 <!--nav-header-->
-<nav class="nav-extended z-depth-0">
-    <div class="nav-wrapper">
+{% include 'navbar.html' %}
 
-        <!-- left side -->
-        <a href="/" class="brand-logo-wrapper">
-            <img class="brand-logo-img" src="{% static 'memosquare/img/logo_and_str.png' %}">
-        </a>
-       
-        <!-- right side -->
-        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-            {% if not user.is_anonymous %}
-                <li>{{ user.get_full_name }}</li>
-                <li>
-                    <a class='dropdown-button' data-activates='dropdown1'>
-                        <img width=40 height="40" class="circle profile" src="{{ user.detail.img_url }}"/>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-
-        <!-- Dropdown Structure -->
-        <ul id='dropdown1' class='dropdown-content'>
-            <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
-            {% if user.detail == 'facebook' %}
-                <li><a onclick="sign_out_FB()" class="black-text">Sign out</a></li>
-            {% else %}
-                <li><a onclick="sign_out_google()" class="black-text">Sign out</a></li>
-            {% endif %}           
-        </ul>
-
-        <ul class="side-nav" id="mobile-demo">
-            {% include 'mobile_left_side_navbar.html' %}
-        </ul>
-    </div>
-</nav>
-
-{% if not user.is_anonymous %}
-<!-- tabs -->
-{% include 'tabs.html' %}
-
-<!-- left-side nav bar -->
-{% include 'left_side_navbar.html' %}
-{% endif %}
 
 <!-- fucking this item... without this button logout is not work...-->
 <div style="display:none" class="g-signin2 center-align" data-width="300" data-onsuccess="sign_in_google"
@@ -79,25 +37,40 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 <script src="{% static 'memosquare/js/memo.js' %}"></script>
+<script src="{% static 'memosquare/js/report.js' %}"></script>
 <script src="{% static 'memosquare/js/account.js' %}"></script>
+<script src="{% static 'memosquare/js/category.js' %}"></script>
+<script src="{% static 'memosquare/js/oauth2_facebook.js' %}"></script>
+<script src="{% static 'memosquare/js/oauth2_google.js' %}"></script>
 <script>
+    /* global variable(fuck google oauth2) */
     var csrf_token = '{{ csrf_token }}';
-    // when side-nav not work
+    var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+
+    /* when side-nav not work */
     (function ($) {
         $(function () {
             $('.button-collapse').sideNav();
         }); // end of document ready
     })(jQuery); // end of jQuery name space
 
-    //global variable( fuck google oauth2)
-    var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+    $(document).ready(function () {
+        $('.modal-trigger').leanModal();
+    });
 
-    $(document).ready(function(){
-    $('.modal-trigger').leanModal();
-  });
+    /* category checked */
+    //jQuery $.ready() does not work here
+    window.onload = function () {
+        {% if request.GET.category %}
+            var category_id = {{ request.GET.category }};
+            $("#radio" + category_id).prop('checked', true);
+        {% else %}
+            $("#radio_all").prop('checked', true);
+        {% endif %}
+    }
 </script>
-<script src="https://apis.google.com/js/platform.js" async defer></script>
-<script src="{% static 'memosquare/js/oauth2_facebook.js' %}"></script>
-<script src="{% static 'memosquare/js/oauth2_google.js' %}"></script>
+{% block extra_script %}
+{% endblock %}
 </html>
