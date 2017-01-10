@@ -6,7 +6,7 @@ class MemoSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.get_full_name', read_only=True)
     page = serializers.CharField(max_length=255, read_only=True)
     timestamp = serializers.DateTimeField(format='%b %d, %Y', read_only=True)
-    category = serializers.CharField(max_length=45, allow_null=True)
+    category = serializers.CharField(max_length=45, allow_blank=True)
 
     class Meta:
         model = Memo

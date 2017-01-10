@@ -50,6 +50,6 @@ def detail_update_delete(request, pk):
             return Response(serializer.data)
 
     elif request.method == 'DELETE':
-        # Don't worry: when category deleted, memo.category will not be cascade deleted. It is set to None
+        # Don't worry: when category deleted, memo.category will not be cascade deleted. It is set to be None
         category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
