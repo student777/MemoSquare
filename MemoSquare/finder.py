@@ -15,6 +15,10 @@ def get_or_create_page(url):
 
 
 def get_or_create_category(name, owner):
+    # Consider empty string as uncategorized
+    if name == "":
+        return None
+
     # first find category
     try:
         category = Category.objects.get(name=name, owner=owner)

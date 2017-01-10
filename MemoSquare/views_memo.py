@@ -18,9 +18,11 @@ from .magic import catch_save
 def list_create(request):
     # Memo list of user
     if request.method == 'GET':
-        # Filter memo by category
-        # If memo is uncategorized, category_id is 0 in request, but map as None because of query
-        # In short, 1: category_id, 0: uncategorized, None: all memo
+        '''
+        Filter memo by category
+        If memo is uncategorized, category_id is 0 in request, but map as None because of query
+        In short, 1: category_id, 0: uncategorized, None: all memo
+        '''
         if 'category' in request.GET:
             if request.GET['category'] is '0':
                 category_id = None
@@ -174,6 +176,7 @@ def clip_unclip(request, pk):
         else:
             data = {'return multiple or no clip'}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view()
 @permission_classes((permissions.IsAuthenticated,))
