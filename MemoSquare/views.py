@@ -45,12 +45,9 @@ def report(request):
     return render(request, 'report.html')
 
 
-from rest_framework.decorators import api_view
-@api_view(['PUT'])
-def upload(request, filename):
-    from .serializers import ImageSerializer
-    serializer = ImageSerializer(data=request.data)
-    serializer.to_internal_value(request.data)
-    serializer.is_valid()
-    print(serializer.data['image'])
-    return Response('dddd')
+def upload(request):
+    from .forms import UploadFileForm
+    form = UploadFileForm(request.POST, request.FILES)
+    if form.is_valid():
+        print(request.FILES['file'])
+        # not validated..?
