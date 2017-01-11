@@ -45,3 +45,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['pk', 'name']
         extra_kwargs = {'owner': {'required': 'False'}}
+
+
+class ImageSerializer(serializers.BaseSerializer):
+    image = serializers.ImageField(max_length=None, use_url=True)

@@ -2,8 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from rest_framework import views, status
-from rest_framework.parsers import FileUploadParser, MultiPartParser
+from rest_framework import status
 from rest_framework.response import Response
 from .models import Report
 
@@ -46,18 +45,12 @@ def report(request):
     return render(request, 'report.html')
 
 
-# views.py
-class FileUploadView(views.APIView):
-    parser_classes = (FileUploadParser,)
-    # parser_classes = (MultiPartParser,)
-
-    def put(self, request, filename, format=None):
-        print(request.body)
-        f = request.data['file']
-        # print(request.FILES['file'])
-        # with open('/home/yee/Downloads/Failed.py', 'w') as f:
-        #     f.write('whatever')
-        with open('/home/yee/Downloads/'+filename, 'wb+') as destination:
-            for chunk in f.chunks():
-                destination.write(chunk)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+from rest_framework.decorators import api_view
+@api_view(['PUT'])
+def upload(request, filename):
+    from .serializers import ImageSerializer
+    serializer = ImageSerializer(data=request.data)
+    serializer.to_internal_value(request.data)
+    serializer.is_valid()
+    print(serializer.data['image'])
+    return Response('dddd')
