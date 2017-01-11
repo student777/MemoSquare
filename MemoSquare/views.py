@@ -2,9 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from rest_framework import status
-from rest_framework.response import Response
+from django.http import HttpResponse
 from .models import Report
+from .magic import save_screen_shot
 
 
 def index(request):
@@ -19,8 +19,8 @@ def sign_in(request):
         user = authenticate(token=token)
         if user is not None:
             login(request, user)
-            return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return HttpResponse(status=200)
+        return HttpResponse(status=401)
 
 
 def sign_out(request):
@@ -46,41 +46,6 @@ def report(request):
 
 
 def upload(request):
-    # imagestr = request.POST['image']
-    # imagestr = str.encodde(imagestr)
-    # from base64 import decodebytes
-    #
-    # with open("/home/yee/Downloads/foo.png", "wb") as f:
-    #     f.write(decodebytes(imagestr))
-    #
-    # from django.http import HttpResponse
-    # return HttpResponse('new src')
-
-    #ref) http://stackoverflow.com/questions/28036404/django-rest-framework-upload-image-the-submitted-data-was-not-a-file
-    import base64
-    import uuid
-    import os
-    from MemoSquare.settings import MEDIA_ROOT, MEDIA_URL
-    from django.utils import timezone
     data = request.POST['image']
-    # Check if the base64 string is in the "data:" format
-    if 'data:' in data and ';base64,' in data:
-        # Break out the header from the base64 content
-        header, data = data.split(';base64,')
-    extension = header[11:]
-    random_name = uuid.uuid4().hex
-    img_path = timezone.now().strftime('/%y/%m/%d/') + random_name + '.' + extension
-    path_to_save = MEDIA_ROOT + img_path
-    # Try to decode the file. Return validation error if it fails.
-    try:
-        decoded_file = base64.b64decode(data)
-    except TypeError:
-        pass
-
-    os.makedirs(os.path.dirname(os.path.normpath(path_to_save)), exist_ok=True)
-
-    with open(path_to_save, "wb") as f:
-        f.write(decoded_file)
-    src_new = MEDIA_URL[0:-1] + img_path
-    from django.http import HttpResponse
-    return HttpResponse(src_new)
+    media_path = save_screen_shot(data)
+    return HttpResponse(media_path)

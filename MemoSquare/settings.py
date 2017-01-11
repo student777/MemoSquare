@@ -133,3 +133,6 @@ AUTHENTICATION_BACKENDS = [
 # Unless it, DRF pagination's 'prev', 'next' not work
 # ref)http://stackoverflow.com/questions/32166549/how-do-i-configure-the-django-rest-framework-pagination-url
 USE_X_FORWARDED_HOST = True
+
+# for screen shot upload(5MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
