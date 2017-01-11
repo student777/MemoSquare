@@ -3,10 +3,13 @@ import urllib.request
 from django.utils import timezone
 from MemoSquare.settings import MEDIA_ROOT, MEDIA_URL
 from xml.etree.ElementTree import ParseError
+from PIL import Image
 import os
-import base64
 import uuid
 import imghdr
+import re
+import io
+import base64
 
 
 def catch_src(content):
@@ -60,30 +63,21 @@ def catch_save(content):
 
 def get_file_extension(decoded_file):
     extension = imghdr.what('whatever-value', decoded_file)
-    extension = "jpg" if extension == "jpeg" else extension
     return extension
 
 
 # ref) http://stackoverflow.com/questions/28036404/django-rest-framework-upload-image-the-submitted-data-was-not-a-file
-def save_screen_shot(data):
-    # Check if the base64 string is in the "data:" format
-    if 'data:' in data and ';base64,' in data:
-        # Break out the header from the base64 content
-        header, data = data.split(';base64,')
+# I'd prefer this to Base64ImageField because of save_image_src code reusability
+def save_screen_shot(data, rectangle):
+    image_data = re.sub('^data:image/.+;base64,', '', data)
+    image = Image.open(io.BytesIO(base64.b64decode(image_data)))
 
-    # Try to decode the file. Return validation error if it fails.
-    try:
-        decoded_file = base64.b64decode(data)
-    except TypeError:
-        print('something wrong HERE')
-        return
-
-    extension = get_file_extension(decoded_file)
+    extension = image.format.lower()
     path_dated, path_system = make_path(extension)
 
-    # Write image, return media path
-    with open(path_system, "wb") as f:
-        f.write(decoded_file)
+    # Crop and Save image
+    image = image.crop(rectangle)
+    image.save(path_system)
 
     path_media = MEDIA_URL[0:-1] + path_dated
     return path_media

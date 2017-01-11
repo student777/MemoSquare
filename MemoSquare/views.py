@@ -47,5 +47,6 @@ def report(request):
 
 def upload(request):
     data = request.POST['image']
-    media_path = save_screen_shot(data)
+    rectangle = [int(i) for i in [request.POST['left'], request.POST['upper'], request.POST['right'], request.POST['lower']]]
+    media_path = save_screen_shot(data, rectangle)
     return HttpResponse(media_path)
