@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
+from rest_framework import views, status
+from rest_framework.parsers import FileUploadParser, MultiPartParser
+from rest_framework.response import Response
 from .models import Report
 
 
@@ -18,7 +20,8 @@ def sign_in(request):
         user = authenticate(token=token)
         if user is not None:
             login(request, user)
-        return HttpResponse('hello %s' % user)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 def sign_out(request):
@@ -41,3 +44,20 @@ def report(request):
         return render(request, 'report_close.html')
 
     return render(request, 'report.html')
+
+
+# views.py
+class FileUploadView(views.APIView):
+    parser_classes = (FileUploadParser,)
+    # parser_classes = (MultiPartParser,)
+
+    def put(self, request, filename, format=None):
+        print(request.body)
+        f = request.data['file']
+        # print(request.FILES['file'])
+        # with open('/home/yee/Downloads/Failed.py', 'w') as f:
+        #     f.write('whatever')
+        with open('/home/yee/Downloads/'+filename, 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
+        return Response(status=status.HTTP_204_NO_CONTENT)
