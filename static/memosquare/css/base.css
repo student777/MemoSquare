@@ -87,7 +87,7 @@ a span{
 	margin-left: 32px;
 }
 
-/*Category*/
+/*Category-navbar*/
 div svg{
 	fill: #6B6B6B;
 	height: 24px;
@@ -122,6 +122,10 @@ input[type=text]{
 .input-field input[type=text]:focus {
      border-bottom: 1px solid #6B6B6B;
      box-shadow: 0 1px 0 0 #6B6B6B;
+}
+
+#add-category-modal{
+	width: 30%;
 }
 
 /*memo-list*/
@@ -173,6 +177,16 @@ img.circle.list-profile{
 }
 
 /*memo_detail*/
+div svg.svg-medium{
+	fill: #6B6B6B;
+	height: 36px;
+	width: 36px;
+}
+
+h5.category-name{
+	vertical-align: super;
+}
+
 div.detail.card{
 	padding: 3em 8em;
 }
