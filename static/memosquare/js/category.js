@@ -20,7 +20,7 @@ function delete_category(pk, caller) {
 
 function edit_category(pk, caller){
     var url = '/category/' + pk + '/';
-    var name = $(caller).parent().parent().children().children().get(0).value;
+    var category_name = $(caller).parent().parent().children().children().get(0).value;
     var settings = {
         method: 'POST',
         data: {
@@ -36,4 +36,28 @@ function edit_category(pk, caller){
         }
     };
     $.ajax(url, settings);
+}
+
+function add_category(){
+    var category_name = $("#add-category-modal input").val();
+    if(category_name.length>0){
+        var url = "/category/";
+        var settings = {
+            method: 'POST',
+            data: {
+                "name": category_name,
+                "csrfmiddlewaretoken": csrf_token
+            },
+            success: function (response){
+                location.href='/memo/?category=' + response.pk;
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        };
+        $.ajax(url, settings);
+    }
+    else{
+        alert('Category name should be at least 1 characters');
+    }
 }
