@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'MemoSquare',
     'rest_framework',
     'corsheaders',
@@ -137,5 +138,5 @@ USE_X_FORWARDED_HOST = True
 # for screen shot upload(5MB)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
-# django.contrib.sites is not pretty
-DOMAIN = 'localhost:8000'
+# site settings
+SITE_ID = 1
