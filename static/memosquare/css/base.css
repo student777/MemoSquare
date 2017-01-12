@@ -7,12 +7,23 @@
 	font-weight: bold;
 }
 
+@media all and (max-width:768px)
+{ .custom-container{
+     width: 95%;
+}
+}
+
+@media all and (min-width:769px){
+.custom-container{
+   width: 66%;
+   }
+}
+
 .custom-container{
     background-color: #EBEFF1 !important;
     display: inline-block;
-    width: 66%;
     margin-left: 3%;
-}
+   }
 
 i {
 	cursor:pointer;
