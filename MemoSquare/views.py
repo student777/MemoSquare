@@ -6,6 +6,10 @@ from django.http import HttpResponse
 from .models import Report
 from .magic import save_screen_shot
 
+'''
+Pure django views code in here
+'''
+
 
 def index(request):
     return render(request, 'base.html')
@@ -52,5 +56,4 @@ def upload(request):
     except KeyError:
         return HttpResponse('fuck you', status=400)
     media_path = save_screen_shot(data, rectangle)
-    print(media_path)
     return HttpResponse(media_path)
