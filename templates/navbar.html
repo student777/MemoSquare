@@ -22,7 +22,7 @@
 
         <!-- Dropdown Structure -->
         <ul id='dropdown1' class='dropdown-content'>
-            <li><a onclick="open_report()" class="black-text">Suggestion</a></li>
+            <li><a href="#report-modal" class="black-text">Suggestion</a></li>
             {% if user.detail == 'facebook' %}
                 <li><a onclick="sign_out_FB()" class="black-text">Sign out</a></li>
             {% else %}
@@ -43,3 +43,5 @@
     <!-- left-side nav bar -->
     {% include 'navbar_left.html' %}
 {% endif %}
+
+{% include 'navbar_modals.html' %}

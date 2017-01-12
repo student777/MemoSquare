@@ -59,8 +59,12 @@
             }
         });
 
+        // Initialize side mobile nav-bar
+        $(".button-collapse").sideNav();
+
         // Check category radio
-        var category_id = {{ request.GET.category }};
+        var category_id = '{{ request.GET.category }}';
+        // if category is empty string,  let radio box id="radio" named 'All' memos be checked...?
         $("#radio" + category_id).prop('checked', true);
     });
 </script>

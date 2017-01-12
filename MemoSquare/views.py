@@ -44,9 +44,7 @@ def report(request):
         user = request.user
         content = request.POST['content']
         Report.objects.create(user=user, content=content)
-        return render(request, 'report_close.html')
-
-    return render(request, 'report.html')
+        return HttpResponse(status=200)
 
 
 def upload(request):
