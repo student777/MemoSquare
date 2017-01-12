@@ -46,7 +46,10 @@ def report(request):
 
 
 def upload(request):
-    data = request.POST['image']
-    rectangle = [int(i) for i in [request.POST['left'], request.POST['upper'], request.POST['right'], request.POST['lower']]]
+    try:
+        data = request.POST['image']
+        rectangle = [int(i) for i in [request.POST['left'], request.POST['upper'], request.POST['right'], request.POST['lower']]]
+    except KeyError:
+        return HttpResponse('fuck you', status=400)
     media_path = save_screen_shot(data, rectangle)
     return HttpResponse(media_path)
