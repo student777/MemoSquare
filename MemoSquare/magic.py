@@ -1,7 +1,7 @@
 from xml.etree import ElementTree
 import urllib.request
 from django.utils import timezone
-from MemoSquare.settings import MEDIA_ROOT, MEDIA_URL
+from MemoSquare.settings import MEDIA_ROOT, MEDIA_URL, DOMAIN
 from xml.etree.ElementTree import ParseError
 from PIL import Image
 import os
@@ -27,18 +27,18 @@ def make_path(file_extension):
 
     path_dated = timezone.now().strftime('/%y/%m/%d/') + complete_file_name  # ex)/17/01/01/no_name.jpg
     path_system = MEDIA_ROOT + path_dated  # ex)/usr/local/server/MemoSquare/media/17/01/01/no_name.jpg
-    path_media = MEDIA_URL[0:-1] + path_dated  # ex)/media/17/01/01/no_name.jpg
+    path_media = DOMAIN + MEDIA_URL[0:-1] + path_dated  # ex)/media/17/01/01/no_name.jpg
 
     # Make directory
     os.makedirs(os.path.dirname(os.path.normpath(path_system)), exist_ok=True)
 
-    return path_dated, path_system, path_media
+    return path_system, path_media
 
 
 # Not create Memo_image foreign key, just stack images
 def save_image_src(src):
     extension = os.path.splitext(src)[-1].lower()[1:]
-    path_dated, path_system, path_media = make_path(extension)
+    path_system, path_media = make_path(extension)
     # Need to async..?
     urllib.request.urlretrieve(src, path_system)
     return path_media
@@ -75,7 +75,7 @@ def save_screen_shot(data, rectangle):
     image = Image.open(io.BytesIO(base64.b64decode(image_data)))
 
     extension = image.format.lower()
-    path_dated, path_system, path_media= make_path(extension)
+    path_system, path_media = make_path(extension)
 
     # Crop and Save image
     image = image.crop(rectangle)

@@ -52,4 +52,5 @@ def upload(request):
     except KeyError:
         return HttpResponse('fuck you', status=400)
     media_path = save_screen_shot(data, rectangle)
+    print(media_path)
     return HttpResponse(media_path)
