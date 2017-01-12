@@ -177,6 +177,8 @@ def clip_unclip(request, pk):
             data = {'return multiple or no clip'}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
+    return Response(status=status.HTTP_200_OK)
+
 
 @api_view()
 @permission_classes((permissions.IsAuthenticated,))

@@ -13,7 +13,7 @@ SECRET_KEY = '90h-_z$56k@b3ed#kt7wsa#3x&88tck#)a0ae6l9t!d$t8kyz#'
 DEBUG = True
 
 # Dev settings. This will be overridden in production
-ALLOWED_HOSTS = ['memosquare.com','localhost', 'estfutures.cafe24.com']
+ALLOWED_HOSTS = ['localhost', 'estfutures.cafe24.com']
 
 # Application definition
 
