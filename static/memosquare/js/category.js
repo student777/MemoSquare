@@ -21,21 +21,26 @@ function delete_category(pk, caller) {
 function edit_category(pk, caller){
     var url = '/category/' + pk + '/';
     var category_name = $(caller).parent().parent().children().children().get(0).value;
-    var settings = {
-        method: 'POST',
-        data: {
-            "name": name,
-            "csrfmiddlewaretoken": csrf_token
-        },
-        success: function (response) {
-            alert('name changed')
-            console.log(response);
-        },
-        error: function (response) {
-            console.log(response);
-        }
-    };
-    $.ajax(url, settings);
+    if(category_name.length>0){
+        var settings = {
+            method: 'POST',
+            data: {
+                "name": category_name,
+                "csrfmiddlewaretoken": csrf_token
+            },
+            success: function (response) {
+                alert('saved');
+                console.log(response);
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        };
+        $.ajax(url, settings);
+    }
+    else{
+        alert('Category name should be at least 1 characters');
+    }
 }
 
 function add_category(){
