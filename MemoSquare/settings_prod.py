@@ -28,5 +28,3 @@ CORS_ALLOW_METHODS = (
 CORS_ORIGIN_WHITELIST = (
     'chrome-extension://njlkefpcpojddmjihelliajgkhdgcoea/res/popup.html',
 )
-
-DOMAIN = 'http://memo-square.com'
