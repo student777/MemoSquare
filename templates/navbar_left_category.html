@@ -11,29 +11,25 @@
     </a>
 </li>
 
-
-<!-- category list -->
-{% for category in category_list %}
+<ul style="margin-left: 15px">
+    <!-- category list -->
+    {% for category in category_list %}
+        <li>
+            <div class="custom-collection-item">
+                <input name="group" type="radio" onchange="location.href='/memo/?category={{ category.pk }}'"
+                       id="radio{{ category.pk }}"/>
+                <label class="category-label" for="radio{{ category.pk }}">{{ category.name }}</label>
+            </div>
+        </li>
+    {% endfor %}
+    <!-- uncategorized -->
     <li>
         <div class="custom-collection-item">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"></svg>
-            <input name="group" type="radio" onchange="location.href='/memo/?category={{ category.pk }}'"
-                   id="radio{{ category.pk }}"/>
-            <label class="category-label" for="radio{{ category.pk }}">{{ category.name }}</label>
+            <input name="group" type="radio" class="red-text" onchange="location.href='/memo/?category=0'" id="radio0"/>
+            <label class="category-label" for="radio0">uncategorized</label>
         </div>
     </li>
-{% endfor %}
-
-
-<!-- uncategorized -->
-<li>
-    <div class="custom-collection-item">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"></svg>
-        <input name="group" type="radio" class="red-text" onchange="location.href='/memo/?category=0'" id="radio0"/>
-        <label class="category-label" for="radio0">uncategorized</label>
-    </div>
-</li>
-
+</ul>
 
 <!-- Add new Category -->
 <li>
