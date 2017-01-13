@@ -36,12 +36,10 @@
     </div>
 </nav>
 
-{% if not user.is_anonymous %}
-    <!-- tabs -->
-    {% include 'navbar_tab.html' %}
+<!-- tabs -->
+{% include 'navbar_tab.html' %}
 
-    <!-- left-side nav bar -->
-    {% include 'navbar_left.html' %}
-{% endif %}
+<!-- left-side nav bar -->
+{% include 'navbar_left.html' %}
 
 {% include 'navbar_modals.html' %}
