@@ -9,6 +9,10 @@ function clip_memo(pk, to_clip, caller) {
         }
     };
 
+    // manage num_clip
+    var parent_div = $(caller).parent().parent();
+    var clips_div = parent_div.find('div.clip-text > span');
+
     if (to_clip == true) {
         settings.method = 'POST';
         settings.data = {"csrfmiddlewaretoken": csrf_token};
@@ -16,6 +20,10 @@ function clip_memo(pk, to_clip, caller) {
             $(caller).text('turned_in');
             var new_onclick = $(caller).attr('onClick').replace("true", "false");
             $(caller).attr('onClick', new_onclick);
+
+            // increase num_clip
+            var num_clip = parseInt(clips_div.text());
+            clips_div.text(++num_clip);
         };
 
     }
@@ -28,8 +36,13 @@ function clip_memo(pk, to_clip, caller) {
             $(caller).text('turned_in_not');
             var new_onclick = $(caller).attr('onClick').replace("false", "true");
             $(caller).attr('onClick', new_onclick);
+
+            // decrese num_clip
+            var num_clip = parseInt(clips_div.text());
+            clips_div.text(--num_clip);
         };
     }
+
     $.ajax(url, settings);
 }
 function lock_memo(pk, caller) {
