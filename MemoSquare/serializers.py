@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from MemoSquare.models import Memo, Category
+from MemoSquare.models import Memo, Category, Comment
 
 
 class MemoSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.get_full_name', read_only=True)
+    owner = serializers.CharField(source='owner.get_full_name', read_only=True)
     page = serializers.CharField(max_length=255, read_only=True)
     timestamp = serializers.DateTimeField(format='%b %d, %Y', read_only=True)
     category = serializers.CharField(max_length=45, allow_blank=True)
@@ -33,6 +33,10 @@ class MemoSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Category
+        fields = ['pk', 'name']
+
     def validate(self, data):
         # When Category is created, check unique_together constraint
         if 'user' in self.context:
@@ -41,8 +45,12 @@ class CategorySerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('That category name already exists')
         return data
 
-    class Meta:
-        model = Category
-        fields = ['pk', 'name']
-        extra_kwargs = {'owner': {'required': 'False'}}
 
+class CommentSerializer(serializers.ModelSerializer):
+    owner = serializers.CharField(source='owner.get_full_name', read_only=True)
+    memo = serializers.IntegerField(source='memo.pk', read_only=True)
+    timestamp = serializers.DateTimeField(format='%b %d, %Y', read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ['pk', 'memo', 'owner', 'content', 'timestamp']

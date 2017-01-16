@@ -45,6 +45,7 @@ function clip_memo(pk, to_clip, caller) {
 
     $.ajax(url, settings);
 }
+
 function lock_memo(pk, caller) {
     var url = '/memo/' + pk + '/lock/';
     var settings = {

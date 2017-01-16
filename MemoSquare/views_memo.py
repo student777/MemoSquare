@@ -23,12 +23,12 @@ def list_create(request):
         If memo is uncategorized, category_id is 0 in request, but map as None because of query
         In short, 1: category_id, 0: uncategorized, None: all memo
         '''
-        if 'category' in request.GET:
-            if request.GET['category'] is '0':
+        if 'category' in request.query_params:
+            if request.query_params['category'] is '0':
                 category_id = None
                 category_name = 'uncategorized'
             else:
-                category_id = request.GET['category']
+                category_id = request.query_params['category']
                 category_name = Category.objects.get(pk=category_id).name
             query_set = Memo.objects.filter(owner=request.user, category_id=category_id).order_by('-pk')
         # No category assigned, return all memo
@@ -198,8 +198,8 @@ def memo_square(request):
 @permission_classes((permissions.IsAuthenticated,))
 @renderer_classes([JSONRenderer])
 def find_by_page(request):
-    if 'url' in request.GET:
-        page_url = request.GET['url']
+    if 'url' in request.query_params:
+        page_url = request.query_params['url']
     else:
         data = 'param "url" does not exist'
         return Response(data, status=status.HTTP_400_BAD_REQUEST)

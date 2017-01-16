@@ -21,7 +21,7 @@ class Page(models.Model):
 class Category(models.Model):
     # Need for sub primary key starting from 1 for each user
     name = models.CharField(max_length=45)
-    owner = models.ForeignKey(User, related_name='category', on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('name', 'owner')
@@ -33,9 +33,9 @@ class Category(models.Model):
 class Memo(models.Model):
     title = models.CharField(max_length=100, blank=True)
     content = models.TextField()
-    owner = models.ForeignKey(User, related_name='memo', on_delete=models.CASCADE)
-    page = models.ForeignKey(Page, related_name='memo', on_delete=models.CASCADE)
-    clipper = models.ManyToManyField(User, through='Clip', related_name='clipper')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    page = models.ForeignKey(Page, on_delete=models.CASCADE)
+    clipper = models.ManyToManyField(User, through='Clip', related_name='clipper')  # Reverse accessor clashes with owner
     is_private = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, related_name='memo', on_delete=models.SET_NULL, null=True, blank=True)
@@ -60,3 +60,10 @@ class Report(models.Model):
 
     def __str__(self):
         return self.user.username + '/' + self.content[:30]
+
+
+class Comment(models.Model):
+    content = models.CharField(max_length=255)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    memo = models.ForeignKey(Memo, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
