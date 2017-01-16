@@ -32,13 +32,13 @@
                 <li class="tab"><a target="_self" class="grey-text active" href="/square/">SQUARE</a></li>
 
             <!-- detail page, my_memo-->
-            {% elif memo.is_mymemo %}
+            {% elif memo.is_owner %}
                 <li class="tab"><a target="_self" class="grey-text active" href="/memo/">MY MEMO</a></li>
                 <li class="tab"><a target="_self" class="grey-text" href="/memo/clipbook/">CLIPBOOK</a></li>
                 <li class="tab"><a target="_self" class="grey-text" href="/square/">SQUARE</a></li>
 
             <!-- detail page, not my_memo -->
-            {% elif not memo.is_mymemo %}
+            {% elif not memo.is_owner %}
                 <li class="tab"><a target="_self" class="grey-text" href="/memo/">MY MEMO</a></li>
                 <li class="tab"><a target="_self" class="grey-text active" href="/memo/clipbook/">CLIPBOOK</a></li>
                 <li class="tab"><a target="_self" class="grey-text" href="/square/">SQUARE</a></li>

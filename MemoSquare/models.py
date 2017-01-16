@@ -21,10 +21,10 @@ class Page(models.Model):
 class Category(models.Model):
     # Need for sub primary key starting from 1 for each user
     name = models.CharField(max_length=45)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('name', 'owner')
+        unique_together = ('name', 'user')
 
     def __str__(self):
         return self.name
@@ -33,16 +33,17 @@ class Category(models.Model):
 class Memo(models.Model):
     title = models.CharField(max_length=100, blank=True)
     content = models.TextField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     page = models.ForeignKey(Page, on_delete=models.CASCADE)
-    clipper = models.ManyToManyField(User, through='Clip', related_name='clipper')  # Reverse accessor clashes with owner
+    clips = models.ManyToManyField(User, through='Clip', related_name='+')
+    likes = models.ManyToManyField(User, through='LikeMemo', related_name='+')
     is_private = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
-    category = models.ForeignKey(Category, related_name='memo', on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         content_truncated = self.content[:100] + (self.content[100:] and '..')
-        return self.owner.__str__() + "/" + content_truncated
+        return self.user.__str__() + "/" + content_truncated
 
 
 class Clip(models.Model):
@@ -64,6 +65,17 @@ class Report(models.Model):
 
 class Comment(models.Model):
     content = models.CharField(max_length=255)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    memo = models.ForeignKey(Memo, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    memo = models.ForeignKey(Memo, on_delete=models.CASCADE, related_name='comment')
+    likes = models.ManyToManyField(User, through='LikeComment', related_name='+')
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class LikeMemo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    memo = models.ForeignKey(Memo, on_delete=models.CASCADE)
+
+
+class LikeComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)

@@ -11,14 +11,14 @@ from MemoSquare.serializers import CategorySerializer
 @permission_classes((permissions.IsAuthenticated,))
 def list_create(request):
     if request.method == 'GET':
-        query_set = Category.objects.filter(owner=request.user)
+        query_set = Category.objects.filter(user=request.user)
         serializer = CategorySerializer(query_set, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
         serializer = CategorySerializer(data=request.data, context={'user': request.user})
         if serializer.is_valid():
-            serializer.save(owner=request.user)
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -35,7 +35,7 @@ def detail_update_delete(request, pk):
         return Response(data, status=status.HTTP_404_NOT_FOUND, template_name='error_msg.html')
 
     # permission check
-    if category.owner != request.user:
+    if category.user != request.user:
         data = {'msg': 'this is not yours'}
         return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
@@ -46,7 +46,7 @@ def detail_update_delete(request, pk):
     elif request.method == 'POST':
         serializer = CategorySerializer(category, data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=request.user)
+            serializer.save(user=request.user)
             return Response(serializer.data)
 
     elif request.method == 'DELETE':

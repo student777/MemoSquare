@@ -48,7 +48,7 @@
                 {% endif %}
 
                 <!-- edit, delete, lock button -->
-                {% if memo.is_mymemo %}
+                {% if memo.is_owner %}
                     <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="edit" onclick="edit_form({{ memo.pk }})">mode_edit</i>
                     <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="delete" onclick="delete_memo({{ memo.pk }})">delete</i>
                     <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="private/public" onclick="lock_memo({{ memo.pk }}, this)">{% if memo.is_private %}lock_outline{% else %}lock_open{% endif %}</i>

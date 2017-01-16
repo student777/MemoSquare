@@ -1,7 +1,7 @@
 from rest_framework.decorators import permission_classes, api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework import permissions, status
-from MemoSquare.models import Comment
+from MemoSquare.models import Comment, LikeComment
 from rest_framework.renderers import JSONRenderer
 from MemoSquare.serializers import CommentSerializer
 
@@ -37,7 +37,7 @@ def update_delete(request, pk):
         return Response(data, status=status.HTTP_404_NOT_FOUND, template_name='error_msg.html')
 
     # permission check
-    if comment.owner != request.user:
+    if comment.user != request.user:
         data = {'msg': 'this is not yours'}
         return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
@@ -51,3 +51,17 @@ def update_delete(request, pk):
         # Don't worry: when Comment deleted, memo.Comment will not be cascade deleted. It is set to be None
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated,))
+def like_unlike(request, pk):
+    try:
+        like = LikeComment.objects.get(user=request.user, comment_id=pk)
+        like.delete()
+        result = 'disliked'
+    except LikeComment.DoesNotExist:
+        LikeComment.objects.create(user=request.user, comment_id=pk)
+        result = 'liked'
+
+    return Response(result, status=status.HTTP_200_OK)

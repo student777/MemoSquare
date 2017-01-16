@@ -14,17 +14,17 @@ def get_or_create_page(url):
     return page
 
 
-def get_or_create_category(name, owner):
+def get_or_create_category(name, user):
     # Consider empty string as uncategorized
     if name == "":
         return None
 
     # first find category
     try:
-        category = Category.objects.get(name=name, owner=owner)
+        category = Category.objects.get(name=name, user=user)
         return category
     except Category.DoesNotExist:
-        category = Category.objects.create(name=name, owner=owner)
+        category = Category.objects.create(name=name, user=user)
 
     return category
 
@@ -36,7 +36,7 @@ def find_memo(url, request):
     if page is None:
         return
 
-    return Memo.objects.filter(page=page).filter(Q(is_private=False) | Q(owner=request.user)).order_by('-pk')
+    return Memo.objects.filter(page=page).filter(Q(is_private=False) | Q(user=request.user)).order_by('-pk')
 
 
 def find_page(url):

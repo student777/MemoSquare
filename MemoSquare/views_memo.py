@@ -1,12 +1,10 @@
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions
 from rest_framework.decorators import permission_classes, api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import LimitOffsetPagination
-from .models import Memo, Clip, Category
+from .models import Memo, Clip, Category, LikeMemo
 from .serializers import MemoSerializer, CategorySerializer
 from .finder import get_or_create_page, find_memo, get_or_create_category
 from .magic import grab_img_from_content
@@ -30,14 +28,14 @@ def list_create(request):
             else:
                 category_id = request.query_params['category']
                 category_name = Category.objects.get(pk=category_id).name
-            query_set = Memo.objects.filter(owner=request.user, category_id=category_id).order_by('-pk')
+            query_set = Memo.objects.filter(user=request.user, category_id=category_id).order_by('-pk')
         # No category assigned, return all memo
         else:
-            query_set = Memo.objects.filter(owner=request.user).order_by('-pk')
+            query_set = Memo.objects.filter(user=request.user).order_by('-pk')
             category_name = 'All memo'
 
         # set category list
-        query_set_category = Category.objects.filter(owner=request.user)
+        query_set_category = Category.objects.filter(user=request.user)
         serializer_category = CategorySerializer(query_set_category, many=True)
 
         paginator = LimitOffsetPagination()
@@ -57,7 +55,7 @@ def list_create(request):
             page = get_or_create_page(request.data['page'])
             category = get_or_create_category(request.data['category'], request.user)
             content = grab_img_from_content(request.data['content'])
-            serializer.save(owner=request.user, page=page, category=category, content=content)
+            serializer.save(user=request.user, page=page, category=category, content=content)
             return Response({'memo': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -75,7 +73,7 @@ def detail_update_delete(request, pk):
     Let A be a set for is_private=True, B be a set for is_owner=True
     We should kick A-B out first. ref) A-B  <-> A and ~B
     '''
-    if memo.is_private and memo.owner != request.user:
+    if memo.is_private and memo.user != request.user:
         data = {'msg': 'this memo is private OR you are not owner. Please log in'}
         return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
@@ -85,7 +83,7 @@ def detail_update_delete(request, pk):
         # Add category info
         # When public memo is exposed to anonymous users..
         if request.user.is_authenticated():
-            query_set_category = Category.objects.filter(owner=request.user)
+            query_set_category = Category.objects.filter(user=request.user)
             serializer_category = CategorySerializer(query_set_category, many=True)
             return Response({'memo': serializer.data, 'category_list': serializer_category.data},
                             template_name='memo_detail.html')
@@ -97,7 +95,7 @@ def detail_update_delete(request, pk):
     We should kick ~B out, but we already kicked A-B out.
     So we should kick ~A and ~B out additionally
     '''
-    if not memo.is_private and memo.owner != request.user:
+    if not memo.is_private and memo.user != request.user:
         data = {'msg': 'you are not an owner'}
         return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
@@ -106,7 +104,7 @@ def detail_update_delete(request, pk):
         serializer = MemoSerializer(memo, data=request.data)
         if serializer.is_valid():
             category = get_or_create_category(request.data['category'], request.user)
-            serializer.save(owner=request.user, category=category)
+            serializer.save(user=request.user, category=category)
             return Response({'memo': serializer.data}, template_name='memo_detail.html')
         return Response({'memo': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -137,7 +135,7 @@ def clip_list(request):
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
 
     # Add category info
-    query_set_category = Category.objects.filter(owner=request.user)
+    query_set_category = Category.objects.filter(user=request.user)
     serializer_category = CategorySerializer(query_set_category, many=True)
     category_name = 'Clipped memo'
 
@@ -156,7 +154,7 @@ def clip_unclip(request, pk):
     memo = get_object_or_404(Memo, pk=pk)
 
     # check object permissions
-    if memo.is_private and memo.owner != request.user:
+    if memo.is_private and memo.user != request.user:
         data = {'msg': 'this memo is private'}
         return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
@@ -188,7 +186,7 @@ def clip_unclip(request, pk):
 @permission_classes((permissions.IsAuthenticated,))
 def memo_square(request):
     # Add category info
-    query_set_category = Category.objects.filter(owner=request.user)
+    query_set_category = Category.objects.filter(user=request.user)
     serializer_category = CategorySerializer(query_set_category, many=True)
     return Response({'category_list': serializer_category.data, 'msg': 'Coming Soon!'}, template_name='error_msg.html')
 
@@ -224,7 +222,7 @@ def find_by_page(request):
 def lock_unlock(request, pk):
     memo = get_object_or_404(Memo, pk=pk)
     # check object permissions
-    if memo.owner != request.user:
+    if memo.user != request.user:
         data = {'msg': 'you are not owner'}
         return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
@@ -237,4 +235,18 @@ def lock_unlock(request, pk):
     else:
         result = 'public'
 
-    return HttpResponse(result)
+    return Response(result, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated,))
+def like_unlike(request, pk):
+    try:
+        like = LikeMemo.objects.get(user=request.user, memo_id=pk)
+        like.delete()
+        result = 'disliked'
+    except LikeMemo.DoesNotExist:
+        LikeMemo.objects.create(user=request.user, memo_id=pk)
+        result = 'liked'
+
+    return Response(result, status=status.HTTP_200_OK)
