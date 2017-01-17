@@ -20,14 +20,14 @@ urlpatterns = [
     url(r'^memo/(?P<pk>\d+)/$', views_memo.detail_update_delete),
     url(r'^memo/(?P<pk>\d+)/clip/$', views_memo.clip_unclip),
     url(r'^memo/(?P<pk>\d+)/lock/$', views_memo.lock_unlock),
-    url(r'^memo/(?P<pk>\d+)/like/$', views_memo.like_unlike),
+    url(r'^memo/(?P<pk>\d+)/like/$', views_memo.like_dislike),
     # Category URLs
     url(r'^category/$', views_category.list_create),
     url(r'^category/(?P<pk>\d+)/$', views_category.detail_update_delete),
     # Comment URLs
     url(r'^comment/$', views_comment.list_create),
     url(r'^comment/(?P<pk>\d+)/$', views_comment.update_delete),
-    url(r'^comment/(?P<pk>\d+)/like/$', views_comment.like_unlike),
+    url(r'^comment/(?P<pk>\d+)/like/$', views_comment.like_dislike),
 ]
 
 if settings.DEBUG:

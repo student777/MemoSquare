@@ -41,6 +41,13 @@
                                     <span style="margin-left: 5px">{{ memo.num_clips }}</span>
                                 </div>
 
+                                <div>
+                                    {{ memo.num_likes }}likes<br>
+                                    {{ memo.num_comments }}comments<br>
+                                    <a class="waves-effect waves-light btn" onclick="like_memo({{ memo.pk }})">like</a>
+                                    <a class="waves-effect waves-light btn" onclick="dislike_memo({{ memo.pk }})">dislike</a>
+                                </div>
+
                                 <!-- description -->
                                 <div class="col s5 m5 right-align list-description">
                                     <span> {{ memo.timestamp }}</span><br>
@@ -55,6 +62,8 @@
                         </div>
                     </div>
                 </div>
+            {% empty %}
+                no memo
             {% endfor %}
         </div>
         <div class="row center-align">

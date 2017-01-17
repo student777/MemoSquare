@@ -221,7 +221,7 @@ def lock_unlock(request, pk):
 
 @api_view(['POST', 'DELETE'])
 @permission_classes((permissions.IsAuthenticated,))
-def like_unlike(request, pk):
+def like_dislike(request, pk):
     # When Memo is None, DoesNotExist error cannot be caught in following try statement
     memo = get_object_or_404(Memo, pk=pk)
 

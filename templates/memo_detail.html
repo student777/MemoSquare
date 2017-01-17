@@ -1,85 +1,108 @@
 {% extends 'base.html' %}
 {% block container %}
-<div class="custom-container">
+    <div class="custom-container">
         <br>
         <div class="row">
             <div class="col s12">
                 <svg class="svg-medium" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
                     <path d="M0 0h24v24H0z" fill="none"/>
-                </svg>                
+                </svg>
                 <h5 class="category-name">{% if memo.category %} {{ memo.category }}{% else %} uncategorized{% endif %}</h5>
             </div>
         </div>
 
-    
-    <div class="detail card white" >
-    <!-- bookmark, goto web icon -->
-        <div class="row">
-            <div class="right-align col s12">
-                <span class="url">{{ memo.page }}</span>
-                <i onclick='window.open("{{ memo.page }}")' class="small material-icons tooltipped" data-position="top" data-delay="50" data-tooltip="go to the page">web</i>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- profile image, description -->
-            <div class="col s12 m1 detail-profile-col">
-                <div class="box">
-                    <img class="detail-profile circle" src="{{ memo.owner_pic_url }}"/>
+        <div class="detail card white">
+            <!-- bookmark, goto web icon -->
+            <div class="row">
+                <div class="right-align col s12">
+                    <span class="url">{{ memo.page }}</span>
+                    <i onclick='window.open("{{ memo.page }}")' class="small material-icons tooltipped" data-position="top" data-delay="50"
+                       data-tooltip="go to the page">web</i>
                 </div>
             </div>
-            
-            <div class="col s12 m5 detail-description">
-                <span>{{ memo.timestamp }}</span><br>
-                <span>by {{ memo.owner }}</span><br>
-            </div>
 
-            <!-- Buttons -->
-            <div class="col s12 m6 right-align">
-            
-                <!-- fb share, clip -->
-                <a href="#"><img id="btn-share-fb" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="share on facebook" onclick="share_memo()" src="/static/memosquare/img/ic_share_web_fb.png" /></a>
+            <div class="row">
+                <!-- profile image, description -->
+                <div class="col s12 m1 detail-profile-col">
+                    <div class="box">
+                        <img class="detail-profile circle" src="{{ memo.owner_pic_url }}"/>
+                    </div>
+                </div>
 
-                {% if memo.is_clipped %}
-                    <i onclick="clip_memo({{ memo.pk }}, false, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="clip/unclip">turned_in</i>
-                {% else %}
-                    <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="clip/unclip">turned_in_not</i>
-                {% endif %}
+                <div class="col s12 m5 detail-description">
+                    <span>{{ memo.timestamp }}</span><br>
+                    <span>by {{ memo.owner }}</span><br>
+                </div>
 
-                <!-- edit, delete, lock button -->
-                {% if memo.is_owner %}
-                    <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="edit" onclick="edit_form({{ memo.pk }})">mode_edit</i>
-                    <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="delete" onclick="delete_memo({{ memo.pk }})">delete</i>
-                    <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="private/public" onclick="lock_memo({{ memo.pk }}, this)">{% if memo.is_private %}lock_outline{% else %}lock_open{% endif %}</i>
-                {% endif %}
-            </div>
-        </div>
-            
+                <!-- Buttons -->
+                <div class="col s12 m6 right-align">
 
-        <div class="row">
-            <div style="word-wrap: break-word;" class="col s12">
-                <h4>
-                    {% if memo.title == '' %}
-                        Memo created on {{ memo.timestamp }}
+                    <!-- fb share, clip -->
+                    <a href="#"><img id="btn-share-fb" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="share on facebook"
+                                     onclick="share_memo()" src="/static/memosquare/img/ic_share_web_fb.png"/></a>
+
+                    {% if memo.is_clipped %}
+                        <i onclick="clip_memo({{ memo.pk }}, false, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50"
+                           data-tooltip="clip/unclip">turned_in</i>
                     {% else %}
-                        {{ memo.title }}
+                        <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons tooltipped" data-position="bottom" data-delay="50"
+                           data-tooltip="clip/unclip">turned_in_not</i>
                     {% endif %}
-                </h4>
+
+                    <!-- edit, delete, lock button -->
+                    {% if memo.is_owner %}
+                        <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="edit"
+                           onclick="edit_form({{ memo.pk }})">mode_edit</i>
+                        <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="delete"
+                           onclick="delete_memo({{ memo.pk }})">delete</i>
+                        <i class="small material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="private/public"
+                           onclick="lock_memo({{ memo.pk }}, this)">{% if memo.is_private %}lock_outline{% else %}lock_open{% endif %}</i>
+                    {% endif %}
+                </div>
             </div>
-            <div style="word-wrap: break-word;" class="col s12" >
-                <p>
-                    {% load memo_filter %}
-                    {{ memo.content | safe | linebreaksbr }}
-                </p>
+
+            <div class="row">
+                <div style="word-wrap: break-word;" class="col s12">
+                    <h4>
+                        {% if memo.title == '' %}
+                            Memo created on {{ memo.timestamp }}
+                        {% else %}
+                            {{ memo.title }}
+                        {% endif %}
+                    </h4>
+                </div>
+                <div style="word-wrap: break-word;" class="col s12">
+                    <p>
+                        {% load memo_filter %}
+                        {{ memo.content | safe | linebreaksbr }}
+                    </p>
+                </div>
+            </div>
+
+            {{ memo.num_comments }} comments<br>
+            <a class="waves-effect waves-light btn" onclick="like_memo({{ memo.pk }})">like</a>
+            <a class="waves-effect waves-light btn" onclick="dislike_memo({{ memo.pk }})">dislike</a>
+            <div id="comment_list" class="row">
+                <!-- comment_list will be appended here -->
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block extra_script %}
-<script>
-    var memo = {"pk": {{ memo.pk }}, "content": '{{ memo.content | safe }}', "title": '{{ memo.title }}'}
-</script>
+    <script>
+        //for share_memo()
+        var memo = {"pk": {{ memo.pk }}, "content": '{{ memo.content | safe }}', "title": '{{ memo.title }}'};
+
+        //append comment_list
+        $(document).ready(function () {
+            $.ajax({
+                'url': '/comment/?memo={{ memo.pk }}&format=html',
+                "success": function (response) {
+                    $('#comment_list').append(response);
+                }
+            })
+        });
+    </script>
 {% endblock %}

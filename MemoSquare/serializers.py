@@ -27,7 +27,7 @@ class MemoSerializer(serializers.ModelSerializer):
             is_owner = user == instance.user
             json['is_clipped'] = user in instance.clips.all()
             json['is_owner'] = is_owner
-            json['is_like'] = user in instance.likes.all()
+            json['is_liked'] = user in instance.likes.all()
         return json
 
 
@@ -65,5 +65,5 @@ class CommentSerializer(serializers.ModelSerializer):
             user = self.context['user']
             is_owner = user == instance.user
             json['is_owner'] = is_owner
-            json['is_like'] = user in instance.likes.all()
+            json['is_liked'] = user in instance.likes.all()
         return json

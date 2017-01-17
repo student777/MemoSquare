@@ -99,11 +99,38 @@ function edit_form(pk) {
     );
 }
 
-function share_memo(){
-    if(typeof memo != undefined) {
+function share_memo() {
+    if (typeof memo != undefined) {
         var facebookURL = "https://www.facebook.com/sharer/sharer.php"
             + "?u=http://memo-square.com/memo/" + memo.pk
             + "&title=" + memo.title;
         window.open(facebookURL, "", "width=500,height=400");
     }
+}
+
+function like_memo(pk) {
+    $.ajax({
+        'url': '/memo/' + pk + '/like/',
+        "method": "POST",
+        'data': {"csrfmiddlewaretoken": csrf_token},
+        "success": function (response) {
+            console.log(response)
+        }
+    })
+}
+
+function dislike_memo(pk) {
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        }
+    });
+    $.ajax({
+        'url': '/memo/' + pk + '/like/',
+        "method": "DELETE",
+        'data': {"csrfmiddlewaretoken": csrf_token},
+        "success": function (response) {
+            console.log(response)
+        }
+    })
 }

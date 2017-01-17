@@ -9,14 +9,13 @@ from django.db.utils import IntegrityError
 
 
 @api_view(['GET', 'POST'])
-@renderer_classes([JSONRenderer])
 @permission_classes((permissions.IsAuthenticated,))
 def list_create(request):
     if request.method == 'GET':
         memo_id = request.query_params['memo']
         query_set = Comment.objects.filter(memo_id=memo_id)
         serializer = CommentSerializer(query_set, many=True, context={'user': request.user})
-        return Response(serializer.data)
+        return Response({'comment_list': serializer.data}, template_name='comment_list.html')
 
     elif request.method == 'POST':
         memo_id = request.data['memo']
@@ -57,7 +56,7 @@ def update_delete(request, pk):
 
 @api_view(['POST', 'DELETE'])
 @permission_classes((permissions.IsAuthenticated,))
-def like_unlike(request, pk):
+def like_dislike(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
 
     if request.method == 'POST':
