@@ -59,10 +59,11 @@ class CommentSerializer(serializers.ModelSerializer):
         json = super().to_representation(instance)
 
         # Add extra field
-        json['num_likes'] = instance.like.count()
+        json['num_likes'] = instance.likes.count()
 
         if 'user' in self.context:
             user = self.context['user']
             is_owner = user == instance.user
             json['is_owner'] = is_owner
-            json['is_like'] = user in instance.like.all()
+            json['is_like'] = user in instance.likes.all()
+        return json

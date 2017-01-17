@@ -15,14 +15,14 @@ def list_create(request):
     if request.method == 'GET':
         memo_id = request.query_params['memo']
         query_set = Comment.objects.filter(memo_id=memo_id)
-        serializer = CommentSerializer(query_set, many=True)
+        serializer = CommentSerializer(query_set, many=True, context={'user': request.user})
         return Response(serializer.data)
 
     elif request.method == 'POST':
         memo_id = request.data['memo']
-        serializer = CommentSerializer(data=request.data)
+        serializer = CommentSerializer(data=request.data, context={'user': request.user})
         if serializer.is_valid():
-            serializer.save(owner=request.user, memo_id=memo_id)
+            serializer.save(user=request.user, memo_id=memo_id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
