@@ -1,7 +1,6 @@
 {% load static %}
 <nav class="nav-extended z-depth-0">
-    <div class="nav-wrapper">
-
+    <div id="nav-bar" class="nav-wrapper">
         <!-- left side -->
         <a href="/" class="brand-logo-wrapper">
             <img class="brand-logo-img" src="{% static 'memosquare/img/logo_and_str.png' %}">
@@ -30,9 +29,8 @@
             {% endif %}
         </ul>
 
-        <ul class="side-nav" id="mobile-demo">
-            {% include 'navbar_mobile.html' %}
-        </ul>
+        <!-- navbar mobile -->
+        <!-- #response3 will be appended here-->
     </div>
 </nav>
 
@@ -41,5 +39,3 @@
 
 <!-- left-side nav bar -->
 {% include 'navbar_left.html' %}
-
-{% include 'navbar_modals.html' %}

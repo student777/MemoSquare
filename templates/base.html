@@ -16,10 +16,8 @@
 </head>
 
 <body style="background-color: #EBEFF1">
-
 <!--nav-header-->
 {% include 'navbar.html' %}
-
 
 <!-- fucking this item... without this button logout is not work...-->
 <div style="display:none" class="g-signin2 center-align" data-width="300" data-onsuccess="sign_in_google"
@@ -33,7 +31,10 @@
     {% endif %}
 {% endblock %}
 
+<!-- modal -->
+{% include 'modal.html' %}
 </body>
+
 <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 <script src="https://apis.google.com/js/platform.js" async defer></script>
@@ -44,30 +45,12 @@
 <script src="{% static 'memosquare/js/oauth2_facebook.js' %}"></script>
 <script src="{% static 'memosquare/js/oauth2_google.js' %}"></script>
 <script>
-    /* global variable(fuck google oauth2) */
-    var csrf_token = '{{ csrf_token }}';
-    var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
-
-    $(document).ready(function () {
-        // Initialize modal
-        $('.modal').modal();
-
-        // Refresh page when category edit/remove modal closed
-        $('#category-modal').modal({
-            complete: function () {
-                location.href = '';
-            }
-        });
-
-        // Initialize side mobile nav-bar
-        $(".button-collapse").sideNav();
-
-        // Check category radio
-        var category_id = '{{ request.GET.category }}';
-        // if category is empty string,  let radio box id="radio" named 'All' memos be checked...?
-        $("#radio" + category_id).prop('checked', true);
-    });
+/* global variable(fuck google oauth2) */
+var csrf_token = '{{ csrf_token }}';
+var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+var category_id = '{{ request.GET.category }}';
 </script>
+<script src="{% static 'memosquare/js/base.js' %}"></script>
 {% block extra_script %}
 {% endblock %}
 </html>

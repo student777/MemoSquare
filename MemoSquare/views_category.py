@@ -7,13 +7,14 @@ from MemoSquare.serializers import CategorySerializer
 
 
 @api_view(['GET', 'POST'])
-@renderer_classes([JSONRenderer])
 @permission_classes((permissions.IsAuthenticated,))
 def list_create(request):
     if request.method == 'GET':
+        # Add category info
+        # When public memo is exposed to anonymous users..
         query_set = Category.objects.filter(user=request.user)
         serializer = CategorySerializer(query_set, many=True)
-        return Response(serializer.data)
+        return Response({'category_list': serializer.data}, template_name='category_list.html', status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
         serializer = CategorySerializer(data=request.data, context={'user': request.user})
