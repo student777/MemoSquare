@@ -8,6 +8,7 @@ from .models import Memo, Clip, Category, LikeMemo
 from .serializers import MemoSerializer, CategorySerializer
 from .finder import get_or_create_page, find_memo, get_or_create_category
 from .magic import grab_img_from_content
+from django.db.utils import IntegrityError
 
 
 # List & Create API view
@@ -238,15 +239,24 @@ def lock_unlock(request, pk):
     return Response(result, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['POST', 'DELETE'])
 @permission_classes((permissions.IsAuthenticated,))
 def like_unlike(request, pk):
-    try:
-        like = LikeMemo.objects.get(user=request.user, memo_id=pk)
+    # When Memo is None, DoesNotExist error cannot be caught in following try statement
+    memo = get_object_or_404(Memo, pk=pk)
+
+    if request.method == 'POST':
+        try:
+            LikeMemo.objects.create(user=request.user, memo=memo)
+        except IntegrityError:
+            pass
+        result = 'liked'
+    elif request.method == 'DELETE':
+        try:
+            like = LikeMemo.objects.get(user=request.user, memo=memo)
+        except LikeMemo.DoesNotExist:
+            return Response('already liked', status=status.HTTP_400_BAD_REQUEST)
         like.delete()
         result = 'disliked'
-    except LikeMemo.DoesNotExist:
-        LikeMemo.objects.create(user=request.user, memo_id=pk)
-        result = 'liked'
 
     return Response(result, status=status.HTTP_200_OK)
