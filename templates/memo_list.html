@@ -31,8 +31,7 @@
                                 <!-- clip -->
                                 <div class="col s1 m1 clip-icon">
                                     {% if memo.is_clipped %}
-                                        <i onclick="clip_memo({{ memo.pk }}, false, this)"
-                                           class="small material-icons">turned_in</i>
+                                        <i onclick="clip_memo({{ memo.pk }}, false, this)" class="small material-icons">turned_in</i>
                                     {% else %}
                                         <i onclick="clip_memo({{ memo.pk }}, true, this)" class="small material-icons">turned_in_not</i>
                                     {% endif %}
@@ -41,11 +40,21 @@
                                     <span style="margin-left: 5px">{{ memo.num_clips }}</span>
                                 </div>
 
+                                <!-- like -->
                                 <div>
-                                    <p id="num_comments">{{ memo.num_comments }} comments</p>
-                                    <p id="num_likes">{{ memo.num_likes }} likes</p>
-                                    <a class="waves-effect waves-light btn" onclick="like_memo({{ memo.pk }}, this)">like</a>
-                                    <a class="waves-effect waves-light btn" onclick="dislike_memo({{ memo.pk }}, this)">dislike</a>
+                                    {% if memo.is_liked %}
+                                        <i id="is_liked" onclick="dislike_memo({{ memo.pk }}, this)" class="small material-icons">thumb_up</i>
+                                        <i id="is_not_liked" onclick="like_memo({{ memo.pk }}, this)" style="display:none" class="small material-icons">thumb_up</i>
+                                    {% else %}
+                                        <i id="is_liked" onclick="dislike_memo({{ memo.pk }}, this)" style="display:none" class="small material-icons">thumb_up</i>
+                                        <i id="is_not_liked" onclick="like_memo({{ memo.pk }}, this)" class="small material-icons">thumb_up</i>
+                                    {% endif %}
+                                    <span id="num_likes">{{ memo.num_likes }}</span>
+                                </div>
+
+                                <!-- comments -->
+                                <div>
+                                    <p id="num_comments"><i class="small material-icons">comment</i>{{ memo.num_comments }}</p>
                                 </div>
 
                                 <!-- description -->

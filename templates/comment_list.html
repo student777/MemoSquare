@@ -5,10 +5,6 @@
         <th>content</th>
         <th>timestamp</th>
         <th>like</th>
-        <th>is_owner</th>
-        <th>is_liked</th>
-        <th>like</th>
-        <th>dislike</th>
         <th>edit</th>
         <th>remove</th>
     </tr>
@@ -16,17 +12,24 @@
 
     <tbody>
     {% for comment in comment_list %}
-        <tr id="comment{{ comment.pk }}">
+        <tr>
             <td>{{ comment.owner }}</td>
             <td>{{ comment.content }}</td>
             <td>{{ comment.timestamp }}</td>
-            <td>{{ comment.num_likes }}</td>
-            <td>{{ comment.is_owner }}</td>
-            <td>{{ comment.is_liked }}</td>
-            <td><a href="#!" style="color:orange" onclick="like_comment({{ comment.pk }}, this)">like</a></td>
-            <td><a href="#!" style="color:greenyellow" onclick="dislike_comment({{ comment.pk }}, this)">dislike</a></td>
-            <td><a href="#!" style="color:mediumpurple" onclick="edit_comment({{ comment.pk }})">edit</a></td>
-            <td><a href="#!" style="color:hotpink" onclick="delete_comment({{ comment.pk }})">remove</a></td>
+            <td>
+                {% if comment.is_liked %}
+                    <i id="is_liked" onclick="dislike_comment({{ comment.pk }}, this)" class="small material-icons">thumb_up</i>
+                    <i id="is_not_liked" onclick="like_comment({{ comment.pk }}, this)" style="display:none" class="small material-icons">thumb_up</i>
+                {% else %}
+                    <i id="is_liked" onclick="dislike_comment({{ comment.pk }}, this)" style="display:none" class="small material-icons">thumb_up</i>
+                    <i id="is_not_liked" onclick="like_comment({{ comment.pk }}, this)" class="small material-icons">thumb_up</i>
+                {% endif %}
+                <span id="num_likes">{{ comment.num_likes }}</span>
+            </td>
+            {% if comment.is_owner %}
+                <td><a href="#!" style="color:mediumpurple" onclick="edit_comment({{ comment.pk }}, this)">edit</a></td>
+                <td><a href="#!" style="color:hotpink" onclick="delete_comment({{ comment.pk }}, this)">remove</a></td>
+            {% endif %}
         </tr>
     {% empty %}
         no comments

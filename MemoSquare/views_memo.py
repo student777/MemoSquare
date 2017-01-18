@@ -142,8 +142,6 @@ def clip_unclip(request, pk):
         data = {'msg': 'this memo is private'}
         return Response(data, status=status.HTTP_403_FORBIDDEN, template_name='error_msg.html')
 
-    # Toggle request?  POST or DELETE -> only POST. If no clip objects, create clip. Otherwise delete clip.
-
     # POST request: clip
     if request.method == 'POST':
         # check if there is no objects

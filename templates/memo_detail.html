@@ -81,15 +81,24 @@
             </div>
 
             <div class="row">
-                <p id="num_comments">{{ memo.num_comments }} comments</p>
-                <p id="num_likes">{{ memo.num_likes }}likes</p>
-                <a class="waves-effect waves-light btn" onclick="like_memo({{ memo.pk }}, this)">like</a>
-                <a class="waves-effect waves-light btn" onclick="dislike_memo({{ memo.pk }}, this)">dislike</a>
+               <i class="small material-icons">comment</i><span id="num_comments">{{ memo.num_comments }}</span>
             </div>
+
+            <div class="row">
+                {% if memo.is_liked %}
+                    <i id="is_liked" onclick="dislike_memo({{ memo.pk }}, this)" class="small material-icons">thumb_up</i>
+                    <i id="is_not_liked" onclick="like_memo({{ memo.pk }}, this)" style="display:none" class="small material-icons">thumb_up</i>
+                {% else %}
+                    <i id="is_liked" onclick="dislike_memo({{ memo.pk }}, this)" style="display:none" class="small material-icons">thumb_up</i>
+                    <i id="is_not_liked" onclick="like_memo({{ memo.pk }}, this)" class="small material-icons">thumb_up</i>
+                {% endif %}
+                <span id="num_likes">{{ memo.num_likes }}</span>
+            </div>
+
             <div class="row">
                 <div class="input-field col s8">
-                    <input placeholder="Add new comment" id="comment" type="text" class="validate">
-                    <label for="comment">new comment</label>
+                    <input placeholder="Add new comment" id="comment_form" type="text" class="validate">
+                    <label for="comment_form">new comment</label>
                 </div>
                 <a class="waves-effect waves-light btn" onclick="add_comment({{ memo.pk }})">ok</a>
             </div>
