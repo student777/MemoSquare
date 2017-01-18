@@ -56,7 +56,7 @@ function delete_comment(pk, caller) {
             $('#comment' + pk).remove();
             // dedcrease num_likes of memo
             var num_likes = parseInt($('#num_comments').text());
-            $('#num_comments').text(--num_likes + ' likes')
+            $('#num_comments').text(--num_likes)
         },
         error: function (response) {
             console.log(response)

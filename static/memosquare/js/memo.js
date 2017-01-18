@@ -46,7 +46,7 @@ function clip_memo(pk, to_clip, caller) {
         }
     };
 
-    // manage num_clip
+    // manage num_clip(works only in list_view)
     var parent_div = $(caller).parent().parent();
     var clips_div = parent_div.find('div.clip-text > span');
 
@@ -57,11 +57,10 @@ function clip_memo(pk, to_clip, caller) {
             var new_onclick = $(caller).attr('onClick').replace("true", "false");
             $(caller).attr('onClick', new_onclick);
 
-            // increase num_clip
+            // increase num_clip(works only in list_view)
             var num_clip = parseInt(clips_div.text());
             clips_div.text(++num_clip);
-        };
-
+        }
     }
     else if (to_clip == false) {
         settings.method = 'DELETE';
@@ -70,9 +69,14 @@ function clip_memo(pk, to_clip, caller) {
             var new_onclick = $(caller).attr('onClick').replace("false", "true");
             $(caller).attr('onClick', new_onclick);
 
-            // decrese num_clip
+            // decrease num_clip(works nly in list_view)
             var num_clip = parseInt(clips_div.text());
             clips_div.text(--num_clip);
+
+            // remove card (works only in clip_list)
+            if(window.location.href.endsWith('/clipbook/')){
+                $(caller).parent().parent().parent().parent().parent().remove();
+            }
         };
     }
 
@@ -102,7 +106,6 @@ function lock_memo(pk, caller) {
     };
     $.ajax(url, settings);
 }
-
 
 function share_memo() {
     if (typeof memo != undefined) {
