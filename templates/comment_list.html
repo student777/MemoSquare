@@ -9,20 +9,24 @@
         <th>is_liked</th>
         <th>like</th>
         <th>dislike</th>
+        <th>edit</th>
+        <th>remove</th>
     </tr>
     </thead>
 
     <tbody>
     {% for comment in comment_list %}
-        <tr>
+        <tr id="comment{{ comment.pk }}">
             <td>{{ comment.owner }}</td>
             <td>{{ comment.content }}</td>
             <td>{{ comment.timestamp }}</td>
             <td>{{ comment.num_likes }}</td>
             <td>{{ comment.is_owner }}</td>
             <td>{{ comment.is_liked }}</td>
-            <td><a class="waves-effect waves-light btn" onclick="like_comment({{ comment.pk }})">like</a></td>
-            <td><a class="waves-effect waves-light btn" onclick="dislike_comment({{ comment.pk }})">dislike</a></td>
+            <td><a href="#!" onclick="like_comment({{ comment.pk }})">like</a></td>
+            <td><a href="#!" onclick="dislike_comment({{ comment.pk }})">dislike</a></td>
+            <td><a href="#!" onclick="edit_comment({{ comment.pk }})">edit</a></td>
+            <td><a href="#!" onclick="delete_comment({{ comment.pk }})">remove</a></td>
         </tr>
     {% empty %}
         no comments

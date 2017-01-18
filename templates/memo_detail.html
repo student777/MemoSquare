@@ -80,9 +80,18 @@
                 </div>
             </div>
 
-            {{ memo.num_comments }} comments<br>
-            <a class="waves-effect waves-light btn" onclick="like_memo({{ memo.pk }})">like</a>
-            <a class="waves-effect waves-light btn" onclick="dislike_memo({{ memo.pk }})">dislike</a>
+            <div class="row">
+                {{ memo.num_comments }} comments<br>
+                <a class="waves-effect waves-light btn" onclick="like_memo({{ memo.pk }})">like</a>
+                <a class="waves-effect waves-light btn" onclick="dislike_memo({{ memo.pk }})">dislike</a>
+            </div>
+            <div class="row">
+                <div class="input-field col s8">
+                    <input placeholder="Add new comment" id="comment" type="text" class="validate">
+                    <label for="comment">new comment</label>
+                </div>
+                <a class="waves-effect waves-light btn" onclick="add_comment({{ memo.pk }})">ok</a>
+            </div>
             <div id="comment_list" class="row">
                 <!-- comment_list will be appended here -->
             </div>
