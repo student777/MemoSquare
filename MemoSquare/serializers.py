@@ -60,7 +60,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
         # Add extra field
         json['num_likes'] = instance.likes.count()
-
+        json['owner_pic_url'] = instance.user.detail.img_url
+        
         if 'user' in self.context:
             user = self.context['user']
             is_owner = user == instance.user
