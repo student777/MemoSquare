@@ -15,7 +15,7 @@ function clip_memo(pk, to_clip, caller) {
 
     if (to_clip == true) {
         settings.method = 'POST';
-        settings.data = {"csrfmiddlewaretoken": csrf_token};
+        settings.data = {csrfmiddlewaretoken: csrf_token};
         settings.success = function () {
             $(caller).text('turned_in');
             var new_onclick = $(caller).attr('onClick').replace("true", "false");
@@ -50,7 +50,7 @@ function lock_memo(pk, caller) {
     var url = '/memo/' + pk + '/lock/';
     var settings = {
         method: 'POST',
-        data: {"csrfmiddlewaretoken": csrf_token},
+        data: {csrfmiddlewaretoken: csrf_token},
         success: function success(result, status, xhr) {
             var lock = $(caller).text();
             if (lock == 'lock_open') {
@@ -108,29 +108,37 @@ function share_memo() {
     }
 }
 
-function like_memo(pk) {
+function like_memo(pk, caller) {
     $.ajax({
-        'url': '/memo/' + pk + '/like/',
-        "method": "POST",
-        'data': {"csrfmiddlewaretoken": csrf_token},
-        "success": function (response) {
-            console.log(response)
+        url: '/memo/' + pk + '/like/',
+        method: "POST",
+        data: {csrfmiddlewaretoken: csrf_token},
+        success: function (response) {
+            var num_likes = parseInt($(caller).parent().find("#num_likes").text()) + 1;
+            $(caller).parent().find("#num_likes").text(num_likes + ' likes');
+        },
+        error: function (response) {
+            alert(response.responseText);
         }
     })
 }
 
-function dislike_memo(pk) {
+function dislike_memo(pk, caller) {
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", csrf_token);
         }
     });
     $.ajax({
-        'url': '/memo/' + pk + '/like/',
-        "method": "DELETE",
-        'data': {"csrfmiddlewaretoken": csrf_token},
-        "success": function (response) {
-            console.log(response)
+        url: '/memo/' + pk + '/like/',
+        method: "DELETE",
+        data: {csrfmiddlewaretoken: csrf_token},
+        success: function (response) {
+            var num_likes = parseInt($(caller).parent().find("#num_likes").text()) - 1;
+            $(caller).parent().find("#num_likes").text(num_likes + ' likes');
+        },
+        error: function (response) {
+            alert(response.responseText);
         }
     })
 }

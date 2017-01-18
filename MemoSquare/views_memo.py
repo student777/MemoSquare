@@ -229,13 +229,13 @@ def like_dislike(request, pk):
         try:
             LikeMemo.objects.create(user=request.user, memo=memo)
         except IntegrityError:
-            pass
+            return Response('already liked', status=status.HTTP_400_BAD_REQUEST)
         result = 'liked'
     elif request.method == 'DELETE':
         try:
             like = LikeMemo.objects.get(user=request.user, memo=memo)
         except LikeMemo.DoesNotExist:
-            return Response('already liked', status=status.HTTP_400_BAD_REQUEST)
+            return Response('already disliked', status=status.HTTP_400_BAD_REQUEST)
         like.delete()
         result = 'disliked'
 

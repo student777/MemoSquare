@@ -42,10 +42,10 @@
                                 </div>
 
                                 <div>
-                                    {{ memo.num_likes }}likes<br>
-                                    {{ memo.num_comments }}comments<br>
-                                    <a class="waves-effect waves-light btn" onclick="like_memo({{ memo.pk }})">like</a>
-                                    <a class="waves-effect waves-light btn" onclick="dislike_memo({{ memo.pk }})">dislike</a>
+                                    <p id="num_comments">{{ memo.num_comments }} comments</p>
+                                    <p id="num_likes">{{ memo.num_likes }} likes</p>
+                                    <a class="waves-effect waves-light btn" onclick="like_memo({{ memo.pk }}, this)">like</a>
+                                    <a class="waves-effect waves-light btn" onclick="dislike_memo({{ memo.pk }}, this)">dislike</a>
                                 </div>
 
                                 <!-- description -->

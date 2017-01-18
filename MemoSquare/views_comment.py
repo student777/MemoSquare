@@ -63,13 +63,13 @@ def like_dislike(request, pk):
         try:
             LikeComment.objects.create(user=request.user, comment=comment)
         except IntegrityError:
-            pass
+            return Response('already liked', status=status.HTTP_400_BAD_REQUEST)
         result = 'liked'
     elif request.method == 'DELETE':
         try:
             like = LikeComment.objects.get(user=request.user, comment=comment)
         except LikeComment.DoesNotExist:
-            return Response('already liked', status=status.HTTP_400_BAD_REQUEST)
+            return Response('already disliked', status=status.HTTP_400_BAD_REQUEST)
         like.delete()
         result = 'disliked'
 

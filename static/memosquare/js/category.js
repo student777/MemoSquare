@@ -6,7 +6,6 @@ function delete_category(pk, caller) {
                 request.setRequestHeader("X-CSRFToken", csrf_token);
             },
             success: function success(result, status, xhr) {
-                console.log($(caller).parent().parent());
                 $(caller).parent().parent().remove();
             },
             error: function (response) {
@@ -25,8 +24,8 @@ function edit_category(pk, caller){
         var settings = {
             method: 'POST',
             data: {
-                "name": category_name,
-                "csrfmiddlewaretoken": csrf_token
+                name: category_name,
+                csrfmiddlewaretoken: csrf_token
             },
             success: function (response) {
                 alert('saved');
@@ -50,8 +49,8 @@ function add_category(){
         var settings = {
             method: 'POST',
             data: {
-                "name": category_name,
-                "csrfmiddlewaretoken": csrf_token
+                name: category_name,
+                csrfmiddlewaretoken: csrf_token
             },
             success: function (response){
                 location.href='/memo/?category=' + response.pk;
