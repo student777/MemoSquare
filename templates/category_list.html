@@ -5,7 +5,7 @@
         {% for category in category_list %}
             <li>
                 <div class="custom-collection-item">
-                    <input name="group" type="radio" onchange="location.href='/memo/?category={{ category.pk }}'"
+                    <input name="group" type="radio" onchange="location.href='/memo/?category_pk={{ category.pk }}'"
                            id="radio{{ category.pk }}"/>
                     <label class="category-label" for="radio{{ category.pk }}">{{ category.name }}</label>
                 </div>
@@ -14,7 +14,7 @@
         <!-- uncategorized -->
         <li>
             <div class="custom-collection-item">
-                <input name="group" type="radio" class="red-text" onchange="location.href='/memo/?category=0'" id="radio0"/>
+                <input name="group" type="radio" class="red-text" onchange="location.href='/memo/?category_pk=0'" id="radio0"/>
                 <label class="category-label" for="radio0">uncategorized</label>
             </div>
         </li>

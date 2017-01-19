@@ -43,7 +43,7 @@ class Memo(models.Model):
 
     def __str__(self):
         content_truncated = self.content[:100] + (self.content[100:] and '..')
-        return self.user.__str__() + "/" + content_truncated
+        return str(self.pk) + '/' + self.user.__str__() + "/" + content_truncated
 
 
 class Clip(models.Model):
@@ -72,6 +72,9 @@ class Comment(models.Model):
     memo = models.ForeignKey(Memo, on_delete=models.CASCADE, related_name='comment')
     likes = models.ManyToManyField(User, through='LikeComment', related_name='+')
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.pk) + '/' + self.content
 
 
 class LikeMemo(models.Model):

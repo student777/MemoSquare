@@ -3,10 +3,10 @@ from MemoSquare.models import Memo, Category, Comment
 
 
 class MemoSerializer(serializers.ModelSerializer):
-    owner = serializers.CharField(source='user.get_full_name', read_only=True)
-    page = serializers.CharField(max_length=255, read_only=True)
+    owner = serializers.CharField(source='user.get_full_name', read_only=True)  # can't use SlugField because of 'owner' alias
+    page = serializers.SlugRelatedField(slug_field='url', read_only=True)
     timestamp = serializers.DateTimeField(format='%b %d, %Y', read_only=True)
-    category = serializers.CharField(max_length=45, allow_blank=True)
+    # category = PrimaryKeyRelatedField(read_only=True) <-- No need because of blank_true option in Memo.category when create
 
     class Meta:
         model = Memo
@@ -47,9 +47,9 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    owner = serializers.CharField(source='user.get_full_name', read_only=True)
-    memo = serializers.IntegerField(source='memo.pk', read_only=True)
+    owner = serializers.CharField(source='user.get_full_name', read_only=True)  # can't use SlugField because of 'owner' alias
     timestamp = serializers.DateTimeField(format='%b %d, %Y', read_only=True)
+    memo = serializers.PrimaryKeyRelatedField(read_only=True)  # can't omit this field because Comment.memo has no option blank_true
 
     class Meta:
         model = Comment

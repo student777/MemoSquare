@@ -12,16 +12,16 @@ from django.db.utils import IntegrityError
 @permission_classes((permissions.IsAuthenticated,))
 def list_create(request):
     if request.method == 'GET':
-        memo_id = request.query_params['memo']
-        query_set = Comment.objects.filter(memo_id=memo_id)
+        memo_pk = request.query_params['memo_pk']
+        query_set = Comment.objects.filter(memo_id=memo_pk)
         serializer = CommentSerializer(query_set, many=True, context={'user': request.user})
         return Response({'comment_list': serializer.data}, template_name='comment_list.html')
 
     elif request.method == 'POST':
-        memo_id = request.data['memo']
+        memo_pk = request.data['memo_pk']
         serializer = CommentSerializer(data=request.data, context={'user': request.user})
         if serializer.is_valid():
-            serializer.save(user=request.user, memo_id=memo_id)
+            serializer.save(user=request.user, memo_id=memo_pk)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

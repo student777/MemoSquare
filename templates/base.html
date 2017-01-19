@@ -49,7 +49,7 @@
 /* global variable(fuck google oauth2) */
 var csrf_token = '{{ csrf_token }}';
 var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
-var category_id = '{{ request.GET.category }}';
+var category_id = '{{ request.GET.category_pk }}';
 </script>
 <script src="{% static 'memosquare/js/base.js' %}"></script>
 {% block extra_script %}

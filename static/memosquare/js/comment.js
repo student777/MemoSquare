@@ -3,7 +3,7 @@ function add_comment(pk) {
     $.ajax({
         url: '/comment/',
         method: "POST",
-        data: {memo: pk, content: content},
+        data: {memo_pk: pk, content: content},
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader('X-CSRFToken', csrf_token);
         },
@@ -11,8 +11,7 @@ function add_comment(pk) {
             $('#comment_list').find('tbody').append(response.owner + response.content + response.timestamp + '귀찮아서태그안먹임');
             // increase num_likes of memo
             var num_likes = parseInt($('#num_comments').text());
-            console.log(num_likes);
-            $('#num_comments').text(++num_likes)
+            $('#num_comments').text(++num_likes);
         },
         error: function (response) {
             console.log(response)

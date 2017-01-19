@@ -20,20 +20,20 @@ def list_create(request):
         '''
         Filter memo by category
         If memo is uncategorized, category_id is 0 in request, but map as None because of query
-        In short, 1: category_id, 0: uncategorized, None: all memo
+        In short, 1: category_pk, 0: uncategorized, None: all memo
         '''
-        if 'category' in request.query_params:
-            if request.query_params['category'] is '0':
-                category_id = None
-                category_name = 'uncategorized'
+        if 'category_pk' in request.query_params:
+            if request.query_params['category_pk'] is '0':
+                category_pk = None
+                template_title = 'uncategorized'
             else:
-                category_id = request.query_params['category']
-                category_name = Category.objects.get(pk=category_id).name
-            query_set = Memo.objects.filter(user=request.user, category_id=category_id).order_by('-pk')
+                category_pk = request.query_params['category_pk']
+                template_title = Category.objects.get(pk=category_pk).name
+            query_set = Memo.objects.filter(user=request.user, category_id=category_pk).order_by('-pk')
         # No category assigned, return all memo
         else:
             query_set = Memo.objects.filter(user=request.user).order_by('-pk')
-            category_name = 'All memo'
+            template_title = 'All memo'
 
         paginator = LimitOffsetPagination()
         paginated_query_set = paginator.paginate_queryset(query_set, request)
@@ -41,15 +41,15 @@ def list_create(request):
         return Response({'memo_list': serializer.data,
                          'prev': paginator.get_previous_link(),
                          'next': paginator.get_next_link(),
-                         'category_name': category_name,
+                         'template_title': template_title,
                          }, template_name='memo_list.html')
 
     # Create Memo
     elif request.method == 'POST':
         serializer = MemoSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             page = get_or_create_page(request.data['page'])
-            category = get_or_create_category(request.data['category'], request.user)
+            category = get_or_create_category(request.data['category_name'], request.user)
             content = grab_img_from_content(request.data['content'])
             serializer.save(user=request.user, page=page, category=category, content=content)
             return Response({'memo': serializer.data}, status=status.HTTP_201_CREATED)
@@ -76,7 +76,8 @@ def detail_update_delete(request, pk):
     # Retrieve
     if request.method == 'GET':
         serializer = MemoSerializer(memo, context={'user': request.user})
-        return Response({'memo': serializer.data}, template_name='memo_detail.html')
+        template_title = 'uncategorized' if memo.category is None else memo.category.name
+        return Response({'memo': serializer.data, 'template_title': template_title}, template_name='memo_detail.html')
 
     '''
     Second check object permissions(POST, DELETE)
@@ -91,7 +92,7 @@ def detail_update_delete(request, pk):
     if request.method == 'POST':
         serializer = MemoSerializer(memo, data=request.data)
         if serializer.is_valid():
-            category = get_or_create_category(request.data['category'], request.user)
+            category = get_or_create_category(request.data['category_name'], request.user)
             serializer.save(user=request.user, category=category)
             return Response({'memo': serializer.data}, template_name='memo_detail.html')
         return Response({'memo': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -122,12 +123,10 @@ def clip_list(request):
     paginated_query_set = paginator.paginate_queryset(memo_list, request)
     serializer = MemoSerializer(paginated_query_set, many=True, context={'user': request.user})
 
-    category_name = 'Clipped memo'
-
     return Response({'memo_list': serializer.data,
                      'prev': paginator.get_previous_link(),
                      'next': paginator.get_next_link(),
-                     'category_name': category_name
+                     'template_title': 'clipped memo'
                      }, template_name='memo_list.html')
 
 
