@@ -10,7 +10,6 @@ function send_report(){
             method: 'POST',
             data: {
                 "content": content,
-                "csrfmiddlewaretoken": csrf_token
             },
             success: function (response){
                 alert('소중한 의견 감사합니다!');

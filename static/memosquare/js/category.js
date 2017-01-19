@@ -2,9 +2,6 @@ function delete_category(pk, caller) {
     if (confirm('really?')) {
         var settings = {
             type: 'DELETE',
-            beforeSend: function (request) {
-                request.setRequestHeader("X-CSRFToken", csrf_token);
-            },
             success: function success(result, status, xhr) {
                 $(caller).parent().parent().remove();
             },
@@ -25,7 +22,6 @@ function edit_category(pk, caller){
             method: 'POST',
             data: {
                 name: category_name,
-                csrfmiddlewaretoken: csrf_token
             },
             success: function (response) {
                 alert('saved');
@@ -50,7 +46,6 @@ function add_category(){
             method: 'POST',
             data: {
                 name: category_name,
-                csrfmiddlewaretoken: csrf_token
             },
             success: function (response){
                 location.href='/memo/?category_pk=' + response.pk;

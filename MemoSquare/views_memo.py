@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import LimitOffsetPagination
 from .models import Memo, Clip, Category, LikeMemo
-from .serializers import MemoSerializer, CategorySerializer
+from .serializers import MemoSerializer
 from .finder import get_or_create_page, find_memo, get_or_create_category
 from .magic import grab_img_from_content
 from django.db.utils import IntegrityError

@@ -6,9 +6,6 @@ function delete_memo(pk) {
     }
     var settings = {
         type: 'DELETE',
-        beforeSend: function (request) {
-            request.setRequestHeader("X-CSRFToken", csrf_token);
-        },
         success: function success(result, status, xhr) {
             //delete <td> is troublesome
             //일단나의메모페에지로
@@ -38,9 +35,6 @@ function edit_form(pk) {
 function clip_memo(pk, to_clip, caller) {
     var url = '/memo/' + pk + '/clip/';
     var settings = {
-        beforeSend : function (request) {
-            request.setRequestHeader("X-CSRFToken", csrf_token);
-        },
         error: function(response) {
             console.log(response);
         }
@@ -87,9 +81,6 @@ function lock_memo(pk, caller) {
     var url = '/memo/' + pk + '/lock/';
     var settings = {
         method: 'POST',
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader('X-CSRFToken', csrf_token);
-        },
         success: function success(result, status, xhr) {
             var lock = $(caller).text();
             if (lock == 'lock_open') {
@@ -120,9 +111,6 @@ function like_memo(pk, caller) {
     $.ajax({
         url: '/memo/' + pk + '/like/',
         method: "POST",
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader('X-CSRFToken', csrf_token);
-        },
         success: function (response) {
             var div = $(caller).parent();
             var num_likes = parseInt(div.find("#num_likes").text());
@@ -140,9 +128,6 @@ function dislike_memo(pk, caller) {
     $.ajax({
         url: '/memo/' + pk + '/like/',
         method: "DELETE",
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", csrf_token);
-        },
         success: function (response) {
             var div = $(caller).parent();
             var num_likes = parseInt(div.find("#num_likes").text());

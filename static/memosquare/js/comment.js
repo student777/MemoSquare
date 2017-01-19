@@ -4,9 +4,6 @@ function add_comment(pk) {
         url: '/comment/',
         method: "POST",
         data: {memo_pk: pk, content: content},
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader('X-CSRFToken', csrf_token);
-        },
         success: function (response) {
             $('#comment_list').find('tbody').append(response.user + response.content + response.timestamp + '귀찮아서태그안먹임');
             // increase num_likes of memo
@@ -26,9 +23,6 @@ function edit_comment(pk, caller) {
     $.ajax({
         url: '/comment/' + pk + '/',
         method: "POST",
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader('X-CSRFToken', csrf_token);
-        },
         data: {content: content_changed},
         success: function (response) {
             td.text(response.content);
@@ -47,9 +41,6 @@ function delete_comment(pk, caller) {
     $.ajax({
         url: '/comment/' + pk + '/',
         method: "DELETE",
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader('X-CSRFToken', csrf_token);
-        },
         success: function (response) {
             $(caller).parent().parent().remove();
             $('#comment' + pk).remove();
@@ -67,9 +58,6 @@ function like_comment(pk, caller) {
     $.ajax({
         url: '/comment/' + pk + '/like/',
         method: "POST",
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader('X-CSRFToken', csrf_token);
-        },
         success: function (response) {
             var tr = $(caller).parent().parent();
             var num_likes = parseInt(tr.find("#num_likes").text());
@@ -87,9 +75,6 @@ function dislike_comment(pk, caller) {
     $.ajax({
         url: '/comment/' + pk + '/like/',
         method: "DELETE",
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader('X-CSRFToken', csrf_token);
-        },
         success: function (response) {
             var tr = $(caller).parent().parent();
             var num_likes = parseInt(tr.find("#num_likes").text());
