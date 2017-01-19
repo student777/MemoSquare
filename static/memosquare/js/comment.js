@@ -8,7 +8,7 @@ function add_comment(pk) {
             xhr.setRequestHeader('X-CSRFToken', csrf_token);
         },
         success: function (response) {
-            $('#comment_list').find('tbody').append(response.owner + response.content + response.timestamp + '귀찮아서태그안먹임');
+            $('#comment_list').find('tbody').append(response.user + response.content + response.timestamp + '귀찮아서태그안먹임');
             // increase num_likes of memo
             var num_likes = parseInt($('#num_comments').text());
             $('#num_comments').text(++num_likes);

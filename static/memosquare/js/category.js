@@ -53,7 +53,7 @@ function add_category(){
                 csrfmiddlewaretoken: csrf_token
             },
             success: function (response){
-                location.href='/memo/?category=' + response.pk;
+                location.href='/memo/?category_pk=' + response.pk;
             },
             error: function (response) {
                 console.log(response);

@@ -75,11 +75,11 @@
             <!-- Category-->
             {% for category in category_list %}
                 <li>
-                    <a href='/memo/?category={{ category.pk }}'>{{ category.name }}</a>
+                    <a href='/memo/?category_pk={{ category.pk }}'>{{ category.name }}</a>
                 </li>
             {% endfor %}
             <li>
-                <a href='/memo/?category=0'>uncategorized</a>
+                <a href='/memo/?category_pk=0'>uncategorized</a>
             </li>
 
             <div class="divider"></div>
