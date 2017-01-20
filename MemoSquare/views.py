@@ -21,9 +21,15 @@ def sign_in(request):
         return HttpResponse(status=401)
 
 
-# login by DRF TokenAuthentication
+# login by DRF TokenAuthentication(NOT used)
 def sign_in_token(request):
     from rest_framework.authtoken.models import Token
+    '''
+    This endpoint returns DRF auth token.
+    Android client or Ajax client set this token to request header
+    ex) xhr.setRequestHeader("Authorization", "Token "+token);
+    Using token auth, no need for csrf_token or cookie-sessionid
+    '''
     if request.method == 'POST':
         token_social = request.POST.get('token')
         user = authenticate(token=token_social)

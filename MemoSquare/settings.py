@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'MemoSquare',
     'rest_framework',
     'corsheaders',
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken', # Not used
 ]
 
 MIDDLEWARE = [
@@ -123,7 +123,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.TemplateHTMLRenderer',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication', # NOT used
         'rest_framework.authentication.SessionAuthentication',
     ),
 }

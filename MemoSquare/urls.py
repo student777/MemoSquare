@@ -8,7 +8,7 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^admin/', admin.site.urls),
     url(r'^sign_in/', views.sign_in),
-    url(r'^sign_in_token/', views.sign_in_token),
+    # url(r'^sign_in_token/', views.sign_in_token), Not used
     url(r'^sign_out/', views.sign_out),
     url(r'^report/', views.report),
     url(r'^upload/$', views.upload),

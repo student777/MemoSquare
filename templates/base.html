@@ -46,8 +46,8 @@
 <script src="{% static 'memosquare/js/oauth2_facebook.js' %}"></script>
 <script src="{% static 'memosquare/js/oauth2_google.js' %}"></script>
 <script>
-/* global variables(fuck google oauth2) */
-var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+/* global variables */
+var is_authenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};  //fuck google oauth2
 var category_id = '{{ request.GET.category_pk }}';
 </script>
 <script src="{% static 'memosquare/js/base.js' %}"></script>
