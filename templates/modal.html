@@ -8,8 +8,8 @@
             <div class="row">
                 <br>
                 <div class="input-field col s10 offset-s1">
-                    <textarea id="textarea" name="content" class="materialize-textarea"></textarea>
-                    <label for="textarea">Content</label>
+                    <textarea id="report_content" name="content" class="materialize-textarea"></textarea>
+                    <label for="report_content">Content</label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -27,8 +27,8 @@
             <div class="row">
                 <br>
                 <div class="input-field col s10 offset-s1">
-                    <input placeholder="new category" id="new-name" type="text" class="validate" name="name">
-                    <label for="new-name">name</label>
+                    <input placeholder="new category" id="category_name" type="text" class="validate" name="name">
+                    <label for="category_name">name</label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -39,4 +39,24 @@
 
     <!-- Category 수정/삭제 모달 -->
     <!-- #response2 will be appended here -->
+
+    <!-- Edit comment Modal -->
+    <div id="edit-comment-modal" class="modal">
+        <div class="modal-content">
+            <h5>Edit comment</h5>
+            <div class="divider"></div>
+            <br>
+            <div class="row">
+                <br>
+                <div class="input-field col s10 offset-s1">
+                    <input type="hidden" id="comment_pk" value=""/>
+                    <input placeholder="new category" id="comment_content" type="text" class="validate" value=""/>
+                    <label for="comment_content">name</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" onclick="edit_comment(this)" class="modal-action waves-effect waves-green btn-flat grey white-text">Save</a>
+            </div>
+        </div>
+    </div>
 </div>

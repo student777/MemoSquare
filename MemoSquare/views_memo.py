@@ -217,6 +217,7 @@ def lock_unlock(request, pk):
 
 
 @api_view(['POST', 'DELETE'])
+@renderer_classes([JSONRenderer])
 @permission_classes((permissions.IsAuthenticated,))
 def like_dislike(request, pk):
     # When Memo is None, DoesNotExist error cannot be caught in following try statement

@@ -1,11 +1,12 @@
 function add_comment(pk) {
     var content = $('input#comment_form').val();
     $.ajax({
-        url: '/comment/',
+        url: '/comment/?format=html',
         method: "POST",
         data: {memo_pk: pk, content: content},
         success: function (response) {
-            $('#comment_list').find('tbody').append(response.user + response.content + response.timestamp + '귀찮아서태그안먹임');
+            console.log(response);
+            $('#comment_list').append(response);
             // increase num_likes of memo
             var num_likes = parseInt($('#num_comments').text());
             $('#num_comments').text(++num_likes);
@@ -16,16 +17,24 @@ function add_comment(pk) {
     })
 }
 
-function edit_comment(pk, caller) {
-    var td = $(caller).parent().parent().children().eq(1);
-    var content_original = td.text();
-    var content_changed = prompt("edit comment", content_original);
+function comment_form(pk, content_original) {
+    var comment_modal = $('#edit-comment-modal');
+    comment_modal.modal('open');
+    comment_modal.find('#comment_content').val(content_original);
+    comment_modal.find('#comment_pk').val(pk);
+}
+
+function edit_comment(caller) {
+    var div = $(caller).parent().parent();
+    var pk = div.find('input#comment_pk').val()
+    var content = div.find('input#comment_content').val();
     $.ajax({
         url: '/comment/' + pk + '/',
         method: "POST",
-        data: {content: content_changed},
+        data: {content: content},
         success: function (response) {
-            td.text(response.content);
+            $('#edit-comment-modal').modal('close');
+            location.href="";
         },
         error: function (response) {
             console.log(response)

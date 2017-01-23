@@ -1,34 +1,27 @@
-
-    {% for comment in comment_list %}
-
-        <div class="row div-each-comment">
-            <div class="col s8">
-                <!-- profile-->
-                <!-- sun-todo: 여기에 이미지만 불러와 주세염 아래 src에-->
-                <img class="circle list-profile" src=""/>
-                <div class="list-profile-comp">
-                        <span>{{ comment.timestamp }}</span><br>
-                        <span>by {{ comment.user }}</span>
-                </div>         
+{% for comment in comment_list %}
+    <div class="row div-each-comment">
+        <div class="col s8">
+            <!-- profile-->
+            <img class="circle list-profile" src="{{ comment.owner_pic_url }}"/>
+            <div class="list-profile-comp">
+                <span>{{ comment.timestamp }}</span><br>
+                <span>by {{ comment.user }}</span>
             </div>
+        </div>
 
-
-            
-            <div class="col s4 right-align">
+        <div class="col s4 right-align">
             {% if comment.is_owner %}
-                <a href="#!" onclick="edit_comment({{ comment.pk }}, this)">
+                <a href="#!" onclick="comment_form({{ comment.pk }}, '{{ comment.content }}')">
                     <i class="small material-icons">mode_edit</i>
                 </a>
                 <a href="#!" onclick="delete_comment({{ comment.pk }}, this)">
                     <i class="small material-icons">delete</i>
                 </a>
             {% endif %}
-            </div>
-            
-            <div class="col s12">
-                {{ comment.content }}
-            </div>
-
         </div>
-    {% empty %}
-    {% endfor %}
+
+        <div class="col s12">
+            {{ comment.content }}
+        </div>
+    </div>
+{% endfor %}

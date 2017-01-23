@@ -182,14 +182,6 @@ p.list-content{
 	padding-bottom: 10px;
 }
 
-#is_liked{
-	background: url('static/memosquare/img/ic_heart.png');
-}
-
-#is_not_liked{
-	background: url('static/memosquare/img/ic_heart.png');
-}
-
 .memo-list-icon{
 	display: inline-block;
 }

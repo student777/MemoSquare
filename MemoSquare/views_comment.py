@@ -22,12 +22,11 @@ def list_create(request):
         serializer = CommentSerializer(data=request.data, context={'user': request.user})
         if serializer.is_valid():
             serializer.save(user=request.user, memo_id=memo_pk)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({'comment_list': [serializer.data]}, status=status.HTTP_201_CREATED, template_name='comment_list.html')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST', 'DELETE'])
-@renderer_classes([JSONRenderer])
 @permission_classes((permissions.IsAuthenticated,))
 def update_delete(request, pk):
     # get comment object
@@ -55,6 +54,7 @@ def update_delete(request, pk):
 
 
 @api_view(['POST', 'DELETE'])
+@renderer_classes([JSONRenderer])
 @permission_classes((permissions.IsAuthenticated,))
 def like_dislike(request, pk):
     comment = get_object_or_404(Comment, pk=pk)

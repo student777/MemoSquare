@@ -25,7 +25,6 @@ def list_create(request):
 
 
 @api_view(['GET', 'POST', 'DELETE'])
-@renderer_classes([JSONRenderer])
 @permission_classes((permissions.IsAuthenticated,))
 def detail_update_delete(request, pk):
     # get category object
