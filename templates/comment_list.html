@@ -1,38 +1,34 @@
-<table>
-    <thead>
-    <tr>
-        <th>owner</th>
-        <th>content</th>
-        <th>timestamp</th>
-        <th>like</th>
-        <th>edit</th>
-        <th>remove</th>
-    </tr>
-    </thead>
 
-    <tbody>
     {% for comment in comment_list %}
-        <tr>
-            <td>{{ comment.user }}</td>
-            <td>{{ comment.content }}</td>
-            <td>{{ comment.timestamp }}</td>
-            <td>
-                {% if comment.is_liked %}
-                    <i id="is_liked" onclick="dislike_comment({{ comment.pk }}, this)" class="small material-icons">thumb_up</i>
-                    <i id="is_not_liked" onclick="like_comment({{ comment.pk }}, this)" style="display:none" class="small material-icons">thumb_up</i>
-                {% else %}
-                    <i id="is_liked" onclick="dislike_comment({{ comment.pk }}, this)" style="display:none" class="small material-icons">thumb_up</i>
-                    <i id="is_not_liked" onclick="like_comment({{ comment.pk }}, this)" class="small material-icons">thumb_up</i>
-                {% endif %}
-                <span id="num_likes">{{ comment.num_likes }}</span>
-            </td>
+
+        <div class="row div-each-comment">
+            <div class="col s8">
+                <!-- profile-->
+                <!-- sun-todo: 여기에 이미지만 불러와 주세염 아래 src에-->
+                <img class="circle list-profile" src=""/>
+                <div class="list-profile-comp">
+                        <span>{{ comment.timestamp }}</span><br>
+                        <span>by {{ comment.user }}</span>
+                </div>         
+            </div>
+
+
+            
+            <div class="col s4 right-align">
             {% if comment.is_owner %}
-                <td><a href="#!" style="color:mediumpurple" onclick="edit_comment({{ comment.pk }}, this)">edit</a></td>
-                <td><a href="#!" style="color:hotpink" onclick="delete_comment({{ comment.pk }}, this)">remove</a></td>
+                <a href="#!" onclick="edit_comment({{ comment.pk }}, this)">
+                    <i class="small material-icons">mode_edit</i>
+                </a>
+                <a href="#!" onclick="delete_comment({{ comment.pk }}, this)">
+                    <i class="small material-icons">delete</i>
+                </a>
             {% endif %}
-        </tr>
+            </div>
+            
+            <div class="col s12">
+                {{ comment.content }}
+            </div>
+
+        </div>
     {% empty %}
-        no comments
     {% endfor %}
-    </tbody>
-</table>
